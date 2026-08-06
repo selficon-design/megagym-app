@@ -605,7 +605,7 @@ async function resolveAuthState(){
   }
   auth.role = profile.role;
 
-  if(profile.role === 'trainer'){
+  if(profile.role === 'trainer' || profile.role === 'supervisor'){
     auth.status = 'trainer';
   } else {
     const { data: cust } = await sb.from('customers').select('*').eq('claimed_by', session.user.id).maybeSingle();
@@ -907,12 +907,13 @@ function bindAuthEvents(){
 function renderSidebarAccount(){
   const el = document.getElementById('sidebar-account');
   if(!el) return;
+  const isSupervisor = auth.role === 'supervisor';
   el.innerHTML = `
     <div class="sidebar-account">
       <div class="who">${escHtml(auth.email||'')}</div>
-      <div class="role">Προπονητής</div>
+      <div class="role">${isSupervisor ? 'Υπεύθυνος' : 'Προπονητής'}</div>
     </div>
-    <button class="btn btn-outline" id="sidebar-invite" style="width:100%;justify-content:center;margin-bottom:6px;font-size:12px;padding:9px;">${ICON.key}Πρόσκληση Προπονητή</button>
+    ${isSupervisor ? `<button class="btn btn-outline" id="sidebar-invite" style="width:100%;justify-content:center;margin-bottom:6px;font-size:12px;padding:9px;">${ICON.key}Πρόσκληση Προπονητή</button>` : ''}
     <button class="logout-btn" id="sidebar-logout">${ICON.logout}Αποσύνδεση</button>
   `;
   const btn = document.getElementById('sidebar-logout');
