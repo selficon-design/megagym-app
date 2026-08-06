@@ -589,8 +589,16 @@ async function resolveAuthState(){
   auth.email = session.user.email;
 
   const { data: profile, error: perr } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-  if(perr || !profile){
+  if(perr){
+    console.error('Profile fetch error:', perr);
     auth.status = 'signedOut';
+    auth.authError = 'Σφάλμα φόρτωσης προφίλ: ' + (perr.message || JSON.stringify(perr));
+    renderRoot(); return;
+  }
+  if(!profile){
+    console.error('No profile row found for user id:', session.user.id);
+    auth.status = 'signedOut';
+    auth.authError = 'Δεν βρέθηκε προφίλ για αυτόν τον λογαριασμό στη βάση.';
     renderRoot(); return;
   }
   auth.role = profile.role;
