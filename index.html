@@ -532,6 +532,8 @@ let state = {
   historySearch: '',
   saveModalOpen: false,
   saveBusy:false,
+  inviteModalOpen: false,
+  inviteCode: '',
   openTlEntries: {},   // id -> bool
 };
 
@@ -620,6 +622,40 @@ async function doTrainerLogin(email, password){
   const { error } = await sb.auth.signInWithPassword({ email, password });
   auth.authBusy = false;
   if(error){ auth.authError = translateAuthError(error.message); renderAuthScreens(); }
+}
+async function doTrainerSignup(email, password, inviteCode){
+  auth.authBusy = true; auth.authError=''; renderAuthScreens();
+  try{
+    const { data: valid, error: verr } = await sb.rpc('validate_trainer_invite', { p_code: inviteCode });
+    if(verr || !valid){
+      auth.authBusy = false;
+      auth.authError = 'Ο κωδικός πρόσκλησης δεν είναι έγκυρος ή έχει ήδη χρησιμοποιηθεί.';
+      renderAuthScreens(); return;
+    }
+    const { error: serr } = await sb.auth.signUp({ email, password });
+    if(serr){
+      auth.authBusy = false;
+      auth.authError = translateAuthError(serr.message);
+      renderAuthScreens(); return;
+    }
+    const { error: rerr } = await sb.rpc('redeem_trainer_invite', { p_code: inviteCode });
+    auth.authBusy = false;
+    if(rerr){
+      auth.authError = 'Ο λογαριασμός δημιουργήθηκε, αλλά ο κωδικός πρόσκλησης δεν μπόρεσε να χρησιμοποιηθεί. Επικοινώνησε με τον προπονητή σου.';
+      renderAuthScreens(); return;
+    }
+    toast('Καλωσήρθες! Ο λογαριασμός προπονητή σου είναι έτοιμος.');
+    await resolveAuthState();
+  }catch(e){
+    auth.authBusy = false;
+    auth.authError = 'Κάτι πήγε στραβά. Δοκίμασε ξανά.';
+    renderAuthScreens();
+  }
+}
+async function createTrainerInvite(){
+  const { data, error } = await sb.rpc('create_trainer_invite');
+  if(error){ toast('Σφάλμα δημιουργίας πρόσκλησης.'); return null; }
+  return data;
 }
 async function doClientLogin(email, password){
   auth.authBusy = true; auth.authError=''; renderAuthScreens();
@@ -754,15 +790,20 @@ function renderRoleChoice(){
     </div>
   `;
 }
-function renderTrainerLoginForm(){
+function renderTrainerAuthForm(){
   return `
     <div class="auth-back" data-back>${ICON.back}Πίσω</div>
-    <div class="auth-title">Σύνδεση Προπονητή</div>
-    <div class="auth-sub">Χρησιμοποίησε τα στοιχεία του λογαριασμού σου</div>
+    <div class="auth-title">Προπονητής</div>
+    <div class="auth-sub">${auth.authTab==='login' ? 'Χρησιμοποίησε τα στοιχεία του λογαριασμού σου' : 'Χρειάζεσαι κωδικό πρόσκλησης από υπάρχοντα προπονητή'}</div>
+    <div class="auth-tabs">
+      <button data-authtab="login" class="${auth.authTab==='login'?'active':''}">Σύνδεση</button>
+      <button data-authtab="signup" class="${auth.authTab==='signup'?'active':''}">Εγγραφή</button>
+    </div>
     ${auth.authError ? `<div class="auth-error">${escHtml(auth.authError)}</div>`:''}
     <div class="auth-field"><label>Email</label><input type="email" id="t-email" autocomplete="username"></div>
-    <div class="auth-field"><label>Κωδικός</label><input type="password" id="t-password" autocomplete="current-password"></div>
-    <button class="btn btn-primary auth-submit" id="trainer-login-btn" ${auth.authBusy?'disabled':''}>${auth.authBusy?'Σύνδεση...':'Σύνδεση'}</button>
+    <div class="auth-field"><label>Κωδικός</label><input type="password" id="t-password" autocomplete="${auth.authTab==='login'?'current-password':'new-password'}"></div>
+    ${auth.authTab==='signup' ? `<div class="auth-field"><label>Κωδικός Πρόσκλησης</label><input type="text" id="t-invite" placeholder="π.χ. A1B2C3D4"></div>`:''}
+    <button class="btn btn-primary auth-submit" id="trainer-auth-btn" ${auth.authBusy?'disabled':''}>${auth.authBusy?'...':(auth.authTab==='login'?'Σύνδεση':'Δημιουργία λογαριασμού')}</button>
   `;
 }
 function renderClientAuthForm(){
@@ -799,7 +840,7 @@ function renderAuthScreens(){
     html = authShell(`<div class="auth-loading" style="padding:20px 0;"><div class="spinner"></div><div>Φόρτωση...</div></div>`);
   } else if(auth.status === 'signedOut'){
     if(!auth.roleChoice) html = authShell(renderRoleChoice());
-    else if(auth.roleChoice === 'trainer') html = authShell(renderTrainerLoginForm());
+    else if(auth.roleChoice === 'trainer') html = authShell(renderTrainerAuthForm());
     else html = authShell(renderClientAuthForm());
   } else if(auth.status === 'client-needs-code'){
     html = authShell(renderClaimCodeForm());
@@ -809,17 +850,24 @@ function renderAuthScreens(){
 }
 function bindAuthEvents(){
   document.querySelectorAll('[data-role]').forEach(el=>{
-    el.addEventListener('click', ()=>{ auth.roleChoice = el.getAttribute('data-role'); auth.authError=''; renderAuthScreens(); });
+    el.addEventListener('click', ()=>{ auth.roleChoice = el.getAttribute('data-role'); auth.authTab='login'; auth.authError=''; renderAuthScreens(); });
   });
   const back = document.querySelector('[data-back]');
   if(back) back.addEventListener('click', ()=>{ auth.roleChoice=null; auth.authError=''; renderAuthScreens(); });
 
-  const trainerBtn = document.getElementById('trainer-login-btn');
+  const trainerBtn = document.getElementById('trainer-auth-btn');
   if(trainerBtn) trainerBtn.addEventListener('click', ()=>{
     const email = document.getElementById('t-email').value.trim();
     const pw = document.getElementById('t-password').value;
     if(!email||!pw){ auth.authError='Συμπλήρωσε email και κωδικό.'; renderAuthScreens(); return; }
-    doTrainerLogin(email, pw);
+    if(auth.authTab==='login'){
+      doTrainerLogin(email, pw);
+    } else {
+      const invite = document.getElementById('t-invite').value.trim();
+      if(!invite){ auth.authError='Χρειάζεσαι κωδικό πρόσκλησης από υπάρχοντα προπονητή.'; renderAuthScreens(); return; }
+      if(pw.length<6){ auth.authError='Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.'; renderAuthScreens(); return; }
+      doTrainerSignup(email, pw, invite);
+    }
   });
 
   document.querySelectorAll('[data-authtab]').forEach(el=>{
@@ -846,7 +894,7 @@ function bindAuthEvents(){
   document.querySelectorAll('#auth-root input').forEach(inp=>{
     inp.addEventListener('keydown', (e)=>{
       if(e.key==='Enter'){
-        const btn = document.getElementById('trainer-login-btn') || document.getElementById('client-auth-btn') || document.getElementById('claim-btn');
+        const btn = document.getElementById('trainer-auth-btn') || document.getElementById('client-auth-btn') || document.getElementById('claim-btn');
         if(btn) btn.click();
       }
     });
@@ -864,10 +912,18 @@ function renderSidebarAccount(){
       <div class="who">${escHtml(auth.email||'')}</div>
       <div class="role">Προπονητής</div>
     </div>
+    <button class="btn btn-outline" id="sidebar-invite" style="width:100%;justify-content:center;margin-bottom:6px;font-size:12px;padding:9px;">${ICON.key}Πρόσκληση Προπονητή</button>
     <button class="logout-btn" id="sidebar-logout">${ICON.logout}Αποσύνδεση</button>
   `;
   const btn = document.getElementById('sidebar-logout');
   if(btn) btn.addEventListener('click', doLogout);
+  const inviteBtn = document.getElementById('sidebar-invite');
+  if(inviteBtn) inviteBtn.addEventListener('click', async ()=>{
+    inviteBtn.disabled = true; inviteBtn.textContent = '...';
+    const code = await createTrainerInvite();
+    inviteBtn.disabled = false; inviteBtn.innerHTML = ICON.key+'Πρόσκληση Προπονητή';
+    if(code){ state.inviteCode = code; state.inviteModalOpen = true; renderModal(); }
+  });
 }
 function renderNav(){
   const items = [
@@ -1206,6 +1262,27 @@ function exportPdf(){
    =================================================================== */
 function renderModal(){
   const root = document.getElementById('modal-root');
+  if(state.inviteModalOpen){
+    root.innerHTML = `
+      <div class="modal-overlay" id="invite-modal-overlay">
+        <div class="modal" style="text-align:center;">
+          <h2>Πρόσκληση Προπονητή</h2>
+          <div class="sub">Δώσε αυτόν τον κωδικό στον νέο προπονητή. Θα τον χρειαστεί στην οθόνη «Εγγραφή» της εφαρμογής. Ισχύει μία φορά.</div>
+          <div class="mono" style="font-size:28px;font-weight:700;letter-spacing:0.08em;background:var(--paper-2);border-radius:10px;padding:18px;margin:18px 0;color:var(--ink);">${escHtml(state.inviteCode)}</div>
+          <div class="modal-actions" style="justify-content:center;">
+            <button class="btn btn-outline" id="invite-copy">Αντιγραφή</button>
+            <button class="btn btn-primary" id="invite-close">Κλείσιμο</button>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('invite-close').addEventListener('click', ()=>{ state.inviteModalOpen=false; renderModal(); });
+    document.getElementById('invite-modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='invite-modal-overlay'){ state.inviteModalOpen=false; renderModal(); }});
+    document.getElementById('invite-copy').addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(state.inviteCode); toast('Αντιγράφηκε!'); }
+      catch(e){ toast('Δεν ήταν δυνατή η αντιγραφή. Αντέγραψέ τον χειροκίνητα.'); }
+    });
+    return;
+  }
   if(!state.saveModalOpen){ root.innerHTML=''; return; }
   root.innerHTML = `
     <div class="modal-overlay" id="modal-overlay">
