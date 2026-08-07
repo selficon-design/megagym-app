@@ -519,12 +519,62 @@ const SETREP = {
 const SET_ORDER = [3,4,5];
 
 /* ===================================================================
+   ΚΑΤΗΓΟΡΙΕΣ ΠΡΟΓΡΑΜΜΑΤΩΝ
+   =================================================================== */
+const CATEGORY_INFO = {
+  muscle: {
+    title: 'Αύξηση Μυϊκού Ιστού',
+    desc: 'Πρόγραμμα βαρών με επιλογή σετ/επαναλήψεων ανά άσκηση (3, 4 ή 5 σετ), σχεδιασμένο για συστηματική αύξηση της μυϊκής μάζας.'
+  },
+  fatburn: {
+    title: 'Καύση Λίπους',
+    desc: 'Προγράμματα σχεδιασμένα για μείωση σωματικού λίπους — με αερόβια άσκηση, με βάρη, ή με συνδυασμό των δύο.'
+  }
+};
+const FATBURN_SUBTYPES = {
+  cardio: {
+    title: 'Καύση Λίπους μόνο με Αερόβια Άσκηση',
+    desc: 'Καθαρά αερόβιο πρόγραμμα με επιλογή οργάνων (διάδρομος, ελλειπτικό, ποδήλατο κ.ά.), ένταση και χρόνο ανά όργανο. Ιδανικό για καύση θερμίδων με μικρή επιβάρυνση αρθρώσεων.'
+  },
+  weights: {
+    title: 'Καύση Λίπους μόνο με Βάρη',
+    desc: 'Πρόγραμμα βαρών υψηλού όγκου (6 σετ, 10-12 επαναλήψεις, μικρό διάλειμμα 60sec) για μεγιστοποίηση της καύσης θερμίδων μέσω αντίστασης.'
+  },
+  combo: {
+    title: 'Καύση Λίπους με Συνδυασμό Αερόβιου και Βαρών',
+    desc: 'Συνδυάζει βάρη και αερόβια άσκηση μέσα στην ίδια εβδομάδα, εναλλάσσοντας τη σειρά τους ανά δύο ημέρες, για πιο ολοκληρωμένο αποτέλεσμα.'
+  }
+};
+
+const CARDIO_EQUIPMENT = ['Διάδρομος','Ελλειπτικό','Ποδήλατο Όρθιο','Ποδήλατο Καθιστό','Σκαλοπάτια','Ποδήλατο Spinning'];
+const CARDIO_MINUTES = [5,10,15,20,25,30,35,40,45,50,55,60];
+
+const TREADMILL_STEADY_TEXT = 'Περπάτημα όχι τρέξιμο ή γρήγορο βάδη. Προσπαθήστε να είστε μέσα στην αεροβική ζώνη που εμπειρικά σημαίνει ότι αν κάποιος σας μιλήσει θα απαντάτε με δυσκολία και λαχανιασμένοι.';
+const TREADMILL_DRILL_TEXT = 'Περπάτημα όχι τρέξιμο ή γρήγορο βάδη. Προσπαθήστε να είστε μέσα στην αεροβική ζώνη που εμπειρικά σημαίνει ότι αν κάποιος σας μιλήσει θα απαντάτε με δυσκολία και λαχανιασμένοι. Κατόπιν αυξήστε την ταχύτητα έως τη μεγαλύτερη ταχύτητα κάθε 5 λεπτά διαδρομής και κρατήστε αυτή την ταχύτητα για ένα λεπτό. Κατόπιν μειώστε ταχύτητα και κρατήστε την σταθερή για 5 λεπτά έως το επόμενο DRILL. DRILL σημαίνει «τρυπάνι» — βάζετε το σώμα σας να «τρυπήσει» το λίπος σε κάθε DRILL. Τα DRILL είναι πολύ αποδοτικά, αλλά μην τα χρησιμοποιείτε νηστικοί (π.χ. το πρωί), γιατί τότε το «τρυπάνι» θα τρυπήσει τους μύες σας και όχι το λίπος. Αν είστε νηστικοί, επιλέξτε λιγότερα DRILL (π.χ. ανά 10 λεπτά) ή σταθερή ταχύτητα. Αν έχετε φάει έως δύο ώρες πριν την προπόνηση και είστε πιο έμπειροι, μπορείτε να αυξήσετε τα DRILL σε δύο συνεχόμενα λεπτά.';
+
+const NUTRITION_INFO = {
+  3: { kcal: '0 έως +150kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 0 έως 600γρ. Η αύξηση αυτή θα είναι μυϊκός ιστός και πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' },
+  5: { kcal: '+150Kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 600γρ. Η αύξηση αυτή θα είναι μυϊκός ιστός. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' },
+  4: { kcal: '+250kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 600γρ έως 1 κιλό. Η αύξηση αυτή θα είναι μυϊκός ιστός και ένα ποσοστό λίπος. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' }
+};
+const NUTRITION_BOX_TEXT = 'Όλα τα προγράμματα γυμναστικής για να λειτουργήσουν χρειάζονται την κατάλληλη διατροφή και το σωστό πλεόνασμα ή έλλειψη θερμίδων.';
+
+const FATBURN_WEIGHTS_FIXED = { set:6, rep:'10-12', rest:'60sec' };
+const COMBO_WEIGHTS_FIXED = { set:3, rep:'10-12', rest:'90sec' };
+
+/* ===================================================================
    STATE
    =================================================================== */
 let state = {
   tab: 'builder',
+  category: null,        // null | 'muscle' | 'fatburn'
+  fatburnSubtype: null,  // null | 'cardio' | 'weights' | 'combo'
   numDays: 4,
   days: [],           // built program rows
+  cardioSlots: [],    // used by fatburn 'cardio' subtype (flat, non-day)
+  notes: '',
+  instructions: '',
+  nutritionSet: 3,    // muscle category only — drives the Διατροφή text
   customers: [],       // [{code,name,surname,dob,createdAt}]
   customersLoaded:false,
   selectedCustomerCode: null,
@@ -539,11 +589,14 @@ let state = {
 
 function makeRowId(d,g){ return 'd'+d+'_'+g; }
 
-function buildDays(numDays){
+// fixedSetRep: null (muscle, per-exercise selectable) or {set,rep,rest} (fatburn weights/combo)
+function buildDays(numDays, fixedSetRep){
   const defs = DAYS_DEF.slice(0, numDays);
   return defs.map((def, di)=>({
     dayIndex: di,
     label: def.label,
+    cardioSlots: buildCardioSlots(4), // only used when subtype === 'combo'
+    topSection: (Math.floor(di/2) % 2 === 0) ? 'weights' : 'cardio',
     groups: def.groups.map(gKey=>({
       id: makeRowId(di,gKey),
       groupKey: gKey,
@@ -552,11 +605,19 @@ function buildDays(numDays){
       options: getExerciseOptions(gKey),
       selected: '',        // exercise name or "ΆΛΛΟ"
       customText: '',
-      set: 3
+      set: fixedSetRep ? fixedSetRep.set : 3,
+      fixedSetRep: fixedSetRep || null
     }))
   }));
 }
-state.days = buildDays(state.numDays);
+function buildCardioSlots(n){
+  const arr = [];
+  for(let i=0;i<n;i++){
+    arr.push({ id:'cs'+i, equipment:'', mode:'steady', speedLow:'', speedHigh:'', incline:'', intensity:'', minutes:'' });
+  }
+  return arr;
+}
+// Δεν χτίζουμε μέρες/δεδομένα πριν επιλεγεί κατηγορία προγράμματος
 
 /* ===================================================================
    SUPABASE — πραγματική cloud βάση δεδομένων + σύστημα σύνδεσης
@@ -722,13 +783,28 @@ async function upsertCustomer(customer){
   );
   return !error;
 }
+function normalizeStoredProgram(stored){
+  if(Array.isArray(stored)){
+    // παλιά μορφή, πριν τις κατηγορίες: απλός πίνακας ημερών, πάντα "muscle"
+    return { category:'muscle', subtype:null, notes:'', instructions:'', nutrition:null, days:stored, cardioSlots:null };
+  }
+  return {
+    category: stored.category || 'muscle',
+    subtype: stored.subtype || null,
+    notes: stored.notes || '',
+    instructions: stored.instructions || '',
+    nutrition: stored.nutrition || null,
+    days: stored.days || null,
+    cardioSlots: stored.cardioSlots || null
+  };
+}
 async function loadProgramsFor(code){
   const { data, error } = await sb.from('programs').select('*').eq('customer_code', code).order('created_at', { ascending:false });
   if(error){ console.error(error); return []; }
-  return (data||[]).map(r=>({ id:r.id, createdAt:r.created_at, days:r.days }));
+  return (data||[]).map(r=>({ id:r.id, createdAt:r.created_at, record: normalizeStoredProgram(r.days) }));
 }
-async function insertProgram(code, days){
-  const { error } = await sb.from('programs').insert({ customer_code: code, created_by: auth.user.id, days });
+async function insertProgram(code, record){
+  const { error } = await sb.from('programs').insert({ customer_code: code, created_by: auth.user.id, days: record });
   return !error;
 }
 
@@ -946,7 +1022,7 @@ function renderNav(){
 }
 
 /* ===================================================================
-   BUILDER TAB
+   BUILDER — κοινές βοηθητικές συναρτήσεις (βάρη)
    =================================================================== */
 function isRowFilled(row){
   if(!row.selected) return false;
@@ -957,19 +1033,180 @@ function rowExerciseName(row){
   if(row.selected === 'ΆΛΛΟ') return row.customText.trim();
   return row.selected;
 }
-function getFilteredDays(){
-  return state.days.map(day=>({
+function rowSetRepRest(row){
+  if(row.fixedSetRep) return row.fixedSetRep;
+  return { set: row.set, rep: SETREP[row.set].rep, rest: SETREP[row.set].rest };
+}
+function getFilteredDaysGeneric(days){
+  return days.map(day=>({
     label: day.label,
-    groups: day.groups.filter(isRowFilled).map(row=>({
-      groupLabel: row.groupLabel,
-      exercise: rowExerciseName(row),
-      set: row.set,
-      rep: SETREP[row.set].rep,
-      rest: SETREP[row.set].rest
-    }))
+    groups: day.groups.filter(isRowFilled).map(row=>{
+      const sr = rowSetRepRest(row);
+      return { groupLabel: row.groupLabel, exercise: rowExerciseName(row), set: sr.set, rep: sr.rep, rest: sr.rest };
+    })
   })).filter(d=>d.groups.length>0);
 }
+function getFilteredDays(){ return getFilteredDaysGeneric(state.days); }
 
+/* ===================================================================
+   BUILDER — κοινές βοηθητικές συναρτήσεις (αερόβιο)
+   =================================================================== */
+function isCardioSlotFilled(slot){ return !!slot.equipment; }
+function describeCardioSlot(slot){
+  const isTreadmill = slot.equipment === 'Διάδρομος';
+  const lines = [];
+  if(isTreadmill){
+    lines.push(slot.mode==='drill' ? 'Αεροβική άσκηση με DRILL' : 'Σταθερή ταχύτητα');
+    if(slot.speedLow) lines.push('Ταχύτητα μικρή: '+slot.speedLow+' km/h');
+    if(slot.speedHigh) lines.push('Ταχύτητα μεγάλη: '+slot.speedHigh+' km/h');
+    if(slot.incline) lines.push('Κλίση: '+slot.incline+'%');
+  } else {
+    if(slot.intensity) lines.push(slot.intensity);
+  }
+  if(slot.minutes) lines.push(slot.minutes+' λεπτά');
+  return {
+    equipment: slot.equipment,
+    lines,
+    instruction: isTreadmill ? (slot.mode==='drill' ? TREADMILL_DRILL_TEXT : TREADMILL_STEADY_TEXT) : ''
+  };
+}
+function getFilteredCardioSlots(slots){
+  return slots.filter(isCardioSlotFilled).map(describeCardioSlot);
+}
+
+/* ===================================================================
+   BUILDER — assembling το τρέχον πρόγραμμα σε ενιαία μορφή για
+   preview / εκτύπωση / PDF / αποθήκευση
+   =================================================================== */
+function buildCurrentProgramRecord(){
+  const record = {
+    category: state.category,
+    subtype: state.fatburnSubtype,
+    notes: state.notes,
+    instructions: state.instructions,
+    nutrition: null,
+    days: null,
+    cardioSlots: null
+  };
+  if(state.category === 'muscle'){
+    record.nutrition = { setChoice: state.nutritionSet, kcal: NUTRITION_INFO[state.nutritionSet].kcal, text: NUTRITION_INFO[state.nutritionSet].text };
+    record.days = getFilteredDaysGeneric(state.days);
+  } else if(state.fatburnSubtype === 'weights'){
+    record.days = getFilteredDaysGeneric(state.days);
+  } else if(state.fatburnSubtype === 'cardio'){
+    record.cardioSlots = getFilteredCardioSlots(state.cardioSlots);
+  } else if(state.fatburnSubtype === 'combo'){
+    record.days = state.days.map(day=>{
+      const w = getFilteredDaysGeneric([day])[0];
+      const c = getFilteredCardioSlots(day.cardioSlots);
+      return { label: day.label, topSection: day.topSection, groups: w?w.groups:[], cardioSlots: c };
+    }).filter(d=> d.groups.length>0 || d.cardioSlots.length>0);
+  }
+  return record;
+}
+function isProgramRecordEmpty(record){
+  if(record.days && record.days.length>0) return false;
+  if(record.cardioSlots && record.cardioSlots.length>0) return false;
+  return true;
+}
+
+/* ===================================================================
+   BUILDER — επιλογή κατηγορίας / υποκατηγορίας
+   =================================================================== */
+function resetProgramState(){
+  state.numDays = 4;
+  state.days = [];
+  state.cardioSlots = [];
+  state.notes = '';
+  state.instructions = '';
+  state.nutritionSet = 3;
+}
+function initProgramForSelection(){
+  if(state.category === 'muscle'){
+    state.days = buildDays(state.numDays, null);
+  } else if(state.fatburnSubtype === 'weights'){
+    state.days = buildDays(state.numDays, FATBURN_WEIGHTS_FIXED);
+  } else if(state.fatburnSubtype === 'combo'){
+    state.days = buildDays(state.numDays, COMBO_WEIGHTS_FIXED);
+  } else if(state.fatburnSubtype === 'cardio'){
+    state.cardioSlots = buildCardioSlots(6);
+  }
+}
+function renderCategoryPicker(){
+  return `
+    <div class="topbar"><div><h1>Νέο Πρόγραμμα</h1><div class="sub">Επίλεξε είδος προγράμματος</div></div></div>
+    <div class="panel pad">
+      <div class="section-title"><span class="dot"></span>Κατηγορία Προγράμματος</div>
+      <div class="role-choice">
+        <button class="role-btn" data-category="muscle" style="align-items:flex-start;">
+          <div class="ricon">${ICON.plan}</div>
+          <div class="rtext"><div class="rt1">${CATEGORY_INFO.muscle.title}</div><div class="rt2" style="white-space:normal;line-height:1.5;">${CATEGORY_INFO.muscle.desc}</div></div>
+        </button>
+        <button class="role-btn" data-category="fatburn" style="align-items:flex-start;">
+          <div class="ricon">${ICON.plan}</div>
+          <div class="rtext"><div class="rt1">${CATEGORY_INFO.fatburn.title}</div><div class="rt2" style="white-space:normal;line-height:1.5;">${CATEGORY_INFO.fatburn.desc}</div></div>
+        </button>
+      </div>
+    </div>`;
+}
+function renderSubtypePicker(){
+  return `
+    <div class="topbar"><div><h1>Καύση Λίπους</h1><div class="sub">Επίλεξε τον τύπο προγράμματος καύσης λίπους</div></div></div>
+    <div class="auth-back" data-back-category style="margin-bottom:14px;">${ICON.back}Αλλαγή κατηγορίας</div>
+    <div class="panel pad">
+      <div class="section-title"><span class="dot"></span>Τύπος Προγράμματος</div>
+      <div class="role-choice">
+        ${Object.entries(FATBURN_SUBTYPES).map(([key,info])=>`
+          <button class="role-btn" data-subtype="${key}" style="align-items:flex-start;">
+            <div class="ricon">${ICON.plan}</div>
+            <div class="rtext"><div class="rt1">${info.title}</div><div class="rt2" style="white-space:normal;line-height:1.5;">${info.desc}</div></div>
+          </button>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+/* ===================================================================
+   BUILDER — πεδία Οδηγιών / Παρατηρήσεων / Διατροφής (κοινά πάνω-πάνω)
+   =================================================================== */
+function renderNotesInstructionsFields(){
+  return `
+    <div class="panel pad" style="margin-bottom:20px;">
+      <div class="section-title"><span class="dot"></span>Οδηγίες & Παρατηρήσεις</div>
+      <div class="field">
+        <label>Οδηγίες</label>
+        <input type="text" id="f-instructions" placeholder="π.χ. Ζέσταμα 5 λεπτά πριν την προπόνηση..." value="${escAttr(state.instructions)}">
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>Παρατηρήσεις</label>
+        <input type="text" id="f-notes" placeholder="π.χ. Προσοχή στον ώμο, αποφυγή..." value="${escAttr(state.notes)}">
+      </div>
+    </div>`;
+}
+function renderNutritionField(){
+  const info = NUTRITION_INFO[state.nutritionSet];
+  return `
+    <div class="panel pad" style="margin-bottom:20px;">
+      <div class="section-title"><span class="dot"></span>Διατροφή</div>
+      <div class="chip-row" style="margin-bottom:14px;">
+        ${SET_ORDER.map(s=>{
+          const size = s===3?40:(s===4?46:52);
+          return `<div class="set-plate ${state.nutritionSet===s?'active':''}" style="width:${size}px;height:${size}px;" data-nutrition-set="${s}">
+            <span class="n">${s}</span><span class="lbl">set</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="setrep-readout" style="text-align:left;margin-bottom:10px;">Διατροφή: <b>${info.kcal}</b></div>
+      <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(info.text)}</p>
+    </div>
+    <div class="panel pad" style="margin-bottom:20px;background:var(--paper-2);">
+      <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(NUTRITION_BOX_TEXT)}</p>
+    </div>`;
+}
+
+/* ===================================================================
+   BUILDER — ασκήσεις βαρών (set plates ή σταθερό set/rep)
+   =================================================================== */
 function renderDayCountSelector(){
   return `
     <div class="panel pad" style="margin-bottom:20px;">
@@ -981,7 +1218,6 @@ function renderDayCountSelector(){
       </div>
     </div>`;
 }
-
 function renderSetPlates(dayIdx, rowId, current){
   return `<div style="display:flex;gap:8px;">` + SET_ORDER.map(s=>{
     const size = s===3?40:(s===4?46:52);
@@ -990,10 +1226,9 @@ function renderSetPlates(dayIdx, rowId, current){
     </div>`;
   }).join('') + `</div>`;
 }
-
 function renderGroupRow(dayIdx, row){
   const filled = isRowFilled(row);
-  const sr = SETREP[row.set];
+  const sr = rowSetRepRest(row);
   return `
     <div class="group-row">
       <div class="group-label">${row.groupLabel}${row.groupSub?`<small>${row.groupSub}</small>`:''}</div>
@@ -1008,48 +1243,125 @@ function renderGroupRow(dayIdx, row){
         ${row.selected==='ΆΛΛΟ' && !filled ? `<div class="hidden-note">Θα αποκρυφτεί από το πρόγραμμα μέχρι να συμπληρωθεί</div>`:''}
       </div>
       <div class="setrep-col">
-        ${renderSetPlates(dayIdx, row.id, row.set)}
-        <div class="setrep-readout">REP <b>${sr.rep}</b><br>Διάλειμμα <b>${sr.rest}</b></div>
+        ${row.fixedSetRep ? '' : renderSetPlates(dayIdx, row.id, row.set)}
+        <div class="setrep-readout">${row.fixedSetRep?`SET <b>${sr.set}</b><br>`:''}REP <b>${sr.rep}</b><br>Διάλειμμα <b>${sr.rest}</b></div>
       </div>
     </div>`;
 }
 
-function renderDayCard(day, idx){
+/* ===================================================================
+   BUILDER — αερόβιο slot (χρησιμοποιείται flat ή μέσα σε ημέρα)
+   =================================================================== */
+function renderCardioSlot(slot, idx, dayIdx){
+  const dayAttr = (dayIdx===null||dayIdx===undefined) ? 'flat' : dayIdx;
+  const isTreadmill = slot.equipment === 'Διάδρομος';
+  return `
+    <div class="group-row" style="grid-template-columns:150px 1fr;">
+      <div class="group-label">Όργανο ${idx+1}</div>
+      <div>
+        <select data-cardio-eq data-cday="${dayAttr}" data-cidx="${idx}">
+          <option value="" ${slot.equipment===''?'selected':''}>— Χωρίς επιλογή —</option>
+          ${CARDIO_EQUIPMENT.map(eq=>`<option value="${escAttr(eq)}" ${slot.equipment===eq?'selected':''}>${eq}</option>`).join('')}
+        </select>
+        ${slot.equipment ? `
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;">
+          ${isTreadmill ? `
+            <select data-cardio-mode data-cday="${dayAttr}" data-cidx="${idx}" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+              <option value="steady" ${slot.mode==='steady'?'selected':''}>Σταθερή ταχύτητα</option>
+              <option value="drill" ${slot.mode==='drill'?'selected':''}>Αεροβική με DRILL</option>
+            </select>
+            <input type="number" step="0.1" data-cardio-speedlow data-cday="${dayAttr}" data-cidx="${idx}" placeholder="Ταχ. μικρή 3-6.5" value="${escAttr(slot.speedLow)}" style="width:150px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+            <input type="number" step="0.1" data-cardio-speedhigh data-cday="${dayAttr}" data-cidx="${idx}" placeholder="Ταχ. μεγάλη 6-9" value="${escAttr(slot.speedHigh)}" style="width:150px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+            <input type="number" step="0.5" data-cardio-incline data-cday="${dayAttr}" data-cidx="${idx}" placeholder="Κλίση 0-2%" value="${escAttr(slot.incline)}" style="width:130px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+          ` : `
+            <select data-cardio-intensity data-cday="${dayAttr}" data-cidx="${idx}" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+              <option value="" ${slot.intensity===''?'selected':''} disabled>— Ένταση —</option>
+              <option value="Χαμηλή ένταση" ${slot.intensity==='Χαμηλή ένταση'?'selected':''}>Χαμηλή ένταση</option>
+              <option value="Μέτρια ένταση" ${slot.intensity==='Μέτρια ένταση'?'selected':''}>Μέτρια ένταση</option>
+            </select>
+          `}
+          <select data-cardio-minutes data-cday="${dayAttr}" data-cidx="${idx}" style="padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-size:12.5px;">
+            <option value="" ${slot.minutes===''?'selected':''} disabled>— Χρόνος —</option>
+            ${CARDIO_MINUTES.map(m=>`<option value="${m}" ${String(slot.minutes)===String(m)?'selected':''}>${m} λεπτά</option>`).join('')}
+          </select>
+        </div>
+        ${isTreadmill ? `<div class="hidden-note" style="background:var(--steel-soft);color:var(--steel);margin-top:8px;max-width:520px;">${escHtml(slot.mode==='drill'?TREADMILL_DRILL_TEXT:TREADMILL_STEADY_TEXT)}</div>`:''}
+        `:''}
+      </div>
+    </div>`;
+}
+function renderCardioPanel(slots, dayIdx, title){
   return `
     <div class="panel day-card">
+      <div class="day-head"><div class="tag"><h3>${title}</h3></div></div>
+      ${slots.map((s,i)=>renderCardioSlot(s,i,dayIdx)).join('')}
+    </div>`;
+}
+
+/* ===================================================================
+   BUILDER — κάρτες ημέρας (βάρη [+ αερόβιο για combo])
+   =================================================================== */
+function renderDayCard(day, idx){
+  const weightsBlock = `
+    <div class="panel day-card">
       <div class="day-head">
-        <div class="tag">
-          <div class="day-num">${idx+1}</div>
-          <h3>${day.label}</h3>
-        </div>
+        <div class="tag"><div class="day-num">${idx+1}</div><h3>${day.label}</h3></div>
         <div class="count">${day.groups.filter(isRowFilled).length}/${day.groups.length} ασκήσεις</div>
       </div>
       ${day.groups.map(row=>renderGroupRow(idx, row)).join('')}
     </div>`;
+  if(state.fatburnSubtype !== 'combo') return weightsBlock;
+  const cardioBlock = renderCardioPanel(day.cardioSlots, idx, 'Αερόβιο — '+day.label);
+  return day.topSection === 'cardio' ? (cardioBlock + weightsBlock) : (weightsBlock + cardioBlock);
 }
 
+/* ===================================================================
+   BUILDER — preview / προεπισκόπηση
+   =================================================================== */
+function renderDaysPreviewTable(days){
+  return days.map(d=>`
+    <div style="margin-bottom:16px;">
+      <div style="font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:0.03em;color:var(--steel);margin-bottom:6px;">${escHtml(d.label)}</div>
+      <table class="pp-table">
+        <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
+        <tbody>${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}<br><small style="color:#9A9488;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('');
+}
+function renderCardioPreviewTable(slots, title){
+  if(slots.length===0) return '';
+  return `<div style="margin-bottom:16px;">
+    ${title?`<div style="font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:0.03em;color:var(--steel);margin-bottom:6px;">${escHtml(title)}</div>`:''}
+    <table class="pp-table">
+      <thead><tr><th>Όργανο</th><th>Λεπτομέρειες</th></tr></thead>
+      <tbody>${slots.map(s=>`<tr><td>${escHtml(s.equipment)}</td><td>${s.lines.map(escHtml).join(' · ')}</td></tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
 function renderPreview(){
-  const filtered = getFilteredDays();
-  if(filtered.length===0){
+  const record = buildCurrentProgramRecord();
+  if(isProgramRecordEmpty(record)){
     return `<div class="panel pad empty">
       <div class="icon">🏋️</div>
       <h3>Ακόμα κανένα πρόγραμμα</h3>
       <p>Συμπλήρωσε ασκήσεις παραπάνω για να δεις εδώ την προεπισκόπηση του προγράμματος.</p>
     </div>`;
   }
+  let body = '';
+  if(record.subtype === 'cardio'){
+    body = renderCardioPreviewTable(record.cardioSlots, '');
+  } else if(record.subtype === 'combo'){
+    body = record.days.map(d=>{
+      const w = d.groups.length? renderDaysPreviewTable([{label:d.label, groups:d.groups}]) : `<div style="font-family:'Oswald';font-weight:600;font-size:14px;color:var(--steel);margin-bottom:6px;">${escHtml(d.label)}</div>`;
+      const c = renderCardioPreviewTable(d.cardioSlots, 'Αερόβιο — '+d.label);
+      return d.topSection==='cardio' ? (c+w) : (w+c);
+    }).join('');
+  } else {
+    body = renderDaysPreviewTable(record.days);
+  }
   return `<div class="panel pad">
     <div class="section-title"><span class="dot"></span>Προεπισκόπηση προγράμματος</div>
-    ${filtered.map(d=>`
-      <div style="margin-bottom:16px;">
-        <div style="font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:0.03em;color:var(--steel);margin-bottom:6px;">${d.label}</div>
-        <table class="pp-table">
-          <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
-          <tbody>
-            ${d.groups.map(g=>`<tr><td>${g.exercise}<br><small style="color:#9A9488;">${g.groupLabel}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td></tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    `).join('')}
+    ${body}
     <div class="action-bar">
       <button class="btn btn-outline" id="btn-pdf">${ICON.pdf}PDF</button>
       <button class="btn btn-outline" id="btn-print">${ICON.print}Εκτύπωση</button>
@@ -1058,29 +1370,65 @@ function renderPreview(){
   </div>`;
 }
 
+/* ===================================================================
+   BUILDER — κεντρική δρομολόγηση
+   =================================================================== */
 function renderBuilder(){
+  if(!state.category) return renderCategoryPicker();
+  if(state.category === 'fatburn' && !state.fatburnSubtype) return renderSubtypePicker();
+
+  const title = state.category==='muscle' ? CATEGORY_INFO.muscle.title : FATBURN_SUBTYPES[state.fatburnSubtype].title;
+  const topFields = (state.category==='muscle' ? renderNutritionField() : '') + renderNotesInstructionsFields();
+
+  let bodyHtml = '';
+  if(state.fatburnSubtype === 'cardio'){
+    bodyHtml = renderCardioPanel(state.cardioSlots, null, 'Αερόβιες Επιλογές');
+  } else {
+    bodyHtml = renderDayCountSelector() + state.days.map((d,i)=>renderDayCard(d,i)).join('');
+  }
+
   return `
-    <div class="topbar">
-      <div>
-        <h1>Νέο Πρόγραμμα</h1>
-        <div class="sub">Επίλεξε ημέρες, ασκήσεις ανά μυϊκή ομάδα και σετ/επαναλήψεις</div>
-      </div>
-    </div>
-    ${renderDayCountSelector()}
-    <div>
-      ${state.days.map((d,i)=>renderDayCard(d,i)).join('')}
-    </div>
+    <div class="topbar"><div><h1>Νέο Πρόγραμμα</h1><div class="sub">${escHtml(title)}</div></div></div>
+    <div class="auth-back" data-back-subtype style="margin-bottom:14px;">${ICON.back}Αλλαγή κατηγορίας</div>
+    ${topFields}
+    <div>${bodyHtml}</div>
     <div class="preview-wrap">${renderPreview()}</div>
   `;
 }
 
 function bindBuilderEvents(){
+  document.querySelectorAll('[data-category]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.category = el.getAttribute('data-category');
+      state.fatburnSubtype = null;
+      resetProgramState();
+      if(state.category==='muscle') initProgramForSelection();
+      render();
+    });
+  });
+  const backCat = document.querySelector('[data-back-category]');
+  if(backCat) backCat.addEventListener('click', ()=>{ state.category=null; state.fatburnSubtype=null; resetProgramState(); render(); });
+  document.querySelectorAll('[data-subtype]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.fatburnSubtype = el.getAttribute('data-subtype');
+      resetProgramState();
+      initProgramForSelection();
+      render();
+    });
+  });
+  const backSub = document.querySelector('[data-back-subtype]');
+  if(backSub) backSub.addEventListener('click', ()=>{
+    if(state.category==='fatburn'){ state.fatburnSubtype=null; resetProgramState(); }
+    else { state.category=null; resetProgramState(); }
+    render();
+  });
+
   document.querySelectorAll('[data-days]').forEach(el=>{
     el.addEventListener('click', ()=>{
       const n = parseInt(el.getAttribute('data-days'));
       state.numDays = n;
-      // preserve existing selections where the same day/group still applies
-      const newDays = buildDays(n);
+      const fixed = state.category==='muscle' ? null : (state.fatburnSubtype==='weights' ? FATBURN_WEIGHTS_FIXED : COMBO_WEIGHTS_FIXED);
+      const newDays = buildDays(n, fixed);
       newDays.forEach((day, di)=>{
         const oldDay = state.days[di];
         if(!oldDay) return;
@@ -1088,6 +1436,8 @@ function bindBuilderEvents(){
           const oldRow = oldDay.groups.find(r=>r.id===row.id);
           if(oldRow){ row.selected=oldRow.selected; row.customText=oldRow.customText; row.set=oldRow.set; }
         });
+        if(oldDay.cardioSlots) day.cardioSlots = oldDay.cardioSlots;
+        if(oldDay.topSection) day.topSection = oldDay.topSection;
       });
       state.days = newDays;
       render();
@@ -1109,8 +1459,7 @@ function bindBuilderEvents(){
       const rid = el.getAttribute('data-row');
       const row = state.days[di].groups.find(r=>r.id===rid);
       row.customText = el.value;
-      renderPreviewOnly();
-      updateHiddenNoteOnly(el, row);
+      render(true);
     });
   });
   document.querySelectorAll('[data-setbtn]').forEach(el=>{
@@ -1123,6 +1472,73 @@ function bindBuilderEvents(){
       render();
     });
   });
+  document.querySelectorAll('[data-nutrition-set]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.nutritionSet = parseInt(el.getAttribute('data-nutrition-set'));
+      render();
+    });
+  });
+
+  // Cardio slot bindings — resolve target slot array by day (or flat)
+  function cardioSlotsFor(dayAttr){
+    return dayAttr==='flat' ? state.cardioSlots : state.days[parseInt(dayAttr)].cardioSlots;
+  }
+  document.querySelectorAll('[data-cardio-eq]').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      const slot = slots[parseInt(el.getAttribute('data-cidx'))];
+      slot.equipment = el.value;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-cardio-mode]').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].mode = el.value;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-cardio-speedlow]').forEach(el=>{
+    el.addEventListener('input', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].speedLow = el.value;
+      render(true);
+    });
+  });
+  document.querySelectorAll('[data-cardio-speedhigh]').forEach(el=>{
+    el.addEventListener('input', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].speedHigh = el.value;
+      render(true);
+    });
+  });
+  document.querySelectorAll('[data-cardio-incline]').forEach(el=>{
+    el.addEventListener('input', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].incline = el.value;
+      render(true);
+    });
+  });
+  document.querySelectorAll('[data-cardio-intensity]').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].intensity = el.value;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-cardio-minutes]').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      const slots = cardioSlotsFor(el.getAttribute('data-cday'));
+      slots[parseInt(el.getAttribute('data-cidx'))].minutes = el.value;
+      render();
+    });
+  });
+
+  const fInstr = document.getElementById('f-instructions');
+  if(fInstr) fInstr.addEventListener('input', ()=>{ state.instructions = fInstr.value; });
+  const fNotes = document.getElementById('f-notes');
+  if(fNotes) fNotes.addEventListener('input', ()=>{ state.notes = fNotes.value; });
+
   const btnPdf = document.getElementById('btn-pdf');
   const btnPrint = document.getElementById('btn-print');
   const btnSave = document.getElementById('btn-save');
@@ -1143,20 +1559,74 @@ function bindPreviewButtons(){
   if(btnPrint) btnPrint.addEventListener('click', printProgram);
   if(btnSave) btnSave.addEventListener('click', async ()=>{ state.saveModalOpen=true; renderModal(); if(!state.customersLoaded) await loadCustomers(); });
 }
-function updateHiddenNoteOnly(inputEl,row){
-  // lightweight: just refresh whole thing (cheap enough)
-  render(true);
-}
 
 /* ===================================================================
    PDF / PRINT
    =================================================================== */
-function buildPrintHtml(filtered, client){
+function pdfDaysBlock(days){
+  return days.map(d=>`
+    <div class="pp-day">
+      <h3>${escHtml(d.label)}</h3>
+      <table class="pp-table">
+        <thead><tr><th>Άσκηση</th><th>Μυϊκή ομάδα</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
+        <tbody>
+          ${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}</td><td>${escHtml(g.groupLabel)}</td><td>${g.set}</td><td>${g.rep}</td><td>${g.rest}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`).join('');
+}
+function pdfCardioBlock(slots, title){
+  if(!slots || slots.length===0) return '';
+  return `
+    <div class="pp-day">
+      ${title?`<h3>${escHtml(title)}</h3>`:''}
+      <table class="pp-table">
+        <thead><tr><th>Όργανο</th><th>Λεπτομέρειες</th></tr></thead>
+        <tbody>
+          ${slots.map(s=>`<tr><td>${escHtml(s.equipment)}</td><td>${s.lines.map(escHtml).join(' · ')}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      ${slots.filter(s=>s.instruction).map(s=>`<p style="font-size:10.5px;color:#3A3F45;line-height:1.5;margin:6px 0 0;">${escHtml(s.instruction)}</p>`).join('')}
+    </div>`;
+}
+function buildPrintHtml(record, client){
   const dateStr = new Date().toLocaleDateString('el-GR');
+  const categoryLabel = record.category==='muscle' ? CATEGORY_INFO.muscle.title : (record.subtype ? FATBURN_SUBTYPES[record.subtype].title : CATEGORY_INFO.fatburn.title);
+
+  let topInfo = '';
+  if(record.nutrition){
+    topInfo += `
+      <div class="pp-day">
+        <h3>Διατροφή</h3>
+        <p style="font-size:11.5px;font-weight:700;margin:0 0 6px;">${escHtml(record.nutrition.kcal)}</p>
+        <p style="font-size:10.5px;color:#3A3F45;line-height:1.5;margin:0 0 8px;">${escHtml(record.nutrition.text)}</p>
+        <p style="font-size:10.5px;color:#3A3F45;line-height:1.5;margin:0;font-style:italic;">${escHtml(NUTRITION_BOX_TEXT)}</p>
+      </div>`;
+  }
+  if(record.instructions){
+    topInfo += `<div class="pp-day"><h3>Οδηγίες</h3><p style="font-size:11px;line-height:1.5;margin:0;">${escHtml(record.instructions)}</p></div>`;
+  }
+  if(record.notes){
+    topInfo += `<div class="pp-day"><h3>Παρατηρήσεις</h3><p style="font-size:11px;line-height:1.5;margin:0;">${escHtml(record.notes)}</p></div>`;
+  }
+
+  let body = '';
+  if(record.subtype === 'cardio'){
+    body = pdfCardioBlock(record.cardioSlots, '');
+  } else if(record.subtype === 'combo'){
+    body = (record.days||[]).map(d=>{
+      const w = d.groups && d.groups.length ? pdfDaysBlock([{label:d.label, groups:d.groups}]) : `<div class="pp-day"><h3>${escHtml(d.label)}</h3></div>`;
+      const c = pdfCardioBlock(d.cardioSlots, 'Αερόβιο — '+d.label);
+      return d.topSection==='cardio' ? (c+w) : (w+c);
+    }).join('');
+  } else {
+    body = pdfDaysBlock(record.days||[]);
+  }
+
   return `
     <div class="pp-header">
       <div>
-        <h1>ΦΟΡΜΑ — Πρόγραμμα Γυμναστικής</h1>
+        <h1>ΦΟΡΜΑ — ${escHtml(categoryLabel)}</h1>
         <div style="font-size:11px;color:#3A3F45;margin-top:4px;">Ημερομηνία δημιουργίας: ${dateStr}</div>
       </div>
       ${client ? `<div class="pp-client">
@@ -1165,25 +1635,16 @@ function buildPrintHtml(filtered, client){
         Ημ. Γέννησης: ${client.dob ? new Date(client.dob).toLocaleDateString('el-GR') : '—'}
       </div>` : ''}
     </div>
-    ${filtered.map(d=>`
-      <div class="pp-day">
-        <h3>${d.label}</h3>
-        <table class="pp-table">
-          <thead><tr><th>Άσκηση</th><th>Μυϊκή ομάδα</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
-          <tbody>
-            ${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}</td><td>${escHtml(g.groupLabel)}</td><td>${g.set}</td><td>${g.rep}</td><td>${g.rest}</td></tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    `).join('')}
+    ${topInfo}
+    ${body}
   `;
 }
 
 function printProgram(client){
   client = (client && client.name)? client : null;
-  const filtered = getFilteredDays();
-  if(filtered.length===0){ toast('Δεν υπάρχουν ασκήσεις να τυπωθούν ακόμα.'); return; }
-  document.getElementById('print-area').innerHTML = buildPrintHtml(filtered, client);
+  const record = buildCurrentProgramRecord();
+  if(isProgramRecordEmpty(record)){ toast('Δεν υπάρχουν ασκήσεις να τυπωθούν ακόμα.'); return; }
+  document.getElementById('print-area').innerHTML = buildPrintHtml(record, client);
   window.print();
 }
 
@@ -1198,8 +1659,8 @@ function withTimeout(promise, ms, msg){
   ]);
 }
 
-async function generatePdfFromDays(filtered, client){
-  if(!filtered || filtered.length===0){ toast('Δεν υπάρχουν ασκήσεις για εξαγωγή PDF ακόμα.'); return; }
+async function generatePdfFromRecord(record, client){
+  if(!record || isProgramRecordEmpty(record)){ toast('Δεν υπάρχουν ασκήσεις για εξαγωγή PDF ακόμα.'); return; }
   if(typeof html2canvas === 'undefined' || !window.jspdf){
     toast('Δεν φορτώθηκαν οι βιβλιοθήκες PDF. Έλεγξε τη σύνδεση στο διαδίκτυο και δοκίμασε ξανά.');
     return;
@@ -1208,7 +1669,7 @@ async function generatePdfFromDays(filtered, client){
   // Σκόπιμα χρησιμοποιούμε σταθερή γραμματοσειρά συστήματος (όχι Google Font) εδώ,
   // ώστε η λήψη του PDF να μην εξαρτάται από εξωτερική φόρτωση γραμματοσειράς
   // (πλήρης υποστήριξη ελληνικών, καμία εξάρτηση δικτύου).
-  wrap.innerHTML = `<div style="padding:36px;font-family:Arial, Helvetica, sans-serif;color:#14171A;">${buildPrintHtml(filtered, client)}</div>`;
+  wrap.innerHTML = `<div style="padding:36px;font-family:Arial, Helvetica, sans-serif;color:#14171A;">${buildPrintHtml(record, client)}</div>`;
   toast('Δημιουργία PDF...');
   try{
     await new Promise(r=>setTimeout(r, 60)); // ensure layout settled
@@ -1255,7 +1716,7 @@ async function generatePdfFromDays(filtered, client){
 }
 
 function exportPdf(){
-  generatePdfFromDays(getFilteredDays(), null);
+  generatePdfFromRecord(buildCurrentProgramRecord(), null);
 }
 
 /* ===================================================================
@@ -1341,8 +1802,8 @@ async function confirmSave(){
     toast('Συμπλήρωσε κωδικό, όνομα και επώνυμο.');
     return;
   }
-  const filtered = getFilteredDays();
-  if(filtered.length===0){
+  const record = buildCurrentProgramRecord();
+  if(isProgramRecordEmpty(record)){
     toast('Δεν υπάρχουν ασκήσεις στο πρόγραμμα.');
     return;
   }
@@ -1351,7 +1812,7 @@ async function confirmSave(){
   if(btn){ btn.disabled = true; btn.textContent='Αποθήκευση...'; }
   try{
     const okC = await upsertCustomer({ code, name, surname, dob });
-    const okP = okC ? await insertProgram(code, filtered) : false;
+    const okP = okC ? await insertProgram(code, record) : false;
     if(okC && okP){
       toast('Το πρόγραμμα αποθηκεύτηκε στο ιστορικό του πελάτη.');
       state.saveModalOpen = false;
@@ -1409,6 +1870,35 @@ function renderHistory(){
     <div id="hist-detail">${renderHistoryDetail()}</div>
   `;
 }
+function renderRecordBodyForCard(record){
+  let body = '';
+  if(record.nutrition){
+    body += `<div style="margin-bottom:10px;font-size:11.5px;"><b>Διατροφή:</b> ${escHtml(record.nutrition.kcal)}</div>`;
+  }
+  if(record.instructions){
+    body += `<div style="margin-bottom:8px;font-size:11.5px;"><b>Οδηγίες:</b> ${escHtml(record.instructions)}</div>`;
+  }
+  if(record.notes){
+    body += `<div style="margin-bottom:10px;font-size:11.5px;"><b>Παρατηρήσεις:</b> ${escHtml(record.notes)}</div>`;
+  }
+  if(record.subtype === 'cardio'){
+    body += renderCardioPreviewTable(record.cardioSlots||[], '');
+  } else if(record.subtype === 'combo'){
+    body += (record.days||[]).map(d=>{
+      const w = d.groups && d.groups.length ? renderDaysPreviewTable([{label:d.label, groups:d.groups}]) : '';
+      const c = renderCardioPreviewTable(d.cardioSlots||[], 'Αερόβιο — '+d.label);
+      return d.topSection==='cardio' ? (c+w) : (w+c);
+    }).join('');
+  } else {
+    body += renderDaysPreviewTable(record.days||[]);
+  }
+  return body;
+}
+function categoryBadgeLabel(record){
+  if(record.category==='muscle') return CATEGORY_INFO.muscle.title;
+  if(record.subtype) return FATBURN_SUBTYPES[record.subtype].title;
+  return CATEGORY_INFO.fatburn.title;
+}
 function renderProgramsTimeline(progs){
   if(progs.length===0){
     return `<div class="empty" style="padding:30px 0;"><div class="icon">🗂️</div><p>Δεν υπάρχουν ακόμα αποθηκευμένα προγράμματα.</p></div>`;
@@ -1417,25 +1907,16 @@ function renderProgramsTimeline(progs){
     ${progs.map((p,i)=>{
       const d = new Date(p.createdAt);
       const open = !!state.openTlEntries[p.id];
+      const record = p.record;
       return `
       <div class="tl-entry">
         <div class="tl-card">
           <div class="tl-head" data-tlhead="${p.id}">
-            <div class="date">Πρόγραμμα #${progs.length-i}<small>${d.toLocaleDateString('el-GR')} · ${d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})}</small></div>
+            <div class="date">Πρόγραμμα #${progs.length-i} <span class="mono" style="font-weight:400;font-size:10.5px;color:var(--accent-dark);">· ${escHtml(categoryBadgeLabel(record))}</span><small>${d.toLocaleDateString('el-GR')} · ${d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})}</small></div>
             <span class="chev ${open?'open':''}">${ICON.chev}</span>
           </div>
           <div class="tl-body ${open?'open':''}">
-            ${p.days.map(dday=>`
-              <div style="margin-bottom:12px;">
-                <div style="font-family:'Oswald';font-weight:600;font-size:13px;color:var(--steel);margin-bottom:5px;">${dday.label}</div>
-                <table class="pp-table">
-                  <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
-                  <tbody>
-                    ${dday.groups.map(g=>`<tr><td>${escHtml(g.exercise)}<br><small style="color:#9A9488;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td></tr>`).join('')}
-                  </tbody>
-                </table>
-              </div>
-            `).join('')}
+            ${renderRecordBodyForCard(record)}
             <div class="action-bar" style="margin-top:10px;padding-top:12px;">
               <button class="btn btn-outline" data-hist-print="${p.id}">${ICON.print}Εκτύπωση</button>
               <button class="btn btn-outline" data-hist-pdf="${p.id}">${ICON.pdf}PDF</button>
@@ -1514,7 +1995,7 @@ function bindClientProgramsEvents(){
     el.addEventListener('click', ()=>{
       const id = el.getAttribute('data-hist-print');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
-      document.getElementById('print-area').innerHTML = buildPrintHtml(p.days, auth.customer);
+      document.getElementById('print-area').innerHTML = buildPrintHtml(p.record, auth.customer);
       window.print();
     });
   });
@@ -1522,7 +2003,7 @@ function bindClientProgramsEvents(){
     el.addEventListener('click', ()=>{
       const id = el.getAttribute('data-hist-pdf');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
-      generatePdfFromDays(p.days, auth.customer);
+      generatePdfFromRecord(p.record, auth.customer);
     });
   });
 }
@@ -1562,7 +2043,7 @@ function bindHistoryDetailEvents(){
       const id = el.getAttribute('data-hist-print');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
       const c = state.customers.find(x=>x.code===state.selectedCustomerCode);
-      document.getElementById('print-area').innerHTML = buildPrintHtml(p.days, c);
+      document.getElementById('print-area').innerHTML = buildPrintHtml(p.record, c);
       window.print();
     });
   });
@@ -1571,7 +2052,7 @@ function bindHistoryDetailEvents(){
       const id = el.getAttribute('data-hist-pdf');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
       const c = state.customers.find(x=>x.code===state.selectedCustomerCode);
-      generatePdfFromDays(p.days, c);
+      generatePdfFromRecord(p.record, c);
     });
   });
 }
