@@ -151,6 +151,14 @@ input,select{font-family:inherit;}
 }
 .plate-btn.disabled{opacity:0.35;pointer-events:none;}
 
+.kcal-btn{
+  padding:10px 16px;border-radius:20px;border:2px solid var(--line);background:var(--panel);
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--ink-soft);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s, background .12s, color .12s;
+}
+.kcal-btn:hover{transform:translateY(-1px);border-color:var(--steel);}
+.kcal-btn.active{background:var(--steel);border-color:var(--steel);color:#fff;box-shadow:0 3px 10px rgba(59,74,90,0.35);}
+
 .set-plate{
   border-radius:50%;border:3px solid var(--line);
   background:var(--panel);
@@ -553,11 +561,17 @@ const TREADMILL_STEADY_TEXT = 'Περπάτημα όχι τρέξιμο ή γρ�
 const TREADMILL_DRILL_TEXT = 'Περπάτημα όχι τρέξιμο ή γρήγορο βάδη. Προσπαθήστε να είστε μέσα στην αεροβική ζώνη που εμπειρικά σημαίνει ότι αν κάποιος σας μιλήσει θα απαντάτε με δυσκολία και λαχανιασμένοι. Κατόπιν αυξήστε την ταχύτητα έως τη μεγαλύτερη ταχύτητα κάθε 5 λεπτά διαδρομής και κρατήστε αυτή την ταχύτητα για ένα λεπτό. Κατόπιν μειώστε ταχύτητα και κρατήστε την σταθερή για 5 λεπτά έως το επόμενο DRILL. DRILL σημαίνει «τρυπάνι» — βάζετε το σώμα σας να «τρυπήσει» το λίπος σε κάθε DRILL. Τα DRILL είναι πολύ αποδοτικά, αλλά μην τα χρησιμοποιείτε νηστικοί (π.χ. το πρωί), γιατί τότε το «τρυπάνι» θα τρυπήσει τους μύες σας και όχι το λίπος. Αν είστε νηστικοί, επιλέξτε λιγότερα DRILL (π.χ. ανά 10 λεπτά) ή σταθερή ταχύτητα. Αν έχετε φάει έως δύο ώρες πριν την προπόνηση και είστε πιο έμπειροι, μπορείτε να αυξήσετε τα DRILL σε δύο συνεχόμενα λεπτά.';
 
 const NUTRITION_INFO = {
-  3: { kcal: '0 έως +150kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 0 έως 600γρ. Η αύξηση αυτή θα είναι μυϊκός ιστός και πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' },
-  5: { kcal: '+150Kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 600γρ. Η αύξηση αυτή θα είναι μυϊκός ιστός. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' },
-  4: { kcal: '+250kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 600γρ έως 1 κιλό. Η αύξηση αυτή θα είναι μυϊκός ιστός και ένα ποσοστό λίπος. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών.' }
+  3: { kcal: '0 έως +150kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 0 έως 600γρ τον μήνα. Η αύξηση αυτή θα είναι μυϊκός ιστός και πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών. Ακολούθησε τη ζυγαριά σου και τον καθρέφτη σου και θα έχεις το τέλειο αποτέλεσμα.' },
+  5: { kcal: '+150Kcal', text: 'Θα έχεις αύξηση βάρους 600γρ. τον μήνα. Η αύξηση αυτή θα είναι μυϊκός ιστός. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών. Ακολούθησε τη ζυγαριά σου και τον καθρέφτη σου και θα έχεις το τέλειο αποτέλεσμα.' },
+  4: { kcal: '+250kcal', text: 'Θα έχεις αύξηση βάρους αντίστοιχα από 600γρ έως 1 κιλό τον μήνα. Η αύξηση αυτή θα είναι μυϊκός ιστός και ένα ποσοστό λίπος. Πιθανότατα θα έχεις και μείωση λίπους, άρα μεγαλύτερη αύξηση μυϊκού ιστού. Στο βάρος του μυϊκού ιστού περιλαμβάνεται και το νερό μέσα στους μύες, αφού αποτελεί κομμάτι του. Άρα εμπειρικά, αν τρως τις σωστές θερμίδες, θα έχεις αυτή την αύξηση βάρους. Η ποιότητα της διατροφής παίζει ρόλο — μπορείς να τη βελτιώνεις σταδιακά με καλύτερη πηγή υδατανθράκων, πρωτεϊνών και καλών λιπαρών. Ακολούθησε τη ζυγαριά σου και τον καθρέφτη σου και θα έχεις το τέλειο αποτέλεσμα.' }
 };
 const NUTRITION_BOX_TEXT = 'Όλα τα προγράμματα γυμναστικής για να λειτουργήσουν χρειάζονται την κατάλληλη διατροφή και το σωστό πλεόνασμα ή έλλειψη θερμίδων.';
+
+/* Διατροφή για προγράμματα Καύσης Λίπους (weights/combo/cardio) — επιλογή kcal */
+const FATBURN_KCAL_OPTIONS = [-500,-250,0,150];
+function fmtKcal(v){ return (v>0?'+':'') + v + 'kcal'; }
+const FATBURN_NUTRITION_TEXT_WEIGHTS = 'Αν επιλέξεις -500kcal θα χάνεις 2 κιλά τον μήνα λίπους, ίσως και παραπάνω όσο βελτιώνεται ο μεταβολισμός σου. Αν επιλέξεις -250kcal τότε θα χάνεις 1 κιλό τον μήνα. Όμως και με 0kcal μπορεί να χάνεις από 500γρ έως ένα κιλό λίπους. Θα έχεις περισσότερη ενέργεια και πιο αποδοτικές προπονήσεις. Εάν επιλέξεις +150kcal τότε θα έχεις σταθερό βάρος, αύξηση μυϊκού ιστού και παράλληλη καύση λίπους. Με λίγα λόγια, κινήσου γύρω από αυτές τις θερμίδες — αν σου βγουν λιγότερες θα έχεις καύση λίπους χωρίς να χάνεις μυϊκό ιστό, αν σου βγουν λίγο παραπάνω θα καις λίπος και θα βάζεις και λίγο μυϊκό ιστό. Ακολούθησε τη ζυγαριά σου και τον καθρέφτη σου και θα έχεις ένα τέλειο αποτέλεσμα. Μην πας κάτω από -500kcal γιατί μπορεί να έχεις καταβολισμό, δηλαδή καύση μυϊκού ιστού.';
+const FATBURN_NUTRITION_TEXT_CARDIO = 'Αν επιλέξεις -500kcal θα χάνεις 2 κιλά τον μήνα λίπους, ίσως και παραπάνω όσο βελτιώνεται ο μεταβολισμός σου. Αν επιλέξεις -250kcal τότε θα χάνεις 1 κιλό τον μήνα. Όμως και με 0kcal μπορεί να χάνεις από 500γρ έως ένα κιλό λίπους. Θα έχεις περισσότερη ενέργεια και πιο αποδοτικές προπονήσεις. Εάν επιλέξεις +150kcal τότε θα έχεις σταθερό βάρος — δεν θα έχεις αύξηση μυϊκού ιστού, αλλά αύξηση της φυσικής σου κατάστασης, αν είναι αυτός ο στόχος σου. Με λίγα λόγια, κινήσου γύρω από αυτές τις θερμίδες — αν σου βγουν λιγότερες θα έχεις καύση λίπους χωρίς να χάνεις μυϊκό ιστό, αν σου βγουν λίγο παραπάνω θα καις λίπος και θα βάζεις και λίγο μυϊκό ιστό. Ακολούθησε τη ζυγαριά σου και τον καθρέφτη σου και θα έχεις ένα τέλειο αποτέλεσμα. Μην πας κάτω από -500kcal γιατί μπορεί να έχεις καταβολισμό, δηλαδή καύση μυϊκού ιστού.';
 
 const FATBURN_WEIGHTS_FIXED = { set:6, rep:'10-12', rest:'60sec' };
 const COMBO_WEIGHTS_FIXED = { set:3, rep:'10-12', rest:'90sec' };
@@ -575,6 +589,7 @@ let state = {
   notes: '',
   instructions: '',
   nutritionSet: 3,    // muscle category only — drives the Διατροφή text
+  fatburnKcal: 0,     // fatburn category only — drives the Διατροφή text
   customers: [],       // [{code,name,surname,dob,createdAt}]
   customersLoaded:false,
   selectedCustomerCode: null,
@@ -807,6 +822,19 @@ async function insertProgram(code, record){
   const { error } = await sb.from('programs').insert({ customer_code: code, created_by: auth.user.id, days: record });
   return !error;
 }
+async function loadAnnouncements(){
+  const { data, error } = await sb.from('announcements').select('*').order('created_at', { ascending:false });
+  if(error){ console.error(error); return []; }
+  return data||[];
+}
+async function sendAnnouncement(message){
+  const { error } = await sb.from('announcements').insert({ message, created_by: auth.user.id });
+  return !error;
+}
+async function deleteAnnouncement(id){
+  const { error } = await sb.from('announcements').delete().eq('id', id);
+  return !error;
+}
 
 /* ===================================================================
    TOAST
@@ -836,6 +864,7 @@ const ICON = {
   logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
   back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
   key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3M17 6l3 3M14 9l2 2"/></svg>',
+  message: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
 };
 
 /* ===================================================================
@@ -1007,6 +1036,9 @@ function renderNav(){
     {id:'builder', label:'Νέο Πρόγραμμα', icon:ICON.plan},
     {id:'history', label:'Ιστορικό Πελάτη', icon:ICON.history},
   ];
+  if(auth.role === 'supervisor'){
+    items.push({id:'announcements', label:'Μηνύματα', icon:ICON.message});
+  }
   const navHtml = items.map(it=>`
     <div class="navitem ${state.tab===it.id?'active':''}" data-tab="${it.id}">
       ${it.icon}<span>${it.label}</span>
@@ -1091,16 +1123,19 @@ function buildCurrentProgramRecord(){
   if(state.category === 'muscle'){
     record.nutrition = { setChoice: state.nutritionSet, kcal: NUTRITION_INFO[state.nutritionSet].kcal, text: NUTRITION_INFO[state.nutritionSet].text };
     record.days = getFilteredDaysGeneric(state.days);
-  } else if(state.fatburnSubtype === 'weights'){
-    record.days = getFilteredDaysGeneric(state.days);
-  } else if(state.fatburnSubtype === 'cardio'){
-    record.cardioSlots = getFilteredCardioSlots(state.cardioSlots);
-  } else if(state.fatburnSubtype === 'combo'){
-    record.days = state.days.map(day=>{
-      const w = getFilteredDaysGeneric([day])[0];
-      const c = getFilteredCardioSlots(day.cardioSlots);
-      return { label: day.label, topSection: day.topSection, groups: w?w.groups:[], cardioSlots: c };
-    }).filter(d=> d.groups.length>0 || d.cardioSlots.length>0);
+  } else if(state.category === 'fatburn'){
+    record.nutrition = { kcal: fmtKcal(state.fatburnKcal), text: (state.fatburnSubtype==='cardio' ? FATBURN_NUTRITION_TEXT_CARDIO : FATBURN_NUTRITION_TEXT_WEIGHTS) };
+    if(state.fatburnSubtype === 'weights'){
+      record.days = getFilteredDaysGeneric(state.days);
+    } else if(state.fatburnSubtype === 'cardio'){
+      record.cardioSlots = getFilteredCardioSlots(state.cardioSlots);
+    } else if(state.fatburnSubtype === 'combo'){
+      record.days = state.days.map(day=>{
+        const w = getFilteredDaysGeneric([day])[0];
+        const c = getFilteredCardioSlots(day.cardioSlots);
+        return { label: day.label, topSection: day.topSection, groups: w?w.groups:[], cardioSlots: c };
+      }).filter(d=> d.groups.length>0 || d.cardioSlots.length>0);
+    }
   }
   return record;
 }
@@ -1120,6 +1155,7 @@ function resetProgramState(){
   state.notes = '';
   state.instructions = '';
   state.nutritionSet = 3;
+  state.fatburnKcal = 0;
 }
 function initProgramForSelection(){
   if(state.category === 'muscle'){
@@ -1198,6 +1234,22 @@ function renderNutritionField(){
       </div>
       <div class="setrep-readout" style="text-align:left;margin-bottom:10px;">Διατροφή: <b>${info.kcal}</b></div>
       <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(info.text)}</p>
+    </div>
+    <div class="panel pad" style="margin-bottom:20px;background:var(--paper-2);">
+      <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(NUTRITION_BOX_TEXT)}</p>
+    </div>`;
+}
+function renderFatburnNutritionField(){
+  const text = state.fatburnSubtype==='cardio' ? FATBURN_NUTRITION_TEXT_CARDIO : FATBURN_NUTRITION_TEXT_WEIGHTS;
+  return `
+    <div class="panel pad" style="margin-bottom:20px;">
+      <div class="section-title"><span class="dot"></span>Διατροφή</div>
+      <div class="chip-row" style="margin-bottom:14px;flex-wrap:wrap;">
+        ${FATBURN_KCAL_OPTIONS.map(v=>`
+          <button class="kcal-btn ${state.fatburnKcal===v?'active':''}" data-fatburn-kcal="${v}">${fmtKcal(v)}</button>
+        `).join('')}
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(text)}</p>
     </div>
     <div class="panel pad" style="margin-bottom:20px;background:var(--paper-2);">
       <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(NUTRITION_BOX_TEXT)}</p>
@@ -1378,7 +1430,7 @@ function renderBuilder(){
   if(state.category === 'fatburn' && !state.fatburnSubtype) return renderSubtypePicker();
 
   const title = state.category==='muscle' ? CATEGORY_INFO.muscle.title : FATBURN_SUBTYPES[state.fatburnSubtype].title;
-  const topFields = (state.category==='muscle' ? renderNutritionField() : '') + renderNotesInstructionsFields();
+  const topFields = (state.category==='muscle' ? renderNutritionField() : renderFatburnNutritionField()) + renderNotesInstructionsFields();
 
   let bodyHtml = '';
   if(state.fatburnSubtype === 'cardio'){
@@ -1475,6 +1527,12 @@ function bindBuilderEvents(){
   document.querySelectorAll('[data-nutrition-set]').forEach(el=>{
     el.addEventListener('click', ()=>{
       state.nutritionSet = parseInt(el.getAttribute('data-nutrition-set'));
+      render();
+    });
+  });
+  document.querySelectorAll('[data-fatburn-kcal]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.fatburnKcal = parseInt(el.getAttribute('data-fatburn-kcal'));
       render();
     });
   });
@@ -1966,8 +2024,25 @@ async function renderAppClient(){
         <div class="sub">Το ιστορικό των προγραμμάτων σου, με σειρά δημιουργίας</div>
       </div>
     </div>
+    <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
     <div class="panel pad" id="client-progs-panel" style="color:var(--ink-soft);font-size:13px;">Φόρτωση...</div>
   `;
+  loadAnnouncements().then(list=>{
+    if(list.length===0) return;
+    const panel = document.getElementById('client-announce-panel');
+    if(!panel) return;
+    panel.style.display = 'block';
+    panel.innerHTML = `
+      <div class="section-title"><span class="dot"></span>Ανακοινώσεις</div>
+      ${list.slice(0,5).map(a=>{
+        const d = new Date(a.created_at);
+        return `<div style="padding:10px 0;border-bottom:1px solid var(--paper-2);">
+          <div style="font-size:10.5px;color:var(--ink-soft);margin-bottom:4px;">${d.toLocaleDateString('el-GR')}</div>
+          <div style="font-size:13px;line-height:1.5;">${escHtml(a.message)}</div>
+        </div>`;
+      }).join('')}
+    `;
+  });
   const progs = (await loadProgramsFor(c.code)).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   state.selectedCustomerPrograms = progs;
   const panel = document.getElementById('client-progs-panel');
@@ -2066,6 +2141,62 @@ function escAttr(s){ return escHtml(s); }
 /* ===================================================================
    MAIN RENDER
    =================================================================== */
+/* ===================================================================
+   ΜΗΝΥΜΑΤΑ (μόνο supervisor) — broadcast ανακοίνωση σε όλους τους πελάτες
+   =================================================================== */
+async function renderAnnouncementsTab(){
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="topbar"><div><h1>Μηνύματα</h1><div class="sub">Στείλε ανακοίνωση που θα βλέπουν όλοι οι πελάτες</div></div></div>
+    <div class="panel pad" style="margin-bottom:20px;">
+      <div class="section-title"><span class="dot"></span>Νέο μήνυμα</div>
+      <textarea id="announce-text" rows="3" style="width:100%;padding:11px 13px;border-radius:8px;border:1.5px solid var(--line);font-size:13.5px;font-family:inherit;resize:vertical;" placeholder="π.χ. Το γυμναστήριο θα είναι κλειστό την Κυριακή..."></textarea>
+      <div class="action-bar" style="justify-content:flex-end;">
+        <button class="btn btn-primary" id="announce-send">${ICON.save}Αποστολή σε όλους</button>
+      </div>
+    </div>
+    <div class="panel pad" id="announce-list">Φόρτωση...</div>
+  `;
+  document.getElementById('announce-send').addEventListener('click', async ()=>{
+    const ta = document.getElementById('announce-text');
+    const msg = ta.value.trim();
+    if(!msg){ toast('Γράψε ένα μήνυμα πρώτα.'); return; }
+    const btn = document.getElementById('announce-send');
+    btn.disabled = true; btn.textContent = 'Αποστολή...';
+    const ok = await sendAnnouncement(msg);
+    btn.disabled = false; btn.innerHTML = ICON.save+'Αποστολή σε όλους';
+    if(ok){ toast('Το μήνυμα στάλθηκε σε όλους τους πελάτες.'); ta.value=''; refreshAnnouncementList(); }
+    else toast('Σφάλμα αποστολής.');
+  });
+  await refreshAnnouncementList();
+}
+async function refreshAnnouncementList(){
+  const el = document.getElementById('announce-list');
+  if(!el) return;
+  const list = await loadAnnouncements();
+  el.innerHTML = `
+    <div class="section-title"><span class="dot"></span>Ιστορικό μηνυμάτων</div>
+    ${list.length===0 ? `<div class="empty" style="padding:20px 0;"><div class="icon">💬</div><p>Δεν έχεις στείλει ακόμα κανένα μήνυμα.</p></div>` :
+      list.map(a=>{
+        const d = new Date(a.created_at);
+        return `<div class="tl-card" style="margin-bottom:10px;padding:14px 16px;">
+          <div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px;">${d.toLocaleDateString('el-GR')} · ${d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})}</div>
+          <div style="font-size:13.5px;line-height:1.5;margin-bottom:8px;">${escHtml(a.message)}</div>
+          <button class="btn btn-outline" data-announce-del="${a.id}" style="font-size:11px;padding:6px 10px;">Διαγραφή</button>
+        </div>`;
+      }).join('')
+    }
+  `;
+  document.querySelectorAll('[data-announce-del]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.getAttribute('data-announce-del');
+      btn.disabled = true;
+      const ok = await deleteAnnouncement(id);
+      if(ok) refreshAnnouncementList(); else { toast('Σφάλμα διαγραφής.'); btn.disabled=false; }
+    });
+  });
+}
+
 function render(skipNav){
   if(!skipNav) renderNav(); else { /* still refresh active states */ 
     document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.getAttribute('data-tab')===state.tab));
@@ -2075,6 +2206,8 @@ function render(skipNav){
   if(state.tab==='builder'){
     main.innerHTML = renderBuilder();
     bindBuilderEvents();
+  } else if(state.tab==='announcements'){
+    renderAnnouncementsTab();
   } else {
     main.innerHTML = renderHistory();
     bindHistoryEvents();
