@@ -576,6 +576,11 @@ const FATBURN_NUTRITION_TEXT_CARDIO = 'Αν επιλέξεις -500kcal θα χ�
 const FATBURN_WEIGHTS_FIXED = { set:6, rep:'10-12', rest:'60sec' };
 const COMBO_WEIGHTS_FIXED = { set:3, rep:'10-12', rest:'90sec' };
 
+/* Ένταση (FAILURE) — σε κάθε άσκηση με βάρη, σε όλους τους τύπους προγράμματος */
+const FAILURE_OPTIONS = [0,-1,-2,-3];
+function failureLabel(v){ return 'FAILURE '+(v===undefined||v===null?0:v); }
+const FAILURE_EXPLANATION = 'FAILURE 0 σημαίνει μέχρι «μυϊκής αποτυχίας» — προσπαθείς να εκτελέσεις επαναλήψεις μέχρι να μην μπορείς να κάνεις άλλη. FAILURE -1 σημαίνει ότι σταματάς μία επανάληψη πριν την αποτυχία, FAILURE -2 δύο επαναλήψεις πριν, FAILURE -3 τρεις επαναλήψεις πριν. Τελικός στόχος είναι όλα τα σετ να φτάνουν σε FAILURE 0.';
+
 /* ===================================================================
    STATE
    =================================================================== */
@@ -621,7 +626,8 @@ function buildDays(numDays, fixedSetRep){
       selected: '',        // exercise name or "ΆΛΛΟ"
       customText: '',
       set: fixedSetRep ? fixedSetRep.set : 3,
-      fixedSetRep: fixedSetRep || null
+      fixedSetRep: fixedSetRep || null,
+      failure: 0
     }))
   }));
 }
@@ -1074,7 +1080,7 @@ function getFilteredDaysGeneric(days){
     label: day.label,
     groups: day.groups.filter(isRowFilled).map(row=>{
       const sr = rowSetRepRest(row);
-      return { groupLabel: row.groupLabel, exercise: rowExerciseName(row), set: sr.set, rep: sr.rep, rest: sr.rest };
+      return { groupLabel: row.groupLabel, exercise: rowExerciseName(row), set: sr.set, rep: sr.rep, rest: sr.rest, failure: row.failure };
     })
   })).filter(d=>d.groups.length>0);
 }
@@ -1270,6 +1276,13 @@ function renderDayCountSelector(){
       </div>
     </div>`;
 }
+function renderFailureExplanation(){
+  return `
+    <div class="panel pad" style="margin-bottom:20px;background:var(--paper-2);">
+      <div style="font-family:'Oswald';font-weight:600;font-size:12.5px;letter-spacing:0.04em;color:var(--steel);margin-bottom:6px;">Τι σημαίνει η Ένταση (FAILURE)</div>
+      <p style="font-size:12px;color:var(--ink-soft);line-height:1.6;margin:0;">${escHtml(FAILURE_EXPLANATION)}</p>
+    </div>`;
+}
 function renderSetPlates(dayIdx, rowId, current){
   return `<div style="display:flex;gap:8px;">` + SET_ORDER.map(s=>{
     const size = s===3?40:(s===4?46:52);
@@ -1293,6 +1306,14 @@ function renderGroupRow(dayIdx, row){
           <input class="custom-input" data-customtext data-day="${dayIdx}" data-row="${row.id}" type="text" placeholder="Πληκτρολόγησε το όνομα της άσκησης..." value="${escAttr(row.customText)}">
         `:''}
         ${row.selected==='ΆΛΛΟ' && !filled ? `<div class="hidden-note">Θα αποκρυφτεί από το πρόγραμμα μέχρι να συμπληρωθεί</div>`:''}
+        <div style="margin-top:10px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--steel);margin-bottom:6px;">Ένταση</div>
+          <div class="chip-row" style="gap:6px;">
+            ${FAILURE_OPTIONS.map(v=>`
+              <button type="button" class="kcal-btn ${row.failure===v?'active':''}" style="padding:6px 10px;font-size:11px;" data-failure-btn data-day="${dayIdx}" data-row="${row.id}" data-failure="${v}">${failureLabel(v)}</button>
+            `).join('')}
+          </div>
+        </div>
       </div>
       <div class="setrep-col">
         ${row.fixedSetRep ? '' : renderSetPlates(dayIdx, row.id, row.set)}
@@ -1375,8 +1396,8 @@ function renderDaysPreviewTable(days){
     <div style="margin-bottom:16px;">
       <div style="font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:0.03em;color:var(--steel);margin-bottom:6px;">${escHtml(d.label)}</div>
       <table class="pp-table">
-        <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
-        <tbody>${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}<br><small style="color:#9A9488;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td></tr>`).join('')}</tbody>
+        <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th><th>Ένταση</th></tr></thead>
+        <tbody>${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}<br><small style="color:#9A9488;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td><td class="mono">${failureLabel(g.failure)}</td></tr>`).join('')}</tbody>
       </table>
     </div>`).join('');
 }
@@ -1436,7 +1457,7 @@ function renderBuilder(){
   if(state.fatburnSubtype === 'cardio'){
     bodyHtml = renderCardioPanel(state.cardioSlots, null, 'Αερόβιες Επιλογές');
   } else {
-    bodyHtml = renderDayCountSelector() + state.days.map((d,i)=>renderDayCard(d,i)).join('');
+    bodyHtml = renderDayCountSelector() + renderFailureExplanation() + state.days.map((d,i)=>renderDayCard(d,i)).join('');
   }
 
   return `
@@ -1521,6 +1542,16 @@ function bindBuilderEvents(){
       const s = parseInt(el.getAttribute('data-set'));
       const row = state.days[di].groups.find(r=>r.id===rid);
       row.set = s;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-failure-btn]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const di = parseInt(el.getAttribute('data-day'));
+      const rid = el.getAttribute('data-row');
+      const f = parseInt(el.getAttribute('data-failure'));
+      const row = state.days[di].groups.find(r=>r.id===rid);
+      row.failure = f;
       render();
     });
   });
@@ -1626,9 +1657,9 @@ function pdfDaysBlock(days){
     <div class="pp-day">
       <h3>${escHtml(d.label)}</h3>
       <table class="pp-table">
-        <thead><tr><th>Άσκηση</th><th>Μυϊκή ομάδα</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th></tr></thead>
+        <thead><tr><th>Άσκηση</th><th>Μυϊκή ομάδα</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th><th>Ένταση</th></tr></thead>
         <tbody>
-          ${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}</td><td>${escHtml(g.groupLabel)}</td><td>${g.set}</td><td>${g.rep}</td><td>${g.rest}</td></tr>`).join('')}
+          ${d.groups.map(g=>`<tr><td>${escHtml(g.exercise)}</td><td>${escHtml(g.groupLabel)}</td><td>${g.set}</td><td>${g.rep}</td><td>${g.rest}</td><td>${escHtml(failureLabel(g.failure))}</td></tr>`).join('')}
         </tbody>
       </table>
     </div>`).join('');
