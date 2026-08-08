@@ -2425,7 +2425,8 @@ function renderHistoryDetail(){
 }
 
 /* ===================================================================
-   CLIENT DASHBOARD (read-only, δεδομένα φιλτραρισμένα ήδη από RLS)
+   CLIENT DASHBOARD (read-only) — πλοήγηση σε βάθος:
+   Προγράμματα → Ημέρες → Μυϊκές Ομάδες/Αερόβιο → Άσκηση
    =================================================================== */
 async function renderAppClient(){
   document.getElementById('navlist').innerHTML = '';
@@ -2441,16 +2442,12 @@ async function renderAppClient(){
   `;
   document.getElementById('sidebar-logout').addEventListener('click', doLogout);
 
+  state.clientNav = { view:'programs', programId:null, dayIndex:null, itemIndex:null };
+
   const main = document.getElementById('main');
   main.innerHTML = `
-    <div class="topbar">
-      <div>
-        <h1>Το Πρόγραμμά μου</h1>
-        <div class="sub">Το ιστορικό των προγραμμάτων σου, με σειρά δημιουργίας</div>
-      </div>
-    </div>
     <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
-    <div class="panel pad" id="client-progs-panel" style="color:var(--ink-soft);font-size:13px;">Φόρτωση...</div>
+    <div id="client-content"></div>
   `;
   loadAnnouncements().then(list=>{
     if(list.length===0) return;
@@ -2461,7 +2458,7 @@ async function renderAppClient(){
       <div class="section-title"><span class="dot"></span>Ανακοινώσεις</div>
       ${list.slice(0,5).map(a=>{
         const d = new Date(a.created_at);
-        return `<div style="padding:10px 0;border-bottom:1px solid var(--paper-2);">
+        return `<div style="padding:10px 0;border-bottom:1px solid rgba(61,216,255,.12);">
           <div style="font-size:10.5px;color:var(--ink-soft);margin-bottom:4px;">${d.toLocaleDateString('el-GR')}</div>
           <div style="font-size:13px;line-height:1.5;">${escHtml(a.message)}</div>
         </div>`;
@@ -2470,42 +2467,219 @@ async function renderAppClient(){
   });
   const progs = (await loadProgramsFor(c.code)).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   state.selectedCustomerPrograms = progs;
-  const panel = document.getElementById('client-progs-panel');
-  if(panel){ panel.outerHTML = renderClientProgramsPanel(progs); bindClientProgramsEvents(); }
+  renderClientMain();
 }
-function renderClientProgramsPanel(progs){
-  return `<div class="panel pad" id="client-progs-panel">
-    <div class="section-title"><span class="dot"></span>Ιστορικό προγραμμάτων</div>
-    ${renderProgramsTimeline(progs)}
-  </div>`;
+
+function getClientDayItems(record, dayIndex){
+  if(record.subtype === 'cardio'){
+    return (record.cardioSlots||[]).map(s=>({type:'cardio', ...s}));
+  }
+  const day = (record.days||[])[dayIndex];
+  if(!day) return [];
+  const weightsItems = (day.groups||[]).map(g=>({type:'muscle', groupLabel:g.groupLabel, exercise:g.exercise, set:g.set, rep:g.rep, rest:g.rest, failure:g.failure}));
+  if(record.subtype === 'combo'){
+    const cardioItems = (day.cardioSlots||[]).map(s=>({type:'cardio', ...s}));
+    return day.topSection==='cardio' ? [...cardioItems, ...weightsItems] : [...weightsItems, ...cardioItems];
+  }
+  return weightsItems;
 }
-function rerenderClientPanel(){
-  const panel = document.getElementById('client-progs-panel');
-  if(panel){ panel.outerHTML = renderClientProgramsPanel(state.selectedCustomerPrograms); bindClientProgramsEvents(); }
+
+function renderClientMain(){
+  const content = document.getElementById('client-content');
+  if(!content) return;
+  const announcePanel = document.getElementById('client-announce-panel');
+  const nav = state.clientNav;
+  if(announcePanel) announcePanel.style.display = (nav.view==='programs') ? (announcePanel.innerHTML.trim()?'block':'none') : 'none';
+
+  let html = '';
+  if(nav.view==='programs' || !nav.programId){
+    html = renderClientProgramsListView();
+  } else {
+    const p = state.selectedCustomerPrograms.find(x=>x.id===nav.programId);
+    if(!p){ html = renderClientProgramsListView(); }
+    else{
+      const record = p.record;
+      if(nav.view==='days'){ html = renderClientDaysListView(p, record); }
+      else if(nav.view==='items'){ html = renderClientItemsListView(p, record, nav.dayIndex); }
+      else if(nav.view==='exercise'){
+        const items = getClientDayItems(record, nav.dayIndex);
+        html = renderClientExerciseView(items[nav.itemIndex]);
+      }
+      else{ html = renderClientProgramsListView(); }
+    }
+  }
+  content.innerHTML = html;
+  bindClientNavEvents();
 }
-function bindClientProgramsEvents(){
-  bindWorkoutButtons();
-  document.querySelectorAll('[data-tlhead]').forEach(el=>{
+
+function renderClientProgramsListView(){
+  const progs = state.selectedCustomerPrograms;
+  return `
+    <div class="topbar"><div><h1>Το Πρόγραμμά μου</h1><div class="sub">Επίλεξε πρόγραμμα για να ξεκινήσεις</div></div></div>
+    <div class="panel pad">
+      <div class="section-title"><span class="dot"></span>Τα Προγράμματά μου</div>
+      ${progs.length===0 ? `<div class="empty" style="padding:30px 0;"><div class="icon">🗂️</div><p>Δεν υπάρχουν ακόμα αποθηκευμένα προγράμματα.</p></div>` :
+        progs.map((p,i)=>{
+          const d = new Date(p.createdAt);
+          return `<div class="client-card" data-open-program="${escAttr(p.id)}">
+            <div class="client-avatar">${progs.length-i}</div>
+            <div class="client-meta">
+              <div class="name">${escHtml(categoryBadgeLabel(p.record))}</div>
+              <div class="sub">${d.toLocaleDateString('el-GR')} · ${d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})}</div>
+            </div>
+          </div>`;
+        }).join('')
+      }
+    </div>`;
+}
+
+function renderClientDaysListView(p, record){
+  const days = record.days || [];
+  return `
+    <div class="auth-back" data-client-back="programs">${ICON.back}Όλα τα προγράμματα</div>
+    <div class="panel pad" style="margin-bottom:18px;">
+      <h2 style="font-size:18px;">${escHtml(categoryBadgeLabel(record))}</h2>
+      <div class="sub" style="margin-top:4px;color:var(--ink-soft);font-size:12.5px;">${new Date(p.createdAt).toLocaleDateString('el-GR')}</div>
+      ${record.nutrition ? `<div style="margin-top:12px;font-size:12.5px;"><b style="color:var(--cyan-soft);">Διατροφή:</b> ${escHtml(record.nutrition.kcal)}</div>`:''}
+      ${record.instructions ? `<div style="margin-top:6px;font-size:12.5px;"><b style="color:var(--cyan-soft);">Οδηγίες:</b> ${escHtml(record.instructions)}</div>`:''}
+      ${record.notes ? `<div style="margin-top:6px;font-size:12.5px;"><b style="color:var(--cyan-soft);">Παρατηρήσεις:</b> ${escHtml(record.notes)}</div>`:''}
+      <div class="action-bar">
+        <button class="btn btn-outline" data-client-print="${escAttr(p.id)}">${ICON.print}Εκτύπωση</button>
+        <button class="btn btn-outline" data-client-pdf="${escAttr(p.id)}">${ICON.pdf}PDF</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${days.map((d,i)=>{
+        const groupNames = (d.groups||[]).map(g=>g.groupLabel).join(', ');
+        const hasCardio = d.cardioSlots && d.cardioSlots.length>0;
+        const sub = groupNames + (hasCardio ? (groupNames?' + Αερόβιο':'Αερόβιο') : '');
+        return `<button class="role-btn" data-open-day="${i}" style="align-items:flex-start;">
+          <div class="ricon">${ICON.plan}</div>
+          <div class="rtext"><div class="rt1">${escHtml(d.label)}</div><div class="rt2">${escHtml(sub)}</div></div>
+        </button>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderClientItemsListView(p, record, dayIndex){
+  const items = getClientDayItems(record, dayIndex);
+  const isCardioOnly = record.subtype === 'cardio';
+  const dayLabel = isCardioOnly ? categoryBadgeLabel(record) : ((record.days||[])[dayIndex]?.label || '');
+  const backTarget = isCardioOnly ? 'programs' : 'days';
+  const backLabel = isCardioOnly ? 'Όλα τα προγράμματα' : 'Ημέρες';
+  return `
+    <div class="auth-back" data-client-back="${backTarget}">${ICON.back}${escHtml(backLabel)}</div>
+    <div class="topbar"><div><h1 style="font-size:20px;">${escHtml(dayLabel)}</h1></div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${items.length===0 ? `<div class="panel pad empty"><p>Δεν υπάρχουν ασκήσεις εδώ.</p></div>` :
+        items.map((item,i)=>{
+          if(item.type==='muscle'){
+            return `<button class="role-btn" data-open-item="${i}" style="align-items:flex-start;">
+              <div class="ricon">${ICON.plan}</div>
+              <div class="rtext"><div class="rt1">${escHtml(item.groupLabel)}</div><div class="rt2">${escHtml(item.exercise)}</div></div>
+            </button>`;
+          }
+          return `<button class="role-btn" data-open-item="${i}" style="align-items:flex-start;">
+            <div class="ricon">${ICON.plan}</div>
+            <div class="rtext"><div class="rt1">${escHtml(item.equipment||'Αερόβιο')}</div><div class="rt2">Αερόβια άσκηση</div></div>
+          </button>`;
+        }).join('')
+      }
+    </div>`;
+}
+
+function renderClientExerciseView(item){
+  if(!item) return `<div class="auth-back" data-client-back="items">${ICON.back}Πίσω</div><div class="panel pad empty"><p>Δεν βρέθηκε η άσκηση.</p></div>`;
+  if(item.type==='cardio'){
+    const desc = describeCardioSlot(item);
+    return `
+      <div class="auth-back" data-client-back="items">${ICON.back}Πίσω</div>
+      <div class="panel pad">
+        <div class="section-title"><span class="dot"></span>${escHtml(desc.equipment)}</div>
+        <table class="pp-table"><tbody>
+          ${desc.lines.map(l=>`<tr><td>${escHtml(l)}</td></tr>`).join('')}
+        </tbody></table>
+        ${desc.instruction ? `<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin-top:14px;">${escHtml(desc.instruction)}</p>`:''}
+      </div>`;
+  }
+  return `
+    <div class="auth-back" data-client-back="items">${ICON.back}Πίσω</div>
+    <div class="panel pad">
+      <div class="section-title"><span class="dot"></span>${escHtml(item.groupLabel)}</div>
+      <h2 style="font-size:20px;margin-bottom:16px;">${escHtml(item.exercise)}</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div class="calc-field-box"><label>SET</label><div class="val">${item.set}</div></div>
+        <div class="calc-field-box"><label>REP</label><div class="val">${escHtml(String(item.rep))}</div></div>
+        <div class="calc-field-box"><label>Διάλειμμα</label><div class="val">${escHtml(String(item.rest))}</div></div>
+        <div class="calc-field-box"><label>Ένταση</label><div class="val" style="font-size:15px;">${escHtml(failureLabel(item.failure))}</div></div>
+      </div>
+      <button class="btn btn-critical" style="width:100%;justify-content:center;" id="client-start-exercise">▶ Έναρξη Προπόνησης</button>
+    </div>`;
+}
+
+function bindClientNavEvents(){
+  document.querySelectorAll('[data-open-program]').forEach(el=>{
     el.addEventListener('click', ()=>{
-      const id = el.getAttribute('data-tlhead');
-      state.openTlEntries[id] = !state.openTlEntries[id];
-      rerenderClientPanel();
+      const id = el.getAttribute('data-open-program');
+      const p = state.selectedCustomerPrograms.find(x=>x.id===id);
+      if(!p) return;
+      const record = p.record;
+      state.clientNav = {
+        view: record.subtype==='cardio' ? 'items' : 'days',
+        programId: id,
+        dayIndex: record.subtype==='cardio' ? null : 0,
+        itemIndex: null
+      };
+      renderClientMain();
     });
   });
-  document.querySelectorAll('[data-hist-print]').forEach(el=>{
+  document.querySelectorAll('[data-open-day]').forEach(el=>{
     el.addEventListener('click', ()=>{
-      const id = el.getAttribute('data-hist-print');
+      state.clientNav.view = 'items';
+      state.clientNav.dayIndex = parseInt(el.getAttribute('data-open-day'));
+      state.clientNav.itemIndex = null;
+      renderClientMain();
+    });
+  });
+  document.querySelectorAll('[data-open-item]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.clientNav.view = 'exercise';
+      state.clientNav.itemIndex = parseInt(el.getAttribute('data-open-item'));
+      renderClientMain();
+    });
+  });
+  document.querySelectorAll('[data-client-back]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const target = el.getAttribute('data-client-back');
+      state.clientNav.view = target;
+      if(target==='programs'){ state.clientNav.programId=null; state.clientNav.dayIndex=null; state.clientNav.itemIndex=null; }
+      else if(target==='days'){ state.clientNav.itemIndex=null; }
+      else if(target==='items'){ state.clientNav.itemIndex=null; }
+      renderClientMain();
+    });
+  });
+  document.querySelectorAll('[data-client-print]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.getAttribute('data-client-print');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
       document.getElementById('print-area').innerHTML = buildPrintHtml(p.record, auth.customer);
       window.print();
     });
   });
-  document.querySelectorAll('[data-hist-pdf]').forEach(el=>{
+  document.querySelectorAll('[data-client-pdf]').forEach(el=>{
     el.addEventListener('click', ()=>{
-      const id = el.getAttribute('data-hist-pdf');
+      const id = el.getAttribute('data-client-pdf');
       const p = state.selectedCustomerPrograms.find(x=>x.id===id);
       generatePdfFromRecord(p.record, auth.customer);
     });
+  });
+  document.getElementById('client-start-exercise')?.addEventListener('click', ()=>{
+    const nav = state.clientNav;
+    const p = state.selectedCustomerPrograms.find(x=>x.id===nav.programId);
+    if(!p) return;
+    const items = getClientDayItems(p.record, nav.dayIndex);
+    const item = items[nav.itemIndex];
+    if(item && item.type==='muscle') openWorkoutMode(item);
   });
 }
 
