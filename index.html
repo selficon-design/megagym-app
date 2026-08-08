@@ -538,7 +538,12 @@ input,select{font-family:inherit;}
     <div class="brand-mark">Φ</div>
     <div class="brand-text"><div class="t1">ΦΟΡΜΑ</div></div>
   </div>
-  <div class="mobile-tabs" id="mobile-tabs"></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="mobile-tabs" id="mobile-tabs"></div>
+    <button id="mobile-logout" title="Αποσύνδεση" style="width:38px;height:38px;flex-shrink:0;border-radius:10px;border:1px solid rgba(239,45,53,.35);background:rgba(239,45,53,.12);color:#ffb3b3;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+    </button>
+  </div>
 </div>
 
 <div id="app" class="hidden">
@@ -2666,6 +2671,8 @@ function renderRoot(){
     renderAuthScreens();
   }
 }
+
+document.getElementById('mobile-logout')?.addEventListener('click', doLogout);
 
 renderRoot();
 resolveAuthState();
