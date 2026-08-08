@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 /* ============ TOKENS ============ */
 :root{
   --bg-0:#05080d;
@@ -21,7 +21,7 @@
   --paper-2:rgba(61,216,255,.06);
   --panel:rgba(13,31,48,.68);
   --panel-solid:#0d1b28;
-  --line:rgba(76,208,255,.34);
+  --line:rgba(76,208,255,.48);
   --accent:#ff9f1a;
   --accent-dark:#c97400;
   --accent-soft:rgba(255,159,26,.14);
@@ -59,6 +59,7 @@ body::before{
 }
 h1,h2,h3,.display{
   font-family:'Orbitron','Arial Black',sans-serif;
+  font-weight:900;
   text-transform:uppercase;
   letter-spacing:0.06em;
   margin:0;
@@ -145,7 +146,7 @@ input,select{font-family:inherit;}
 .panel{
   position:relative;overflow:hidden;
   background:linear-gradient(145deg, rgba(19,42,62,.78), rgba(7,17,28,.84));
-  border:1px solid var(--line);
+  border:2px solid var(--line);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   backdrop-filter:blur(15px) saturate(135%);
@@ -242,7 +243,7 @@ input,select{font-family:inherit;}
 .group-label small{display:block;font-family:'Rajdhani';font-weight:500;text-transform:none;letter-spacing:0;color:#7f9bb0;font-size:11px;margin-top:2px;}
 
 .exercise-col select{
-  width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);
+  width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);
   background:rgba(3,11,18,.78);font-size:13.5px;color:var(--ink);
   appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2388ecff' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -269,7 +270,7 @@ input,select{font-family:inherit;}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
   min-height:44px;
-  padding:11px 18px;border-radius:12px;border:1px solid var(--line);
+  padding:11px 18px;border-radius:12px;border:2px solid var(--line);
   font-size:13px;font-weight:700;letter-spacing:0.03em;
   font-family:'Rajdhani','Segoe UI',Arial,sans-serif;
   background:linear-gradient(145deg, rgba(19,53,75,.82), rgba(8,24,38,.92));
@@ -316,14 +317,14 @@ input,select{font-family:inherit;}
 /* ============ HISTORY ============ */
 .search-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
 .search-row input{
-  flex:1;min-width:180px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);
+  flex:1;min-width:180px;padding:11px 13px;border-radius:10px;border:2px solid var(--line);
   font-size:13.5px;background:rgba(3,11,18,.78);color:var(--ink);
 }
 .search-row input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
 
 .client-card{
   display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;
-  border:1.5px solid var(--line);background:rgba(13,31,48,.4);cursor:pointer;margin-bottom:8px;
+  border:2px solid var(--line);background:rgba(13,31,48,.4);cursor:pointer;margin-bottom:8px;
   transition:border-color .12s, background .12s;
 }
 .client-card:hover{border-color:var(--cyan);}
@@ -343,7 +344,7 @@ input,select{font-family:inherit;}
   background:var(--accent);border:2px solid var(--panel-solid);box-shadow:0 0 8px rgba(255,159,26,.7);
 }
 .tl-card{
-  border:1.5px solid var(--line);border-radius:14px;background:rgba(13,31,48,.5);overflow:hidden;
+  border:2px solid var(--line);border-radius:14px;background:rgba(13,31,48,.5);overflow:hidden;
 }
 .tl-head{
   display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;
@@ -362,7 +363,7 @@ input,select{font-family:inherit;}
   backdrop-filter:blur(4px);
 }
 .modal{
-  background:linear-gradient(160deg, #0f2131, #060d14);border:1px solid var(--line);border-radius:18px;max-width:440px;width:100%;
+  background:linear-gradient(160deg, #0f2131, #060d14);border:3px solid var(--cyan);border-radius:18px;max-width:440px;width:100%;
   padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 30px rgba(61,216,255,.15);max-height:88vh;overflow-y:auto;
 }
 .modal h2{font-size:19px;margin-bottom:4px;}
@@ -370,7 +371,7 @@ input,select{font-family:inherit;}
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:11.5px;font-weight:700;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
 .field input{
-  width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;
+  width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);font-size:14px;
   background:rgba(3,11,18,.78);color:var(--ink);
 }
 .field input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
@@ -380,7 +381,7 @@ input,select{font-family:inherit;}
 /* ============ TOAST ============ */
 #toast{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:linear-gradient(145deg,#0f2131,#060d14);border:1px solid var(--line);color:#eefcff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
+  background:linear-gradient(145deg,#0f2131,#060d14);border:2px solid var(--line);color:#eefcff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
   box-shadow:0 8px 24px rgba(0,0,0,.5), 0 0 20px rgba(61,216,255,.15);opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;
   max-width:90vw;text-align:center;
 }
@@ -416,7 +417,7 @@ input,select{font-family:inherit;}
 #auth-root{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
 .auth-card{
   background:linear-gradient(145deg, rgba(19,42,62,.85), rgba(7,17,28,.92));
-  border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:32px;max-width:400px;width:100%;
+  border:2px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:32px;max-width:400px;width:100%;
   backdrop-filter:blur(15px) saturate(135%);
 }
 .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
@@ -428,7 +429,7 @@ input,select{font-family:inherit;}
 
 .role-choice{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
 .role-btn{
-  display:flex;align-items:center;gap:14px;padding:16px;border:1.5px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--line);
   border-radius:14px;background:rgba(13,31,48,.5);text-align:left;width:100%;
   transition:border-color .15s, background .15s, transform .1s;
 }
@@ -441,13 +442,13 @@ input,select{font-family:inherit;}
 .role-btn .rtext .rt1{font-weight:700;font-size:14.5px;color:#dffaff;}
 .role-btn .rtext .rt2{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
 
-.auth-tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(3,11,18,.6);padding:4px;border-radius:11px;border:1px solid var(--line);}
+.auth-tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(3,11,18,.6);padding:4px;border-radius:11px;border:2px solid var(--line);}
 .auth-tabs button{flex:1;padding:9px;border-radius:8px;font-size:12.5px;font-weight:700;background:transparent;color:var(--ink-soft);border:none;}
 .auth-tabs button.active{background:rgba(61,216,255,.16);color:#fff;box-shadow:inset 0 0 0 1px rgba(61,216,255,.4);}
 
 .auth-field{margin-bottom:14px;}
 .auth-field label{display:block;font-size:11.5px;font-weight:700;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
-.auth-field input{width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;background:rgba(3,11,18,.78);color:var(--ink);}
+.auth-field input{width:100%;padding:11px 13px;border-radius:10px;border:2px solid var(--line);font-size:14px;background:rgba(3,11,18,.78);color:var(--ink);}
 .auth-field input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
 .auth-submit{width:100%;justify-content:center;margin-top:6px;padding:12px;}
 .auth-note{font-size:11.5px;color:var(--ink-soft);margin-top:14px;line-height:1.5;text-align:center;}
@@ -502,7 +503,7 @@ input,select{font-family:inherit;}
 .timer-status{min-height:20px;color:var(--ink-soft);margin-top:10px;font-size:12.5px;}
 .calc-keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
 .calc-key{
-  min-height:52px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.55);
+  min-height:52px;border-radius:12px;border:2px solid var(--line);background:rgba(13,31,48,.55);
   color:#eefcff;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;
 }
 .calc-key:hover{border-color:var(--cyan);}
@@ -514,7 +515,7 @@ input,select{font-family:inherit;}
   color:#eefcff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
 }
 .calc-selector button.active{background:var(--accent);border-color:var(--accent);color:#1a1200;box-shadow:0 0 16px rgba(255,159,26,.4);}
-.calc-field-box{background:rgba(3,11,18,.7);border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
+.calc-field-box{background:rgba(3,11,18,.7);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
 .calc-field-box label{display:block;font-size:10.5px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
 .calc-field-box .val{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;color:#fff;}
 .calc-result-box{
@@ -732,6 +733,11 @@ const TPL_TEMPO_OPTIONS = ['2-1-2','2-2-2','1-1-1'];
 const TPL_CARDIO_EQUIPMENT = ['ΔΙΑΔΡΟΜΟΣ','ΕΛΛΕΙΠΤΙΚΟ','ΠΟΔΗΛΑΤΟ ΟΡΘΙΟ','ΠΟΔΗΛΑΤΟ ΚΑΘΙΣΤΟ','ΠΟΔΗΛΑΤΟ SPINNING','ΣΚΑΛΟΠΑΤΙΑ','MEGA WAVE','ΚΩΠΗΛΑΤΙΚΗ','AIR BIKE'];
 const TPL_CARDIO_MINUTES = [10,20,30,40,50,60];
 const TPL_GENDERS = ['ΑΝΔΡΕΣ','ΓΥΝΑΙΚΕΣ'];
+/* Κατηγορίες/Υποκατηγορίες προγραμμάτων — από το φύλλο "ΚΑΤΗΓΟΡΙΕΣ ΠΡΟΓΡΑΜΜΑΤΩΝ" */
+const TPL_CATEGORIES = {
+  'ΑΥΞΗΣΗ ΜΥΙΚΟΥ ΙΣΤΟΥ': [],
+  'ΚΑΥΣΗΣ ΛΙΠΟΥΣ': ['ΚΑΥΣΗ ΛΙΠΟΥΣ ΜΕ ΒΑΡΗ','ΚΑΥΣΗ ΛΙΠΟΥΣ ΜΕ ΑΕΡΟΒΙΟ','ΚΑΥΣΗ ΛΙΠΟΥΣ ΜΕ ΒΑΡΗ ΚΑΙ ΑΕΡΟΒΙΟ']
+};
 const TPL_EXERCISE_FIELDS = [
   {key:'description', label:'Περιγραφή'},
   {key:'technique', label:'Τεχνική'},
@@ -782,9 +788,10 @@ function freshTplBuilder(){
     tab: 'meta', // meta | days
     gender: 'ΑΝΔΡΕΣ',
     topCategory: '', topCategoryPhoto: '',
-    subCategory: '', subCategoryDesc: '', subCategoryResults: '', subCategoryPhoto: '',
+    subCategory: '',
     name: '', photo: '', numDays: 4,
     description: '', results: '', nutrition: '', notes: '',
+    sortOrder: 0, isPublished: true,
     days: tplBuildDays(4),
     addForm: null, // {dayIndex, type:'muscle'|'cardio', ...}
   };
@@ -875,7 +882,7 @@ async function resolveAuthState(){
   }
   auth.role = profile.role;
 
-  if(profile.role === 'trainer' || profile.role === 'supervisor'){
+  if(profile.role === 'trainer' || profile.role === 'supervisor' || profile.role === 'owner'){
     auth.status = 'trainer';
   } else {
     const { data: cust } = await sb.from('customers').select('*').eq('claimed_by', session.user.id).maybeSingle();
@@ -1034,7 +1041,7 @@ async function deleteAnnouncement(id){
    ΕΤΟΙΜΑ ΠΡΟΓΡΑΜΜΑΤΑ — Supabase CRUD
    =================================================================== */
 async function loadTemplatePrograms(){
-  const { data, error } = await sb.from('template_programs').select('*').order('created_at', { ascending:false });
+  const { data, error } = await sb.from('template_programs').select('*').order('sort_order', { ascending:true }).order('created_at', { ascending:false });
   if(error){ console.error(error); return []; }
   return data||[];
 }
@@ -1046,11 +1053,29 @@ async function deleteTemplateProgram(id){
   const { error } = await sb.from('template_programs').delete().eq('id', id);
   return !error;
 }
+async function updateTemplatePublish(id, isPublished){
+  const { error } = await sb.from('template_programs').update({ is_published: isPublished }).eq('id', id);
+  return !error;
+}
 
 /* ===================================================================
    ΠΡΟΓΡΑΜΜΑ BUILDER (μόνο supervisor) — δημιουργία έτοιμων προγραμμάτων
    =================================================================== */
 function escNL(s){ return escHtml(s).replace(/\n/g,'<br>'); }
+
+async function renderTplPreviewTab(){
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="topbar"><div><h1>Προεπισκόπηση Βιβλιοθήκης</h1><div class="sub">Έτσι ακριβώς θα τη βλέπουν οι πελάτες σου</div></div></div>
+    <div id="client-content" style="color:var(--ink-soft);">Φόρτωση...</div>
+  `;
+  state.tplLibNav = { view:'gender', gender:null, topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null };
+  if(!state.tplTemplatesLoaded){
+    state.tplTemplates = await loadTemplatePrograms();
+    state.tplTemplatesLoaded = true;
+  }
+  renderTplLibMain();
+}
 
 async function renderTplBuilderTab(){
   if(!state.tplBuilder) state.tplBuilder = freshTplBuilder();
@@ -1224,27 +1249,44 @@ function renderTplAddCardioForm(af){
     </div>`;
 }
 function renderTplMetaForm(b){
+  const subOptions = TPL_CATEGORIES[b.topCategory] || [];
   return `
     <div class="panel pad" style="margin-bottom:18px;">
       <div class="section-title"><span class="dot"></span>Βασικά Στοιχεία Προγράμματος</div>
       <div class="calc-selector" style="margin-bottom:14px;">
         ${TPL_GENDERS.map(g=>`<button type="button" class="${b.gender===g?'active':''}" data-tpl-gender="${g}">${g}</button>`).join('')}
       </div>
-      <div class="field"><label>Κατηγορία (π.χ. TRANSFORMATION)</label><input type="text" id="tpl-topcat" value="${escAttr(b.topCategory)}" placeholder="π.χ. TRANSFORMATION"></div>
+      <div class="field">
+        <label>Κατηγορία</label>
+        <select id="tpl-topcat" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+          <option value="" ${!b.topCategory?'selected':''} disabled>— Επίλεξε —</option>
+          ${Object.keys(TPL_CATEGORIES).map(c=>`<option value="${escAttr(c)}" ${b.topCategory===c?'selected':''}>${escHtml(c)}</option>`).join('')}
+        </select>
+      </div>
+      ${subOptions.length>0 ? `
+      <div class="field">
+        <label>Υποκατηγορία</label>
+        <select id="tpl-subcat" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+          <option value="" ${!b.subCategory?'selected':''} disabled>— Επίλεξε —</option>
+          ${subOptions.map(s=>`<option value="${escAttr(s)}" ${b.subCategory===s?'selected':''}>${escHtml(s)}</option>`).join('')}
+        </select>
+      </div>`:''}
       <div class="field"><label>Φωτογραφία Κατηγορίας (URL)</label><input type="text" id="tpl-topcatphoto" value="${escAttr(b.topCategoryPhoto)}" placeholder="https://..."></div>
-      <div class="field"><label>Υποκατηγορία (π.χ. Αύξηση Μυϊκού Ιστού)</label><input type="text" id="tpl-subcat" value="${escAttr(b.subCategory)}" placeholder="π.χ. ΑΥΞΗΣΗ ΜΥΪΚΟΥ ΙΣΤΟΥ"></div>
-      <div class="field"><label>Περιγραφή Υποκατηγορίας</label><input type="text" id="tpl-subcatdesc" value="${escAttr(b.subCategoryDesc)}"></div>
-      <div class="field"><label>Αποτελέσματα Υποκατηγορίας</label><input type="text" id="tpl-subcatresults" value="${escAttr(b.subCategoryResults)}"></div>
       <div class="field"><label>Ονομασία Προγράμματος</label><input type="text" id="tpl-name" value="${escAttr(b.name)}" placeholder="π.χ. ΑΝΔΡΙΚΟ ΠΡΟΓΡΑΜΜΑ 4 ΗΜΕΡΩΝ"></div>
       <div class="field"><label>Φωτογραφία Προγράμματος (URL)</label><input type="text" id="tpl-photo" value="${escAttr(b.photo)}" placeholder="https://..."></div>
       <div class="field">
         <label>Αριθμός Ημερών</label>
         <div class="chip-row">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<button class="plate-btn ${b.numDays===n?'active':''}" data-tpl-days="${n}" style="--size:36px;font-size:12px;">${n}</button>`).join('')}</div>
       </div>
-      <div class="field"><label>Περιγραφή Προγράμματος</label><textarea id="tpl-description" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.description)}</textarea></div>
-      <div class="field"><label>Αποτελέσματα</label><textarea id="tpl-results" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.results)}</textarea></div>
-      <div class="field"><label>Διατροφή</label><textarea id="tpl-nutrition" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.nutrition)}</textarea></div>
-      <div class="field" style="margin-bottom:0;"><label>Παρατηρήσεις</label><textarea id="tpl-notes" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.notes)}</textarea></div>
+      <div class="field"><label>Περιγραφή Προγράμματος</label><textarea id="tpl-description" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.description)}</textarea></div>
+      <div class="field"><label>Αποτελέσματα</label><textarea id="tpl-results" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.results)}</textarea></div>
+      <div class="field"><label>Διατροφή</label><textarea id="tpl-nutrition" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.nutrition)}</textarea></div>
+      <div class="field"><label>Παρατηρήσεις</label><textarea id="tpl-notes" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.notes)}</textarea></div>
+      <div class="field"><label>Σειρά Εμφάνισης (μικρότερος αριθμός = πρώτο)</label><input type="number" id="tpl-sortorder" value="${escAttr(b.sortOrder)}" style="max-width:120px;"></div>
+      <div class="field" style="margin-bottom:0;display:flex;align-items:center;gap:10px;">
+        <button type="button" id="tpl-publish-toggle" class="plate-btn ${b.isPublished?'active':''}" style="--size:26px;border-radius:6px;font-size:11px;">${b.isPublished?'✓':''}</button>
+        <label style="margin:0;text-transform:none;font-size:13px;letter-spacing:0;color:var(--ink);">Ορατό στους πελάτες (αν το απενεργοποιήσεις, μένει μόνο στη βιβλιοθήκη σου)</label>
+      </div>
     </div>`;
 }
 
@@ -1267,10 +1309,17 @@ function bindTplBuilderEvents(){
     const el = document.getElementById(id);
     if(el) el.addEventListener('input', ()=>{ b[field] = el.value; });
   };
-  bindText('tpl-topcat','topCategory'); bindText('tpl-topcatphoto','topCategoryPhoto');
-  bindText('tpl-subcat','subCategory'); bindText('tpl-subcatdesc','subCategoryDesc'); bindText('tpl-subcatresults','subCategoryResults');
+  const topcatSel = document.getElementById('tpl-topcat');
+  if(topcatSel) topcatSel.addEventListener('change', ()=>{ b.topCategory = topcatSel.value; b.subCategory=''; renderTplFormArea(); });
+  const subcatSel = document.getElementById('tpl-subcat');
+  if(subcatSel) subcatSel.addEventListener('change', ()=>{ b.subCategory = subcatSel.value; });
+  bindText('tpl-topcatphoto','topCategoryPhoto');
   bindText('tpl-name','name'); bindText('tpl-photo','photo');
   bindText('tpl-description','description'); bindText('tpl-results','results'); bindText('tpl-nutrition','nutrition'); bindText('tpl-notes','notes');
+  const sortEl = document.getElementById('tpl-sortorder');
+  if(sortEl) sortEl.addEventListener('input', ()=>{ b.sortOrder = parseInt(sortEl.value)||0; });
+  const pubToggle = document.getElementById('tpl-publish-toggle');
+  if(pubToggle) pubToggle.addEventListener('click', ()=>{ b.isPublished = !b.isPublished; renderTplFormArea(); });
 
   document.querySelectorAll('[data-tpl-addform]').forEach(el=>{
     el.addEventListener('click', ()=>{
@@ -1366,8 +1415,9 @@ function bindTplBuilderEvents(){
 
 async function submitTplProgram(){
   const b = state.tplBuilder;
-  if(!b.topCategory.trim() || !b.subCategory.trim() || !b.name.trim()){
-    toast('Συμπλήρωσε τουλάχιστον Κατηγορία, Υποκατηγορία και Ονομασία προγράμματος.');
+  const needsSub = (TPL_CATEGORIES[b.topCategory]||[]).length>0;
+  if(!b.topCategory.trim() || !b.name.trim() || (needsSub && !b.subCategory.trim())){
+    toast('Συμπλήρωσε τουλάχιστον Κατηγορία' + (needsSub?', Υποκατηγορία':'') + ' και Ονομασία προγράμματος.');
     return;
   }
   const totalItems = b.days.reduce((sum,d)=>sum+d.items.length,0);
@@ -1381,10 +1431,7 @@ async function submitTplProgram(){
     gender: b.gender,
     top_category: b.topCategory.trim(),
     top_category_photo_url: b.topCategoryPhoto.trim() || null,
-    sub_category: b.subCategory.trim(),
-    sub_category_description: b.subCategoryDesc.trim() || null,
-    sub_category_results: b.subCategoryResults.trim() || null,
-    sub_category_photo_url: b.subCategoryPhoto.trim() || null,
+    sub_category: b.subCategory.trim() || null,
     name: b.name.trim(),
     photo_url: b.photo.trim() || null,
     num_days: b.numDays,
@@ -1392,6 +1439,8 @@ async function submitTplProgram(){
     results: b.results.trim() || null,
     nutrition: b.nutrition.trim() || null,
     notes: b.notes.trim() || null,
+    sort_order: b.sortOrder || 0,
+    is_published: !!b.isPublished,
     data: { days: b.days },
     created_by: auth.user.id
   };
@@ -1416,16 +1465,31 @@ function renderTplListArea(){
     <div class="section-title"><span class="dot"></span>Αποθηκευμένα Έτοιμα Προγράμματα (${list.length})</div>
     ${list.length===0 ? `<div class="empty" style="padding:20px 0;"><p>Δεν έχεις αποθηκεύσει ακόμα κάποιο πρόγραμμα.</p></div>` :
       list.map(t=>`
-        <div class="tl-card" style="margin-bottom:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <div class="tl-card" style="margin-bottom:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
           <div>
-            <div style="font-size:11px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.05em;">${escHtml(t.gender)} · ${escHtml(t.top_category)} · ${escHtml(t.sub_category)}</div>
+            <div style="font-size:11px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.05em;">${escHtml(t.gender)} · ${escHtml(t.top_category)}${t.sub_category?' · '+escHtml(t.sub_category):''}</div>
             <div style="font-weight:700;font-size:14px;color:#dffaff;margin-top:2px;">${escHtml(t.name)}</div>
-            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;">${t.num_days} ημέρες</div>
+            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;">${t.num_days} ημέρες · σειρά ${t.sort_order||0} · ${t.is_published ? `<span style="color:#7ef5a0;">ορατό στους πελάτες</span>` : `<span style="color:#ffcf9e;">μόνο στη βιβλιοθήκη</span>`}</div>
           </div>
-          <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;flex-shrink:0;" data-tpl-delete="${escAttr(t.id)}">Διαγραφή</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;" data-tpl-togglepub="${escAttr(t.id)}">${t.is_published?'Απόκρυψη':'Δημοσίευση'}</button>
+            <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;" data-tpl-delete="${escAttr(t.id)}">Διαγραφή</button>
+          </div>
         </div>
       `).join('')
     }`;
+  document.querySelectorAll('[data-tpl-togglepub]').forEach(el=>{
+    el.addEventListener('click', async ()=>{
+      const id = el.getAttribute('data-tpl-togglepub');
+      const t = state.tplTemplates.find(x=>x.id===id);
+      if(!t) return;
+      el.disabled = true;
+      const ok = await updateTemplatePublish(id, !t.is_published);
+      el.disabled = false;
+      if(ok){ t.is_published = !t.is_published; renderTplListArea(); toast(t.is_published?'Το πρόγραμμα είναι πλέον ορατό στους πελάτες.':'Το πρόγραμμα κρύφτηκε από τους πελάτες.'); }
+      else toast('Σφάλμα ενημέρωσης.');
+    });
+  });
   document.querySelectorAll('[data-tpl-delete]').forEach(el=>{
     el.addEventListener('click', async ()=>{
       if(!confirm('Σίγουρα θέλεις να διαγράψεις αυτό το πρόγραμμα από τη βιβλιοθήκη;')) return;
@@ -1613,11 +1677,13 @@ function bindAuthEvents(){
 function renderSidebarAccount(){
   const el = document.getElementById('sidebar-account');
   if(!el) return;
-  const isSupervisor = auth.role === 'supervisor';
+  const isOwner = auth.role === 'owner';
+  const isSupervisor = auth.role === 'supervisor' || isOwner;
+  const roleLabel = isOwner ? 'Ιδιοκτήτης' : (isSupervisor ? 'Υπεύθυνος' : 'Προπονητής');
   el.innerHTML = `
     <div class="sidebar-account">
       <div class="who">${escHtml(auth.email||'')}</div>
-      <div class="role">${isSupervisor ? 'Υπεύθυνος' : 'Προπονητής'}</div>
+      <div class="role">${roleLabel}</div>
     </div>
     ${isSupervisor ? `<button class="btn btn-outline" id="sidebar-invite" style="width:100%;justify-content:center;margin-bottom:6px;font-size:12px;padding:9px;">${ICON.key}Πρόσκληση Προπονητή</button>` : ''}
     <button class="logout-btn" id="sidebar-logout">${ICON.logout}Αποσύνδεση</button>
@@ -1637,8 +1703,11 @@ function renderNav(){
     {id:'builder', label:'Νέο Πρόγραμμα', icon:ICON.plan},
     {id:'history', label:'Ιστορικό Πελάτη', icon:ICON.history},
   ];
-  if(auth.role === 'supervisor'){
+  if(auth.role === 'owner'){
     items.push({id:'tplbuilder', label:'Έτοιμα Προγράμματα', icon:ICON.key});
+    items.push({id:'tplpreview', label:'Προεπισκόπηση Βιβλιοθήκης', icon:ICON.history});
+  }
+  if(auth.role === 'supervisor' || auth.role === 'owner'){
     items.push({id:'announcements', label:'Μηνύματα', icon:ICON.message});
   }
   const navHtml = items.map(it=>`
@@ -3283,16 +3352,20 @@ function renderTplLibSubCatView(){
 
 function renderTplLibProgramsView(){
   const { gender, topCategory, subCategory } = state.tplLibNav;
-  const progs = state.tplTemplates.filter(t=>t.gender===gender && t.top_category===topCategory && t.sub_category===subCategory);
+  const hasSub = (TPL_CATEGORIES[topCategory]||[]).length>0;
+  const progs = state.tplTemplates
+    .filter(t=>t.gender===gender && t.top_category===topCategory && (hasSub ? t.sub_category===subCategory : true))
+    .sort((a,b)=> (a.sort_order||0)-(b.sort_order||0));
+  const backTarget = hasSub ? 'subcat' : 'topcat';
   return `
-    <div class="auth-back" data-tpllib-back="subcat">${ICON.back}Κατηγορία</div>
-    <div class="topbar"><div><h1>${escHtml(subCategory)}</h1></div></div>
+    <div class="auth-back" data-tpllib-back="${backTarget}">${ICON.back}Κατηγορία</div>
+    <div class="topbar"><div><h1>${escHtml(subCategory || topCategory)}</h1></div></div>
     ${progs.length===0 ? tplLibEmptyState('Δεν υπάρχουν ακόμα προγράμματα εδώ.') :
       progs.map(t=>`
       <div class="panel" style="margin-bottom:16px;overflow:hidden;">
         ${tplPhotoBlock(t.photo_url, 'ΦΩΤΟΓΡΑΦΙΑ ΠΡΟΓΡΑΜΜΑΤΟΣ')}
         <div class="pad">
-          <div class="set-box" style="margin-bottom:8px;">${t.num_days} ΗΜΕΡΕΣ</div>
+          <div class="set-box" style="margin-bottom:8px;">${t.num_days} ΗΜΕΡΕΣ${(!t.is_published && auth.role==='owner') ? ' · <span style="color:#ffcf9e;">ΠΡΟΣΧΕΔΙΟ</span>':''}</div>
           <h3 style="font-size:16px;margin-bottom:8px;">${escHtml(t.name)}</h3>
           ${t.description ? `<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;">${escNL(t.description)}</p>`:''}
           <button class="btn btn-primary" style="width:100%;justify-content:center;" data-tpllib-program="${escAttr(t.id)}">ΠΛΗΡΟΦΟΡΙΕΣ</button>
@@ -3421,8 +3494,11 @@ function bindTplLibEvents(){
   });
   document.querySelectorAll('[data-tpllib-topcat]').forEach(el=>{
     el.addEventListener('click', ()=>{
-      state.tplLibNav.view = 'subcat';
-      state.tplLibNav.topCategory = el.getAttribute('data-tpllib-topcat');
+      const cat = el.getAttribute('data-tpllib-topcat');
+      state.tplLibNav.topCategory = cat;
+      const hasSub = (TPL_CATEGORIES[cat]||[]).length>0;
+      state.tplLibNav.view = hasSub ? 'subcat' : 'programs';
+      state.tplLibNav.subCategory = hasSub ? null : null;
       renderTplLibMain();
     });
   });
@@ -3625,6 +3701,8 @@ function render(skipNav){
     renderAnnouncementsTab();
   } else if(state.tab==='tplbuilder'){
     renderTplBuilderTab();
+  } else if(state.tab==='tplpreview'){
+    renderTplPreviewTab();
   } else {
     main.innerHTML = renderHistory();
     bindHistoryEvents();
