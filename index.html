@@ -151,6 +151,11 @@ input,select{font-family:inherit;}
   box-shadow:var(--shadow);
   backdrop-filter:blur(15px) saturate(135%);
   -webkit-backdrop-filter:blur(15px) saturate(135%);
+  transition:border-color .2s ease, box-shadow .25s ease;
+}
+.panel:hover{
+  border-color:rgba(74,225,255,.85);
+  box-shadow:0 0 0 1px rgba(74,225,255,.3), 0 0 55px rgba(0,200,255,.35), 0 18px 48px rgba(0,0,0,.5);
 }
 .pad{padding:22px;}
 .section-title{
@@ -165,14 +170,14 @@ input,select{font-family:inherit;}
 .plate-btn{
   --size:44px;
   width:var(--size);height:var(--size);border-radius:50%;
-  border:2px solid var(--line);
+  border:1px solid var(--line);
   background:rgba(13,31,48,.55);
   display:flex;align-items:center;justify-content:center;
   font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;
   color:var(--ink-soft);
   transition:transform .12s ease, box-shadow .12s ease, border-color .12s, background .12s, color .12s;
 }
-.plate-btn:hover{transform:translateY(-1px);border-color:var(--cyan);}
+.plate-btn:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 0 26px rgba(0,200,255,.55);}
 .plate-btn.active{
   background:var(--accent);border-color:var(--accent);color:#1a1200;
   box-shadow:0 0 16px rgba(255,159,26,.45);
@@ -180,11 +185,11 @@ input,select{font-family:inherit;}
 .plate-btn.disabled{opacity:0.35;pointer-events:none;}
 
 .kcal-btn{
-  padding:10px 16px;border-radius:20px;border:2px solid var(--line);background:rgba(13,31,48,.55);
+  padding:10px 16px;border-radius:20px;border:1px solid var(--line);background:rgba(13,31,48,.55);
   font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--ink-soft);
   transition:transform .12s ease, box-shadow .12s ease, border-color .12s, background .12s, color .12s;
 }
-.kcal-btn:hover{transform:translateY(-1px);border-color:var(--cyan);}
+.kcal-btn:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 0 26px rgba(0,200,255,.55);}
 .kcal-btn.active{background:var(--accent);border-color:var(--accent);color:#1a1200;box-shadow:0 0 16px rgba(255,159,26,.4);}
 
 .set-plate{
@@ -197,7 +202,7 @@ input,select{font-family:inherit;}
 }
 .set-plate .n{font-weight:700;line-height:1;}
 .set-plate .lbl{font-size:8px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.7;margin-top:1px;}
-.set-plate:hover{transform:translateY(-1px);border-color:var(--cyan);}
+.set-plate:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 0 30px rgba(0,200,255,.6);}
 .set-plate.active{
   background:radial-gradient(circle at 35% 30%, #ffcf7a, var(--accent) 55%, var(--accent-dark));
   border-color:var(--accent-dark);color:#1a1200;
@@ -237,13 +242,13 @@ input,select{font-family:inherit;}
 }
 .group-label{
   font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
-  letter-spacing:0.03em;color:#dffaff;
+  letter-spacing:0.03em;color:#dffaff;text-transform:uppercase;
   padding-top:9px;
 }
 .group-label small{display:block;font-family:'Rajdhani';font-weight:500;text-transform:none;letter-spacing:0;color:#7f9bb0;font-size:11px;margin-top:2px;}
 
 .exercise-col select{
-  width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);
   background:rgba(3,11,18,.78);font-size:13.5px;color:var(--ink);
   appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2388ecff' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -270,7 +275,7 @@ input,select{font-family:inherit;}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
   min-height:44px;
-  padding:11px 18px;border-radius:12px;border:2px solid var(--line);
+  padding:11px 18px;border-radius:12px;border:1px solid var(--line);
   font-size:13px;font-weight:700;letter-spacing:0.03em;
   font-family:'Rajdhani','Segoe UI',Arial,sans-serif;
   background:linear-gradient(145deg, rgba(19,53,75,.82), rgba(8,24,38,.92));
@@ -280,14 +285,14 @@ input,select{font-family:inherit;}
 }
 .btn svg{width:15px;height:15px;}
 .btn:active{transform:scale(.98);}
-.btn:hover{transform:translateY(-1px);border-color:#56e2ff;box-shadow:inset 0 0 16px rgba(61,216,255,.12), 0 0 16px rgba(0,190,255,.25);}
+.btn:hover{transform:translateY(-1px);border-color:#56e2ff;box-shadow:inset 0 0 16px rgba(61,216,255,.12), 0 0 46px rgba(0,190,255,.55);}
 .btn-primary{
   border-color:rgba(255,159,26,.85);
   background:linear-gradient(145deg, rgba(95,54,10,.85), rgba(35,22,8,.94));
   color:#fff7e9;
   box-shadow:inset 0 0 14px rgba(255,159,26,.10), 0 0 15px rgba(255,140,0,.20);
 }
-.btn-primary:hover{border-color:#ffb13b;box-shadow:inset 0 0 18px rgba(255,159,26,.16), 0 0 24px rgba(255,140,0,.34);}
+.btn-primary:hover{border-color:#ffb13b;box-shadow:inset 0 0 18px rgba(255,159,26,.16), 0 0 54px rgba(255,140,0,.65);}
 .btn-dark{background:linear-gradient(145deg,#0d1b28,#050c14);border-color:rgba(255,255,255,.14);color:#fff;}
 .btn-outline{background:rgba(255,255,255,0.02);border-color:var(--line);color:var(--ink-soft);}
 .btn-outline:hover{border-color:var(--cyan);color:var(--ink);}
@@ -298,7 +303,7 @@ input,select{font-family:inherit;}
   color:#fff;
   box-shadow:inset 0 0 15px rgba(255,255,255,.06), 0 0 14px rgba(239,45,53,.3);
 }
-.btn-critical:hover{box-shadow:0 0 28px rgba(239,45,53,.5);}
+.btn-critical:hover{box-shadow:0 0 58px rgba(239,45,53,.75);}
 .btn:disabled{opacity:0.4;pointer-events:none;}
 
 .action-bar{
@@ -317,7 +322,7 @@ input,select{font-family:inherit;}
 /* ============ HISTORY ============ */
 .search-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
 .search-row input{
-  flex:1;min-width:180px;padding:11px 13px;border-radius:10px;border:2px solid var(--line);
+  flex:1;min-width:180px;padding:11px 13px;border-radius:10px;border:1px solid var(--line);
   font-size:13.5px;background:rgba(3,11,18,.78);color:var(--ink);
 }
 .search-row input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
@@ -327,7 +332,7 @@ input,select{font-family:inherit;}
   border:2px solid var(--line);background:rgba(13,31,48,.4);cursor:pointer;margin-bottom:8px;
   transition:border-color .12s, background .12s;
 }
-.client-card:hover{border-color:var(--cyan);}
+.client-card:hover{border-color:var(--cyan);box-shadow:0 0 40px rgba(0,200,255,.45);}
 .client-card.active{border-color:var(--accent);background:var(--accent-soft);}
 .client-avatar{
   width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg, var(--cyan), #123049);color:#04121c;
@@ -371,7 +376,7 @@ input,select{font-family:inherit;}
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:11.5px;font-weight:700;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
 .field input{
-  width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);font-size:14px;
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-size:14px;
   background:rgba(3,11,18,.78);color:var(--ink);
 }
 .field input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
@@ -381,7 +386,7 @@ input,select{font-family:inherit;}
 /* ============ TOAST ============ */
 #toast{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:linear-gradient(145deg,#0f2131,#060d14);border:2px solid var(--line);color:#eefcff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
+  background:linear-gradient(145deg,#0f2131,#060d14);border:1px solid var(--line);color:#eefcff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
   box-shadow:0 8px 24px rgba(0,0,0,.5), 0 0 20px rgba(61,216,255,.15);opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;
   max-width:90vw;text-align:center;
 }
@@ -421,11 +426,33 @@ input,select{font-family:inherit;}
   backdrop-filter:blur(15px) saturate(135%);
 }
 .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.auth-title{font-size:19px;margin-bottom:4px;}
+.auth-title{
+  font-family:'Orbitron','Arial Black',sans-serif;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.05em;
+  color:#ecfbff;text-shadow:0 0 16px rgba(61,216,255,.26);
+  font-size:19px;margin-bottom:4px;
+}
 .auth-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5;}
-.auth-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-bottom:16px;cursor:pointer;font-weight:700;}
-.auth-back:hover{color:var(--cyan-soft);}
-.auth-back svg{width:13px;height:13px;}
+.auth-back{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:8px 18px 8px 8px;
+  border:2px solid var(--cyan);
+  border-radius:16px;
+  background:linear-gradient(145deg, rgba(12,31,48,.88), rgba(5,13,22,.88));
+  box-shadow:0 0 18px rgba(0,184,255,.28), inset 0 0 16px rgba(0,184,255,.06);
+  color:#dffaff;margin-bottom:16px;cursor:pointer;font-weight:800;
+  font-family:'Orbitron','Rajdhani',sans-serif;font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;
+  transition:box-shadow .2s ease, border-color .2s ease, transform .12s ease;
+}
+.auth-back svg{
+  width:34px;height:34px;padding:9px;flex-shrink:0;
+  border-radius:50%;border:2px solid var(--cyan);
+  background:rgba(13,31,48,.65);
+  box-shadow:0 0 16px rgba(0,184,255,.45);
+  stroke-width:2.75;
+}
+.auth-back:hover{border-color:#56e2ff;box-shadow:0 0 44px rgba(0,190,255,.55);transform:translateY(-1px);}
+.auth-back:hover svg{box-shadow:0 0 28px rgba(0,200,255,.75);}
 
 .role-choice{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
 .role-btn{
@@ -433,7 +460,7 @@ input,select{font-family:inherit;}
   border-radius:14px;background:rgba(13,31,48,.5);text-align:left;width:100%;
   transition:border-color .15s, background .15s, transform .1s;
 }
-.role-btn:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px);}
+.role-btn:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px);box-shadow:0 0 40px rgba(255,159,26,.5);}
 .role-btn .ricon{
   width:38px;height:38px;border-radius:50%;background:var(--steel-soft);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--cyan-soft);
@@ -442,13 +469,13 @@ input,select{font-family:inherit;}
 .role-btn .rtext .rt1{font-weight:700;font-size:14.5px;color:#dffaff;}
 .role-btn .rtext .rt2{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
 
-.auth-tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(3,11,18,.6);padding:4px;border-radius:11px;border:2px solid var(--line);}
+.auth-tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(3,11,18,.6);padding:4px;border-radius:11px;border:1px solid var(--line);}
 .auth-tabs button{flex:1;padding:9px;border-radius:8px;font-size:12.5px;font-weight:700;background:transparent;color:var(--ink-soft);border:none;}
 .auth-tabs button.active{background:rgba(61,216,255,.16);color:#fff;box-shadow:inset 0 0 0 1px rgba(61,216,255,.4);}
 
 .auth-field{margin-bottom:14px;}
 .auth-field label{display:block;font-size:11.5px;font-weight:700;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
-.auth-field input{width:100%;padding:11px 13px;border-radius:10px;border:2px solid var(--line);font-size:14px;background:rgba(3,11,18,.78);color:var(--ink);}
+.auth-field input{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--line);font-size:14px;background:rgba(3,11,18,.78);color:var(--ink);}
 .auth-field input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan);}
 .auth-submit{width:100%;justify-content:center;margin-top:6px;padding:12px;}
 .auth-note{font-size:11.5px;color:var(--ink-soft);margin-top:14px;line-height:1.5;text-align:center;}
@@ -503,19 +530,19 @@ input,select{font-family:inherit;}
 .timer-status{min-height:20px;color:var(--ink-soft);margin-top:10px;font-size:12.5px;}
 .calc-keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
 .calc-key{
-  min-height:52px;border-radius:12px;border:2px solid var(--line);background:rgba(13,31,48,.55);
+  min-height:52px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.55);
   color:#eefcff;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;
 }
-.calc-key:hover{border-color:var(--cyan);}
+.calc-key:hover{border-color:var(--cyan);box-shadow:0 0 26px rgba(0,200,255,.55);}
 .calc-key.clear{border-color:rgba(255,68,75,.6);color:#ff9494;}
 .calc-key.delete{border-color:rgba(255,159,26,.6);color:#ffcf9e;}
 .calc-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .calc-selector button{
-  min-height:50px;border-radius:12px;border:2px solid var(--line);background:rgba(13,31,48,.5);
+  min-height:50px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.5);
   color:#eefcff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
 }
 .calc-selector button.active{background:var(--accent);border-color:var(--accent);color:#1a1200;box-shadow:0 0 16px rgba(255,159,26,.4);}
-.calc-field-box{background:rgba(3,11,18,.7);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
+.calc-field-box{background:rgba(3,11,18,.7);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
 .calc-field-box label{display:block;font-size:10.5px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
 .calc-field-box .val{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;color:#fff;}
 .calc-result-box{
@@ -1146,7 +1173,7 @@ function renderTplItemCard(it, dayIndex, itemIndex){
   return `
     <div class="tl-card" style="margin-bottom:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
       <div>
-        <div style="font-weight:700;font-size:13px;color:#dffaff;">${escHtml(it.groupLabel)}</div>
+        <div style="font-weight:700;font-size:13px;color:#dffaff;text-transform:uppercase;">${escHtml(it.groupLabel)}</div>
         <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escHtml(it.exercise)}</div>
         <div style="font-size:11px;color:var(--cyan-soft);margin-top:2px;" class="mono">SET ${it.set} · REP ${escHtml(it.rep)} · ${escHtml(it.rest)} · ${escHtml(it.tempo)} · ${failureLabel(it.failure)}</div>
       </div>
@@ -1258,7 +1285,7 @@ function renderTplMetaForm(b){
       </div>
       <div class="field">
         <label>Κατηγορία</label>
-        <select id="tpl-topcat" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+        <select id="tpl-topcat" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
           <option value="" ${!b.topCategory?'selected':''} disabled>— Επίλεξε —</option>
           ${Object.keys(TPL_CATEGORIES).map(c=>`<option value="${escAttr(c)}" ${b.topCategory===c?'selected':''}>${escHtml(c)}</option>`).join('')}
         </select>
@@ -1266,7 +1293,7 @@ function renderTplMetaForm(b){
       ${subOptions.length>0 ? `
       <div class="field">
         <label>Υποκατηγορία</label>
-        <select id="tpl-subcat" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+        <select id="tpl-subcat" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
           <option value="" ${!b.subCategory?'selected':''} disabled>— Επίλεξε —</option>
           ${subOptions.map(s=>`<option value="${escAttr(s)}" ${b.subCategory===s?'selected':''}>${escHtml(s)}</option>`).join('')}
         </select>
@@ -1278,10 +1305,10 @@ function renderTplMetaForm(b){
         <label>Αριθμός Ημερών</label>
         <div class="chip-row">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<button class="plate-btn ${b.numDays===n?'active':''}" data-tpl-days="${n}" style="--size:36px;font-size:12px;">${n}</button>`).join('')}</div>
       </div>
-      <div class="field"><label>Περιγραφή Προγράμματος</label><textarea id="tpl-description" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.description)}</textarea></div>
-      <div class="field"><label>Αποτελέσματα</label><textarea id="tpl-results" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.results)}</textarea></div>
-      <div class="field"><label>Διατροφή</label><textarea id="tpl-nutrition" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.nutrition)}</textarea></div>
-      <div class="field"><label>Παρατηρήσεις</label><textarea id="tpl-notes" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.notes)}</textarea></div>
+      <div class="field"><label>Περιγραφή Προγράμματος</label><textarea id="tpl-description" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.description)}</textarea></div>
+      <div class="field"><label>Αποτελέσματα</label><textarea id="tpl-results" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.results)}</textarea></div>
+      <div class="field"><label>Διατροφή</label><textarea id="tpl-nutrition" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.nutrition)}</textarea></div>
+      <div class="field"><label>Παρατηρήσεις</label><textarea id="tpl-notes" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.notes)}</textarea></div>
       <div class="field"><label>Σειρά Εμφάνισης (μικρότερος αριθμός = πρώτο)</label><input type="number" id="tpl-sortorder" value="${escAttr(b.sortOrder)}" style="max-width:120px;"></div>
       <div class="field" style="margin-bottom:0;display:flex;align-items:center;gap:10px;">
         <button type="button" id="tpl-publish-toggle" class="plate-btn ${b.isPublished?'active':''}" style="--size:26px;border-radius:6px;font-size:11px;">${b.isPublished?'✓':''}</button>
@@ -1703,9 +1730,9 @@ function renderNav(){
     {id:'builder', label:'Νέο Πρόγραμμα', icon:ICON.plan},
     {id:'history', label:'Ιστορικό Πελάτη', icon:ICON.history},
   ];
+  items.push({id:'tplpreview', label:'Βιβλιοθήκη Προγραμμάτων', icon:ICON.history});
   if(auth.role === 'owner'){
     items.push({id:'tplbuilder', label:'Έτοιμα Προγράμματα', icon:ICON.key});
-    items.push({id:'tplpreview', label:'Προεπισκόπηση Βιβλιοθήκης', icon:ICON.history});
   }
   if(auth.role === 'supervisor' || auth.role === 'owner'){
     items.push({id:'announcements', label:'Μηνύματα', icon:ICON.message});
@@ -2068,7 +2095,7 @@ function renderDaysPreviewTable(days, opts){
         <thead><tr><th>Άσκηση</th><th>Set</th><th>Rep</th><th>Διάλειμμα</th><th>Ένταση</th>${withWorkout?'<th></th>':''}</tr></thead>
         <tbody>${d.groups.map(g=>{
           const idx = withWorkout ? pushWorkoutCatalog({exercise:g.exercise, groupLabel:g.groupLabel, set:g.set, rep:g.rep, rest:g.rest}) : null;
-          return `<tr><td>${escHtml(g.exercise)}<br><small style="color:#7f9bb0;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td><td class="mono">${failureLabel(g.failure)}</td>${withWorkout?`<td><button class="btn btn-primary" style="padding:6px 10px;font-size:11px;white-space:nowrap;" data-workout-idx="${idx}">▶ Έναρξη</button></td>`:''}</tr>`;
+          return `<tr><td>${escHtml(g.exercise)}<br><small style="color:#7f9bb0;text-transform:uppercase;">${escHtml(g.groupLabel)}</small></td><td class="mono">${g.set}</td><td class="mono">${g.rep}</td><td class="mono">${g.rest}</td><td class="mono">${failureLabel(g.failure)}</td>${withWorkout?`<td><button class="btn btn-primary" style="padding:6px 10px;font-size:11px;white-space:nowrap;" data-workout-idx="${idx}">▶ Έναρξη</button></td>`:''}</tr>`;
         }).join('')}</tbody>
       </table>
       </div>
@@ -2679,7 +2706,7 @@ function renderWorkoutModal(){
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
           <div>
             <h2 style="margin-bottom:2px;font-size:18px;">${escHtml(ex.exercise)}</h2>
-            <div class="sub" style="margin-bottom:0;">${escHtml(ex.groupLabel||'')} · SET ${ex.set} · REP ${escHtml(String(ex.rep))}</div>
+            <div class="sub" style="margin-bottom:0;text-transform:uppercase;">${escHtml(ex.groupLabel||'')} · SET ${ex.set} · REP ${escHtml(String(ex.rep))}</div>
           </div>
           <button id="workout-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
         </div>
@@ -3293,6 +3320,45 @@ function renderTplLibMain(){
 function tplLibCurrentProgram(){
   return state.tplTemplates.find(t=>t.id===state.tplLibNav.programId) || null;
 }
+function mapTemplateToCustomRecord(t){
+  const days = (t.data && t.data.days) || [];
+  const isFatburn = t.top_category === 'ΚΑΥΣΗΣ ΛΙΠΟΥΣ';
+  let category = 'muscle', subtype = null;
+  if(isFatburn){
+    category = 'fatburn';
+    if(t.sub_category === 'ΚΑΥΣΗ ΛΙΠΟΥΣ ΜΕ ΒΑΡΗ') subtype = 'weights';
+    else if(t.sub_category === 'ΚΑΥΣΗ ΛΙΠΟΥΣ ΜΕ ΑΕΡΟΒΙΟ') subtype = 'cardio';
+    else subtype = 'combo';
+  }
+  const mappedDays = days.map(d=>{
+    const groups = d.items.filter(it=>it.type==='muscle').map(it=>({
+      groupLabel: it.groupLabel, exercise: it.exercise, set: it.set, rep: it.rep, rest: it.rest, failure: it.failure
+    }));
+    const cardioSlots = d.items.filter(it=>it.type==='cardio').map(it=>({
+      equipment: it.equipment, mode: it.mode, speedLow: it.speedLow, speedHigh: it.speedHigh, incline: it.incline, intensity: it.intensity, minutes: it.minutes
+    }));
+    return { label: d.label, groups, cardioSlots, topSection:'weights' };
+  });
+  const record = {
+    category, subtype,
+    notes: t.notes || '',
+    instructions: t.description || '',
+    nutrition: t.nutrition ? { kcal:'', text: t.nutrition } : null,
+    days: null, cardioSlots: null
+  };
+  if(subtype === 'cardio'){
+    record.cardioSlots = mappedDays.reduce((acc,d)=>acc.concat(d.cardioSlots),[]);
+  } else {
+    record.days = mappedDays.filter(d=> d.groups.length>0 || (d.cardioSlots && d.cardioSlots.length>0));
+  }
+  return record;
+}
+async function saveTemplateToMyPrograms(templateId){
+  const t = state.tplTemplates.find(x=>x.id===templateId);
+  if(!t || !auth.customer) return false;
+  const record = mapTemplateToCustomRecord(t);
+  return await insertProgram(auth.customer.code, record);
+}
 
 function renderTplLibGenderView(){
   return `
@@ -3377,6 +3443,7 @@ function renderTplLibProgramsView(){
 function renderTplLibDetailView(){
   const t = tplLibCurrentProgram();
   if(!t) return tplLibEmptyState('Δεν βρέθηκε το πρόγραμμα.');
+  const isClient = auth.status === 'client';
   return `
     <div class="auth-back" data-tpllib-back="programs">${ICON.back}Προγράμματα</div>
     <div class="topbar"><div><h1>${escHtml(t.name)}</h1></div></div>
@@ -3386,6 +3453,7 @@ function renderTplLibDetailView(){
       ${t.nutrition ? `<div class="info-card"><div class="lbl">Διατροφή</div><div class="txt">${escNL(t.nutrition)}</div></div>`:''}
       ${t.notes ? `<div class="info-card"><div class="lbl">Παρατηρήσεις</div><div class="txt">${escNL(t.notes)}</div></div>`:''}
       <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:10px;" data-tpllib-start="${escAttr(t.id)}">▶ ΕΝΑΡΞΗ ΠΡΟΓΡΑΜΜΑΤΟΣ</button>
+      ${isClient ? `<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px;" id="tpllib-save-mine" data-tpl-id="${escAttr(t.id)}">${ICON.save}Αποθήκευση στα Προγράμματά μου</button>`:''}
     </div>`;
 }
 
@@ -3557,6 +3625,19 @@ function bindTplLibEvents(){
     const day = t && (t.data.days||[])[state.tplLibNav.dayIndex];
     const it = day && day.items[state.tplLibNav.itemIndex];
     if(it && it.type==='muscle') openWorkoutMode(it);
+  });
+  document.getElementById('tpllib-save-mine')?.addEventListener('click', async ()=>{
+    const btn = document.getElementById('tpllib-save-mine');
+    const id = btn.getAttribute('data-tpl-id');
+    btn.disabled = true; btn.textContent = 'Αποθήκευση...';
+    const ok = await saveTemplateToMyPrograms(id);
+    btn.disabled = false; btn.innerHTML = ICON.save+'Αποθήκευση στα Προγράμματά μου';
+    if(ok){
+      toast('Το πρόγραμμα αποθηκεύτηκε στα δικά σου προγράμματα!');
+      state.selectedCustomerPrograms = (await loadProgramsFor(auth.customer.code)).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+    } else {
+      toast('Σφάλμα αποθήκευσης. Δοκίμασε ξανά.');
+    }
   });
   document.querySelectorAll('[data-tpllib-eqphoto]').forEach(el=>{
     el.addEventListener('click', ()=>{ window.open(el.getAttribute('data-tpllib-eqphoto'), '_blank'); });
