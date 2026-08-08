@@ -527,6 +527,20 @@ input,select{font-family:inherit;}
 .calc-change.negative{color:#ff7a7a;}
 .calc-message{font-size:11.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
 .calc-message.error{color:#ff9494;}
+
+/* ============ INFO CARDS (λεπτομέρειες άσκησης / κατηγορίας) ============ */
+.info-card{
+  background:rgba(13,31,48,.55);border-left:3px solid var(--accent);border-radius:8px;
+  padding:12px 14px;margin-bottom:10px;
+}
+.info-card .lbl{font-size:10.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.info-card .txt{font-size:13px;color:#dfeaf2;line-height:1.55;}
+.equip-photo{width:100%;height:150px;object-fit:cover;display:block;background:rgba(3,11,18,.5);}
+.equip-photo-empty{width:100%;height:110px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;background:rgba(3,11,18,.5);text-align:center;padding:10px;}
+.priority-badge{
+  display:inline-block;background:var(--accent-soft);color:#ffcf9e;border:1px solid rgba(255,159,26,.5);
+  border-radius:20px;padding:4px 12px;font-size:10.5px;font-weight:700;letter-spacing:0.04em;margin-bottom:8px;
+}
 </style>
 </head>
 <body>
@@ -695,6 +709,42 @@ function failureLabel(v){ return 'UNTIL FAILURE '+(v===undefined||v===null?0:v);
 const FAILURE_EXPLANATION = 'UNTIL FAILURE 0 σημαίνει μέχρι «μυϊκής αποτυχίας» — προσπαθείς να εκτελέσεις επαναλήψεις μέχρι να μην μπορείς να κάνεις άλλη. UNTIL FAILURE -1 σημαίνει ότι σταματάς μία επανάληψη πριν την αποτυχία, UNTIL FAILURE -2 δύο επαναλήψεις πριν, UNTIL FAILURE -3 τρεις επαναλήψεις πριν. Τελικός στόχος είναι όλα τα σετ να φτάνουν σε UNTIL FAILURE 0. Τελικός σκοπός σου, προκειμένου να πάρεις όλα τα οφέλη του προγράμματος, είναι να πηγαίνεις σε όλες τις ασκήσεις και σε όλα τα σετ έως UNTIL FAILURE 0. Μπορείς στην αρχή να πηγαίνεις UNTIL FAILURE -3 σε όλα τα σετ και μετά UNTIL FAILURE -2, ή να πηγαίνεις UNTIL FAILURE 0 μόνο στο τελευταίο ή στα δύο τελευταία σετ.';
 
 /* ===================================================================
+   ΕΤΟΙΜΑ ΠΡΟΓΡΑΜΜΑΤΑ (Template Library) — δεδομένα builder
+   =================================================================== */
+const TPL_MUSCLE_GROUPS = ["CHEST - ΣΤΗΘΟΣ", "BACΚ -  ΠΛΑΤΗ", "SHOULDERS - ΩΜΟΙ", "BICEPS - ΔΙΚΕΦΑΛΟΙ", "TRICEPS - ΤΡΙΚΕΦΑΛΟΙ", "LEGS - ΠΟΔΙΑ", "CALVES - ΓΑΜΠΕΣ", "ABS -  ΚΟΙΛΙΑΚΟΙ", "BACK MUSCLES - ΡΑΧΙΑΙΟΙ"];
+
+const TPL_EXERCISES = {
+  "CHEST - ΣΤΗΘΟΣ": ["Πιέσεις στήθους σε οριζόντια θέση - Horizontal Chest Press", "Πιέσεις στήθους σε επικλινή θέση - Incline Chest Press", "Πιέσεις στήθους σε κατακλινή θέση - Decline Chest Press", "Βυθίσεις στήθους - Chest Dips", "Ανοίγματα στήθους σε οριζόντια θέση - Horizontal Chest Fly", "Ανοίγματα στήθους σε επικλινή θέση - Incline Chest Fly", "Ανοίγματα στήθους σε κατακλινή θέση - Decline Chest Fly", "Ανοίγματα στήθους σε όρθια θέση - Standing Chest Fly", "Εκτάσεις στήθους - Peck Deck"],
+  "BACΚ -  ΠΛΑΤΗ": ["Έλξεις πλάτης από πάνω προς τα κάτω ανοιχτή λαβη - Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή ανάποδη λαβή- Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή λαβή V - Vertical Pulldown", "Έλξεις σώματος προς τα πάνω ανοιχτή λαβή - Pull-Up", "Έλξεις σώματος προς τα πάνω κλειστή λαβή - Pull-Up", "Κωπηλατική οριζόντια κλειστή λαβή - Seated close-grip cable row", "Κωπηλατική οριζόντια ανοιχτή λαβή - Wide-Grip Seated Cable Row", "Κωπηλατική οριζόντια ανοιχτή ανάποδη λαβή - Supinated wide-grip seated", "Κωπηλατική επικλινή με στήριξη στήθους - Incline Lever Row", "Όρθια κωπιλατική στην τροχαλία - Standing cable row", "Σκυφτή κωπιλατική με μπάρα - Βarbell bent-over row", "Σκυφτή κωπιλατική με κλειστή λαβή σταυρός - Close-Grip Bent-Over Row", "Σκυφτή κωπιλατική στον επικλινή με ανάποδη λαβή - Chest-Supported Reverse-Grip Incline Row", "Pull over με μπάρα - Βarbell pullover", "Pull over με αλτήρα - Βarbell pullover", "Straight-Arm Pulldown - Έλξεις Τροχαλίας Με Τεντωμένα Χέρια", "Ανάστροφες εκτάσεις ώμων - Reverse Fly"],
+  "SHOULDERS - ΩΜΟΙ": ["Πλάγιες εκτάσεις ώμων όρθιος  - Lateral Raises", "Πλάγιες εκτάσεις ώμων όρθιος ένα χέρι - One-Arm Dumbbell Lateral Raise", "Πλάγιες εκτάσεις ώμων καθηστός  - Seated lateral raise", "Πλάγιες εκτάσεις ώμων επικλινή  - Incline lateral raise", "Εκτάσεις ώμων - πλάτης σκυφτός - Bent-over lateral raises", "Εκτάσεις ώμων - πλάτης σκυφτός καθηστός  - Seated Bent-Over Lateral Raise", "Όρθια κωπηλατική με μπάρα ( σαγόνι )  - barbell upright row", "Όρθια κωπηλατική με σχοινί ( σαγόνι )  - Cable upright row", "Πιέσεις ώμων όρθιος - Standing Overhead Press", "Πιέσεις ώμων καθηστός - Seated Shoulder Press", "Όρθιες έλξεις ώμων στην τροχαλία με σχοινί ( κεφάλι ) - Cable Face Pull", "Εμπρόσθιες άρσεις ώμων - Front Raise"],
+  "BICEPS - ΔΙΚΕΦΑΛΟΙ": ["Κάμψεις δικεφάλων (λαβή ίσια)- Bicep Curl", "Κάμψεις δικεφάλων (λαβή Ζ) - Bicep Curl Ζ", "Κάμψεις δικεφάλων σφυριά - Bicep Hammer curl", "Κάμψεις δικεφάλων σε μαξιλάρι - Bicep preacher curl", "Κάμψεις δικεφάλων σε επικλινή - Ιncline dumbbell curls", "Κάμψεις δικεφάλων σε Smith - Smith machine bicep curl", "Κάμψεις δικεφάλων αυτοσυγκέντρωσης - Concentration bicep curl"],
+  "TRICEPS - ΤΡΙΚΕΦΑΛΟΙ": ["Πιέσεις στον πάγκο με κλειστή λαβή - Close-grip bench press", "Πιέσεις τρικεφάλων στην τροχαλία ίσια λαβή - Straight Bar Tricep Pushdown", "Πιέσεις τρικεφάλων στην τροχαλία γωνιακή λαβή - V-bar triceps pushdown", "Πιέσεις τρικεφάλων στην τροχαλία σχοινί - Cable Rope Pushdown", "Πιέσεις τρικεφάλων τροχαλία ανάστροφη λαβή - Reverse Grip Triceps Pushdown", "Γαλικές εκτάσεις τρικεφάλων V - Skull Crushers", "Βυθίσεις τρικεφάλων - Triceps dip", "Εκτάσεις τρικεφάλου με ένα χέρι τροχαλία - Single-Arm Cable Tricep Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι όρθιος - Standing Overhead Dumbbell Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι καθιστός - Seated Overhead Dumbbell Tricep Extension", "Εκτάσεις τρικεφάλων καθηστός σκυφτός σε πάγκο - Seated bent-over two-arm dumbbell kickback"],
+  "LEGS - ΠΟΔΙΑ": ["Εκτάσεις δικεφάλων καθηστος - Leg Extension", "Κάμψεις τετρακεφάλων καθηστός - Leg Curl", "Κάμψεις τετρακεφάλων ξαπλωτός - Prone Leg Curl", "Άρσεις θανάτου με λυγισμένα πόδια -", "Άρσεις θανάτου με αλύγιστα πόδια -", "Sumo Dedlift", "Πιέσεις ποδιών Leg Press", "Καθίσματα - Squats", "Προβολές ποδιών Forward Lunges", "Άρσεις γοφών - Hip Thrust", "Λακτίσματα γλουτιαίων - Glute Kickbacks", "Bulgarian Squat", "Προσαγωγοί", "Απαγωγοί"],
+  "CALVES - ΓΑΜΠΕΣ": ["Γάμπες Καθηστός", "Γάμπες Όρθιος"],
+  "ABS -  ΚΟΙΛΙΑΚΟΙ": ["Κοιλιακοί σε μηχάνημα", "Κοιλιακοι σε πάγκο με κλίση", "Κοιλιακοί ανασηκώσεις ποδιών"],
+  "BACK MUSCLES - ΡΑΧΙΑΙΟΙ": ["Ραχιαίοι σε μηχάνημα", "Ραχιαίοι σε πάγκο"],
+};
+
+const TPL_SET_OPTIONS = [3,4,5,6];
+const TPL_REP_OPTIONS = ['2 έως 4','4 έως 6','6 έως 8','8 έως 10','10 έως 12','13 έως 15'];
+const TPL_REST_OPTIONS = ['60sec','90sec','120sec','150sec','180sec','240sec'];
+const TPL_TEMPO_OPTIONS = ['2-1-2','2-2-2','1-1-1'];
+const TPL_CARDIO_EQUIPMENT = ['ΔΙΑΔΡΟΜΟΣ','ΕΛΛΕΙΠΤΙΚΟ','ΠΟΔΗΛΑΤΟ ΟΡΘΙΟ','ΠΟΔΗΛΑΤΟ ΚΑΘΙΣΤΟ','ΠΟΔΗΛΑΤΟ SPINNING','ΣΚΑΛΟΠΑΤΙΑ','MEGA WAVE','ΚΩΠΗΛΑΤΙΚΗ','AIR BIKE'];
+const TPL_CARDIO_MINUTES = [10,20,30,40,50,60];
+const TPL_GENDERS = ['ΑΝΔΡΕΣ','ΓΥΝΑΙΚΕΣ'];
+const TPL_EXERCISE_FIELDS = [
+  {key:'description', label:'Περιγραφή'},
+  {key:'technique', label:'Τεχνική'},
+  {key:'breathing', label:'Αναπνοή'},
+  {key:'warmup', label:'Warm Up'},
+  {key:'mistakes', label:'Συχνά Λάθη'},
+  {key:'purpose', label:'Σκοπός'},
+  {key:'cooldown', label:'Cool Down'},
+  {key:'intensityNotes', label:'Οδηγίες Έντασης'}
+];
+
+
+/* ===================================================================
    STATE
    =================================================================== */
 let state = {
@@ -720,7 +770,30 @@ let state = {
   workoutModalOpen: false,
   workoutExercise: null,
   openTlEntries: {},   // id -> bool
+  clientNav: { view:'programs', programId:null, dayIndex:null, itemIndex:null },
+  clientLibraryMode: false, // false = τα δικά μου προγράμματα, true = βιβλιοθήκη έτοιμων
+  tplLibNav: { view:'gender', gender:null, topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null },
+  tplTemplates: [],
+  tplTemplatesLoaded: false,
+  tplBuilder: null,
 };
+function freshTplBuilder(){
+  return {
+    tab: 'meta', // meta | days
+    gender: 'ΑΝΔΡΕΣ',
+    topCategory: '', topCategoryPhoto: '',
+    subCategory: '', subCategoryDesc: '', subCategoryResults: '', subCategoryPhoto: '',
+    name: '', photo: '', numDays: 4,
+    description: '', results: '', nutrition: '', notes: '',
+    days: tplBuildDays(4),
+    addForm: null, // {dayIndex, type:'muscle'|'cardio', ...}
+  };
+}
+function tplBuildDays(n){
+  const arr = [];
+  for(let i=0;i<n;i++) arr.push({ label:'DAY '+(['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN','ELEVEN','TWELVE'][i]||(i+1)), items:[] });
+  return arr;
+}
 
 function makeRowId(d,g){ return 'd'+d+'_'+g; }
 
@@ -958,6 +1031,413 @@ async function deleteAnnouncement(id){
 }
 
 /* ===================================================================
+   ΕΤΟΙΜΑ ΠΡΟΓΡΑΜΜΑΤΑ — Supabase CRUD
+   =================================================================== */
+async function loadTemplatePrograms(){
+  const { data, error } = await sb.from('template_programs').select('*').order('created_at', { ascending:false });
+  if(error){ console.error(error); return []; }
+  return data||[];
+}
+async function saveTemplateProgram(row){
+  const { error } = await sb.from('template_programs').insert(row);
+  return !error;
+}
+async function deleteTemplateProgram(id){
+  const { error } = await sb.from('template_programs').delete().eq('id', id);
+  return !error;
+}
+
+/* ===================================================================
+   ΠΡΟΓΡΑΜΜΑ BUILDER (μόνο supervisor) — δημιουργία έτοιμων προγραμμάτων
+   =================================================================== */
+function escNL(s){ return escHtml(s).replace(/\n/g,'<br>'); }
+
+async function renderTplBuilderTab(){
+  if(!state.tplBuilder) state.tplBuilder = freshTplBuilder();
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="topbar"><div><h1>Έτοιμα Προγράμματα</h1><div class="sub">Δημιούργησε πρότυπα προγράμματα που θα βλέπουν και θα «τρέχουν» οι πελάτες</div></div></div>
+    <div id="tpl-form-area"></div>
+    <div class="panel pad" id="tpl-list-area" style="margin-top:24px;">Φόρτωση αποθηκευμένων προγραμμάτων...</div>
+  `;
+  renderTplFormArea();
+  const list = await loadTemplatePrograms();
+  state.tplTemplates = list;
+  state.tplTemplatesLoaded = true;
+  renderTplListArea();
+}
+
+function renderTplFormArea(){
+  const area = document.getElementById('tpl-form-area');
+  if(!area) return;
+  const b = state.tplBuilder;
+  area.innerHTML = `
+    ${renderTplMetaForm(b)}
+    ${renderTplDaysEditor(b)}
+    <div class="panel pad" style="margin-top:20px;">
+      <button class="btn btn-critical" style="width:100%;justify-content:center;" id="tpl-save-btn">${ICON.save}Αποθήκευση Προγράμματος στη Βιβλιοθήκη</button>
+    </div>
+  `;
+  bindTplBuilderEvents();
+}
+
+function renderTplDaysEditor(b){
+  return `
+    <div class="panel pad">
+      <div class="section-title"><span class="dot"></span>Ημέρες & Ασκήσεις</div>
+      ${b.days.map((day,di)=>`
+        <div class="day-card" style="margin-bottom:16px;">
+          <div class="day-head">
+            <div class="tag"><div class="day-num">${di+1}</div><h3>${escHtml(day.label)}</h3></div>
+            <div class="count">${day.items.length} στοιχεία</div>
+          </div>
+          <div style="padding:16px 20px;">
+            ${day.items.length===0 ? `<div style="color:var(--ink-soft);font-size:12.5px;margin-bottom:10px;">Δεν έχεις προσθέσει ακόμα τίποτα σε αυτή την ημέρα.</div>` :
+              day.items.map((it,ii)=>renderTplItemCard(it,di,ii)).join('')
+            }
+            ${b.addForm && b.addForm.dayIndex===di ? renderTplAddItemForm(b.addForm) : `
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+                <button class="btn btn-outline" data-tpl-addform="${di}" data-tpl-addtype="muscle">+ Άσκηση με Βάρη</button>
+                <button class="btn btn-outline" data-tpl-addform="${di}" data-tpl-addtype="cardio">+ Αερόβιο</button>
+              </div>`
+            }
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderTplItemCard(it, dayIndex, itemIndex){
+  if(it.type==='cardio'){
+    return `
+      <div class="tl-card" style="margin-bottom:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <div>
+          <div style="font-weight:700;font-size:13px;color:#dffaff;">🏃 ${escHtml(it.equipment)}</div>
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;">${it.minutes?escHtml(String(it.minutes))+' λεπτά':''}${it.intensity?' · '+escHtml(it.intensity):''}${it.mode?' · '+(it.mode==='drill'?'DRILL':'Σταθερή'):''}</div>
+        </div>
+        <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;" data-tpl-removeitem="${dayIndex}:${itemIndex}">Αφαίρεση</button>
+      </div>`;
+  }
+  return `
+    <div class="tl-card" style="margin-bottom:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#dffaff;">${escHtml(it.groupLabel)}</div>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escHtml(it.exercise)}</div>
+        <div style="font-size:11px;color:var(--cyan-soft);margin-top:2px;" class="mono">SET ${it.set} · REP ${escHtml(it.rep)} · ${escHtml(it.rest)} · ${escHtml(it.tempo)} · ${failureLabel(it.failure)}</div>
+      </div>
+      <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;flex-shrink:0;" data-tpl-removeitem="${dayIndex}:${itemIndex}">Αφαίρεση</button>
+    </div>`;
+}
+
+function renderTplAddItemForm(af){
+  if(af.type==='cardio') return renderTplAddCardioForm(af);
+  return renderTplAddMuscleForm(af);
+}
+
+function renderTplAddMuscleForm(af){
+  const opts = af.groupLabel ? (TPL_EXERCISES[af.groupLabel]||[]) : [];
+  return `
+    <div class="panel pad" style="background:var(--paper-2);margin-top:10px;">
+      <div class="field">
+        <label>Μυϊκή Ομάδα</label>
+        <select id="tpl-af-group" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+          <option value="" ${!af.groupLabel?'selected':''} disabled>— Επίλεξε —</option>
+          ${TPL_MUSCLE_GROUPS.map(g=>`<option value="${escAttr(g)}" ${af.groupLabel===g?'selected':''}>${escHtml(g)}</option>`).join('')}
+        </select>
+      </div>
+      ${af.groupLabel ? `
+      <div class="field">
+        <label>Άσκηση</label>
+        <select id="tpl-af-exercise" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+          <option value="" ${!af.exercise?'selected':''} disabled>— Επίλεξε —</option>
+          ${opts.map(o=>`<option value="${escAttr(o)}" ${af.exercise===o?'selected':''}>${escHtml(o)}</option>`).join('')}
+          <option value="ΆΛΛΟ" ${af.exercise==='ΆΛΛΟ'?'selected':''}>ΆΛΛΟ (πληκτρολόγηση)</option>
+        </select>
+        ${af.exercise==='ΆΛΛΟ' ? `<input type="text" id="tpl-af-customex" value="${escAttr(af.customExercise||'')}" placeholder="Όνομα άσκησης" style="margin-top:8px;width:100%;padding:9px 11px;border-radius:10px;border:1.5px dashed var(--accent);background:var(--accent-soft);color:var(--ink);">`:''}
+      </div>
+      <div class="field"><label>Set</label><div class="chip-row">${TPL_SET_OPTIONS.map(v=>`<button type="button" class="kcal-btn ${af.set===v?'active':''}" data-tpl-af-set="${v}">${v}</button>`).join('')}</div></div>
+      <div class="field"><label>Rep</label><div class="chip-row">${TPL_REP_OPTIONS.map(v=>`<button type="button" class="kcal-btn ${af.rep===v?'active':''}" data-tpl-af-rep="${escAttr(v)}" style="font-size:11px;">${escHtml(v)}</button>`).join('')}</div></div>
+      <div class="field"><label>Διάλειμμα</label><div class="chip-row">${TPL_REST_OPTIONS.map(v=>`<button type="button" class="kcal-btn ${af.rest===v?'active':''}" data-tpl-af-rest="${escAttr(v)}">${escHtml(v)}</button>`).join('')}</div></div>
+      <div class="field"><label>Τέμπο</label><div class="chip-row">${TPL_TEMPO_OPTIONS.map(v=>`<button type="button" class="kcal-btn ${af.tempo===v?'active':''}" data-tpl-af-tempo="${escAttr(v)}">${escHtml(v)}</button>`).join('')}</div></div>
+      <div class="field"><label>Ένταση</label><div class="chip-row">${FAILURE_OPTIONS.map(v=>`<button type="button" class="kcal-btn ${af.failure===v?'active':''}" data-tpl-af-failure="${v}">${failureLabel(v)}</button>`).join('')}</div></div>
+      ${TPL_EXERCISE_FIELDS.map(f=>`
+        <div class="field"><label>${escHtml(f.label)}</label><textarea data-tpl-af-text="${f.key}" rows="2" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;font-size:12.5px;">${escHtml(af[f.key]||'')}</textarea></div>
+      `).join('')}
+      <div class="field">
+        <label>Προτεινόμενος Εξοπλισμός</label>
+        ${(af.equipment||[]).map((eq,ei)=>`
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center;">
+            <div style="flex:1;font-size:12px;background:rgba(3,11,18,.6);padding:8px 10px;border-radius:8px;border:1px solid var(--line);">${escHtml(eq.name)}${eq.photoUrl?' · 📷 μηχάνημα':''}${eq.exercisePhotoUrl?' · 📷 άσκηση':''}${eq.videoUrl?' · 🎥':''}</div>
+            <button type="button" class="btn btn-outline" style="padding:6px 10px;font-size:11px;" data-tpl-af-eqremove="${ei}">✕</button>
+          </div>
+        `).join('')}
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px;">
+          <input type="text" id="tpl-af-eqname" placeholder="Όνομα εξοπλισμού" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-size:12px;">
+          <input type="text" id="tpl-af-eqphoto" placeholder="Link φωτογραφίας μηχανήματος" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-size:12px;">
+          <input type="text" id="tpl-af-eqexphoto" placeholder="Link φωτογραφίας άσκησης" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-size:12px;">
+          <input type="text" id="tpl-af-eqvideo" placeholder="Link video άσκησης" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-size:12px;">
+          <button type="button" class="btn btn-outline" id="tpl-af-eqadd">+ Προσθήκη Εξοπλισμού</button>
+        </div>
+      </div>
+      `:''}
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn btn-outline" id="tpl-af-cancel">Ακύρωση</button>
+        ${af.groupLabel && af.exercise ? `<button class="btn btn-primary" id="tpl-af-submit">Προσθήκη Άσκησης</button>`:''}
+      </div>
+    </div>`;
+}
+
+function renderTplAddCardioForm(af){
+  const isTreadmill = af.equipment === 'ΔΙΑΔΡΟΜΟΣ';
+  return `
+    <div class="panel pad" style="background:var(--paper-2);margin-top:10px;">
+      <div class="field">
+        <label>Όργανο</label>
+        <select id="tpl-af-cequip" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);">
+          <option value="" ${!af.equipment?'selected':''} disabled>— Επίλεξε —</option>
+          ${TPL_CARDIO_EQUIPMENT.map(e=>`<option value="${escAttr(e)}" ${af.equipment===e?'selected':''}>${escHtml(e)}</option>`).join('')}
+        </select>
+      </div>
+      ${af.equipment ? (isTreadmill ? `
+        <div class="field"><label>Λειτουργία</label>
+          <div class="calc-selector">
+            <button type="button" class="${af.mode==='steady'?'active':''}" data-tpl-af-cmode="steady">ΣΤΑΘΕΡΗ</button>
+            <button type="button" class="${af.mode==='drill'?'active':''}" data-tpl-af-cmode="drill">DRILL</button>
+          </div>
+        </div>
+        <div class="field"><label>Ταχύτητα μικρή (3-6 km/h)</label><input type="number" step="0.1" id="tpl-af-cspeedlow" value="${escAttr(af.speedLow||'')}" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);"></div>
+        <div class="field"><label>Ταχύτητα μεγάλη (6-10 km/h)</label><input type="number" step="0.1" id="tpl-af-cspeedhigh" value="${escAttr(af.speedHigh||'')}" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);"></div>
+        <div class="field"><label>Κλίση (0-2%)</label><input type="number" step="0.5" id="tpl-af-cincline" value="${escAttr(af.incline||'')}" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);"></div>
+      `:`
+        <div class="field"><label>Ένταση</label>
+          <div class="calc-selector">
+            <button type="button" class="${af.intensity==='Χαμηλή ένταση'?'active':''}" data-tpl-af-cintensity="Χαμηλή ένταση">ΧΑΜΗΛΗ</button>
+            <button type="button" class="${af.intensity==='Μέτρια ένταση'?'active':''}" data-tpl-af-cintensity="Μέτρια ένταση">ΜΕΤΡΙΑ</button>
+          </div>
+        </div>
+      `) : ''}
+      ${af.equipment ? `<div class="field"><label>Χρόνος (λεπτά)</label><div class="chip-row">${TPL_CARDIO_MINUTES.map(m=>`<button type="button" class="kcal-btn ${String(af.minutes)===String(m)?'active':''}" data-tpl-af-cminutes="${m}">${m}</button>`).join('')}</div></div>`:''}
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn btn-outline" id="tpl-af-cancel">Ακύρωση</button>
+        ${af.equipment ? `<button class="btn btn-primary" id="tpl-af-csubmit">Προσθήκη Αερόβιου</button>`:''}
+      </div>
+    </div>`;
+}
+function renderTplMetaForm(b){
+  return `
+    <div class="panel pad" style="margin-bottom:18px;">
+      <div class="section-title"><span class="dot"></span>Βασικά Στοιχεία Προγράμματος</div>
+      <div class="calc-selector" style="margin-bottom:14px;">
+        ${TPL_GENDERS.map(g=>`<button type="button" class="${b.gender===g?'active':''}" data-tpl-gender="${g}">${g}</button>`).join('')}
+      </div>
+      <div class="field"><label>Κατηγορία (π.χ. TRANSFORMATION)</label><input type="text" id="tpl-topcat" value="${escAttr(b.topCategory)}" placeholder="π.χ. TRANSFORMATION"></div>
+      <div class="field"><label>Φωτογραφία Κατηγορίας (URL)</label><input type="text" id="tpl-topcatphoto" value="${escAttr(b.topCategoryPhoto)}" placeholder="https://..."></div>
+      <div class="field"><label>Υποκατηγορία (π.χ. Αύξηση Μυϊκού Ιστού)</label><input type="text" id="tpl-subcat" value="${escAttr(b.subCategory)}" placeholder="π.χ. ΑΥΞΗΣΗ ΜΥΪΚΟΥ ΙΣΤΟΥ"></div>
+      <div class="field"><label>Περιγραφή Υποκατηγορίας</label><input type="text" id="tpl-subcatdesc" value="${escAttr(b.subCategoryDesc)}"></div>
+      <div class="field"><label>Αποτελέσματα Υποκατηγορίας</label><input type="text" id="tpl-subcatresults" value="${escAttr(b.subCategoryResults)}"></div>
+      <div class="field"><label>Ονομασία Προγράμματος</label><input type="text" id="tpl-name" value="${escAttr(b.name)}" placeholder="π.χ. ΑΝΔΡΙΚΟ ΠΡΟΓΡΑΜΜΑ 4 ΗΜΕΡΩΝ"></div>
+      <div class="field"><label>Φωτογραφία Προγράμματος (URL)</label><input type="text" id="tpl-photo" value="${escAttr(b.photo)}" placeholder="https://..."></div>
+      <div class="field">
+        <label>Αριθμός Ημερών</label>
+        <div class="chip-row">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<button class="plate-btn ${b.numDays===n?'active':''}" data-tpl-days="${n}" style="--size:36px;font-size:12px;">${n}</button>`).join('')}</div>
+      </div>
+      <div class="field"><label>Περιγραφή Προγράμματος</label><textarea id="tpl-description" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.description)}</textarea></div>
+      <div class="field"><label>Αποτελέσματα</label><textarea id="tpl-results" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.results)}</textarea></div>
+      <div class="field"><label>Διατροφή</label><textarea id="tpl-nutrition" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.nutrition)}</textarea></div>
+      <div class="field" style="margin-bottom:0;"><label>Παρατηρήσεις</label><textarea id="tpl-notes" rows="2" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:rgba(3,11,18,.78);color:var(--ink);font-family:inherit;">${escHtml(b.notes)}</textarea></div>
+    </div>`;
+}
+
+function bindTplBuilderEvents(){
+  const b = state.tplBuilder;
+  document.querySelectorAll('[data-tpl-gender]').forEach(el=>{
+    el.addEventListener('click', ()=>{ b.gender = el.getAttribute('data-tpl-gender'); renderTplFormArea(); });
+  });
+  document.querySelectorAll('[data-tpl-days]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const n = parseInt(el.getAttribute('data-tpl-days'));
+      b.numDays = n;
+      const newDays = tplBuildDays(n);
+      newDays.forEach((d,i)=>{ if(b.days[i]) d.items = b.days[i].items; });
+      b.days = newDays;
+      renderTplFormArea();
+    });
+  });
+  const bindText = (id, field)=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', ()=>{ b[field] = el.value; });
+  };
+  bindText('tpl-topcat','topCategory'); bindText('tpl-topcatphoto','topCategoryPhoto');
+  bindText('tpl-subcat','subCategory'); bindText('tpl-subcatdesc','subCategoryDesc'); bindText('tpl-subcatresults','subCategoryResults');
+  bindText('tpl-name','name'); bindText('tpl-photo','photo');
+  bindText('tpl-description','description'); bindText('tpl-results','results'); bindText('tpl-nutrition','nutrition'); bindText('tpl-notes','notes');
+
+  document.querySelectorAll('[data-tpl-addform]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const di = parseInt(el.getAttribute('data-tpl-addform'));
+      const type = el.getAttribute('data-tpl-addtype');
+      b.addForm = type==='cardio'
+        ? { dayIndex:di, type:'cardio', equipment:'', mode:'steady', speedLow:'', speedHigh:'', incline:'', intensity:'', minutes:'' }
+        : { dayIndex:di, type:'muscle', groupLabel:'', exercise:'', customExercise:'', set:4, rep:TPL_REP_OPTIONS[3], rest:TPL_REST_OPTIONS[2], tempo:TPL_TEMPO_OPTIONS[0], failure:0,
+            description:'', technique:'', breathing:'', warmup:'', mistakes:'', purpose:'', cooldown:'', intensityNotes:'', equipment:[] };
+      renderTplFormArea();
+    });
+  });
+  const cancelBtn = document.getElementById('tpl-af-cancel');
+  if(cancelBtn) cancelBtn.addEventListener('click', ()=>{ b.addForm=null; renderTplFormArea(); });
+
+  document.querySelectorAll('[data-tpl-removeitem]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const [di,ii] = el.getAttribute('data-tpl-removeitem').split(':').map(Number);
+      b.days[di].items.splice(ii,1);
+      renderTplFormArea();
+    });
+  });
+
+  if(b.addForm && b.addForm.type==='muscle'){
+    const af = b.addForm;
+    const groupSel = document.getElementById('tpl-af-group');
+    if(groupSel) groupSel.addEventListener('change', ()=>{ af.groupLabel = groupSel.value; af.exercise=''; renderTplFormArea(); });
+    const exSel = document.getElementById('tpl-af-exercise');
+    if(exSel) exSel.addEventListener('change', ()=>{ af.exercise = exSel.value; renderTplFormArea(); });
+    const customEx = document.getElementById('tpl-af-customex');
+    if(customEx) customEx.addEventListener('input', ()=>{ af.customExercise = customEx.value; });
+    document.querySelectorAll('[data-tpl-af-set]').forEach(el=>el.addEventListener('click', ()=>{ af.set=parseInt(el.getAttribute('data-tpl-af-set')); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-rep]').forEach(el=>el.addEventListener('click', ()=>{ af.rep=el.getAttribute('data-tpl-af-rep'); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-rest]').forEach(el=>el.addEventListener('click', ()=>{ af.rest=el.getAttribute('data-tpl-af-rest'); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-tempo]').forEach(el=>el.addEventListener('click', ()=>{ af.tempo=el.getAttribute('data-tpl-af-tempo'); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-failure]').forEach(el=>el.addEventListener('click', ()=>{ af.failure=parseInt(el.getAttribute('data-tpl-af-failure')); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-text]').forEach(el=>{
+      const key = el.getAttribute('data-tpl-af-text');
+      el.addEventListener('input', ()=>{ af[key] = el.value; });
+    });
+    const eqAdd = document.getElementById('tpl-af-eqadd');
+    if(eqAdd) eqAdd.addEventListener('click', ()=>{
+      const name = document.getElementById('tpl-af-eqname').value.trim();
+      const photoUrl = document.getElementById('tpl-af-eqphoto').value.trim();
+      const exercisePhotoUrl = document.getElementById('tpl-af-eqexphoto').value.trim();
+      const videoUrl = document.getElementById('tpl-af-eqvideo').value.trim();
+      if(!name){ toast('Δώσε όνομα εξοπλισμού.'); return; }
+      af.equipment.push({name, photoUrl, exercisePhotoUrl, videoUrl});
+      renderTplFormArea();
+    });
+    document.querySelectorAll('[data-tpl-af-eqremove]').forEach(el=>{
+      el.addEventListener('click', ()=>{ af.equipment.splice(parseInt(el.getAttribute('data-tpl-af-eqremove')),1); renderTplFormArea(); });
+    });
+    const submitBtn = document.getElementById('tpl-af-submit');
+    if(submitBtn) submitBtn.addEventListener('click', ()=>{
+      const exerciseName = af.exercise==='ΆΛΛΟ' ? af.customExercise.trim() : af.exercise;
+      if(!exerciseName){ toast('Συμπλήρωσε το όνομα της άσκησης.'); return; }
+      b.days[af.dayIndex].items.push({
+        type:'muscle', groupLabel: af.groupLabel, exercise: exerciseName,
+        set: af.set, rep: af.rep, rest: af.rest, tempo: af.tempo, failure: af.failure,
+        description: af.description, technique: af.technique, breathing: af.breathing,
+        warmup: af.warmup, mistakes: af.mistakes, purpose: af.purpose, cooldown: af.cooldown,
+        intensityNotes: af.intensityNotes, equipment: af.equipment
+      });
+      b.addForm = null;
+      renderTplFormArea();
+    });
+  }
+  if(b.addForm && b.addForm.type==='cardio'){
+    const af = b.addForm;
+    const eqSel = document.getElementById('tpl-af-cequip');
+    if(eqSel) eqSel.addEventListener('change', ()=>{ af.equipment = eqSel.value; renderTplFormArea(); });
+    document.querySelectorAll('[data-tpl-af-cmode]').forEach(el=>el.addEventListener('click', ()=>{ af.mode=el.getAttribute('data-tpl-af-cmode'); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-cintensity]').forEach(el=>el.addEventListener('click', ()=>{ af.intensity=el.getAttribute('data-tpl-af-cintensity'); renderTplFormArea(); }));
+    document.querySelectorAll('[data-tpl-af-cminutes]').forEach(el=>el.addEventListener('click', ()=>{ af.minutes=el.getAttribute('data-tpl-af-cminutes'); renderTplFormArea(); }));
+    const sl = document.getElementById('tpl-af-cspeedlow'); if(sl) sl.addEventListener('input', ()=>{ af.speedLow = sl.value; });
+    const sh = document.getElementById('tpl-af-cspeedhigh'); if(sh) sh.addEventListener('input', ()=>{ af.speedHigh = sh.value; });
+    const inc = document.getElementById('tpl-af-cincline'); if(inc) inc.addEventListener('input', ()=>{ af.incline = inc.value; });
+    const csubmit = document.getElementById('tpl-af-csubmit');
+    if(csubmit) csubmit.addEventListener('click', ()=>{
+      b.days[af.dayIndex].items.push({
+        type:'cardio', equipment: af.equipment, mode: af.mode, speedLow: af.speedLow, speedHigh: af.speedHigh,
+        incline: af.incline, intensity: af.intensity, minutes: af.minutes
+      });
+      b.addForm = null;
+      renderTplFormArea();
+    });
+  }
+
+  const saveBtn = document.getElementById('tpl-save-btn');
+  if(saveBtn) saveBtn.addEventListener('click', submitTplProgram);
+}
+
+async function submitTplProgram(){
+  const b = state.tplBuilder;
+  if(!b.topCategory.trim() || !b.subCategory.trim() || !b.name.trim()){
+    toast('Συμπλήρωσε τουλάχιστον Κατηγορία, Υποκατηγορία και Ονομασία προγράμματος.');
+    return;
+  }
+  const totalItems = b.days.reduce((sum,d)=>sum+d.items.length,0);
+  if(totalItems===0){
+    toast('Πρόσθεσε τουλάχιστον μία άσκηση σε κάποια ημέρα.');
+    return;
+  }
+  const btn = document.getElementById('tpl-save-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Αποθήκευση...'; }
+  const row = {
+    gender: b.gender,
+    top_category: b.topCategory.trim(),
+    top_category_photo_url: b.topCategoryPhoto.trim() || null,
+    sub_category: b.subCategory.trim(),
+    sub_category_description: b.subCategoryDesc.trim() || null,
+    sub_category_results: b.subCategoryResults.trim() || null,
+    sub_category_photo_url: b.subCategoryPhoto.trim() || null,
+    name: b.name.trim(),
+    photo_url: b.photo.trim() || null,
+    num_days: b.numDays,
+    description: b.description.trim() || null,
+    results: b.results.trim() || null,
+    nutrition: b.nutrition.trim() || null,
+    notes: b.notes.trim() || null,
+    data: { days: b.days },
+    created_by: auth.user.id
+  };
+  const ok = await saveTemplateProgram(row);
+  if(btn){ btn.disabled=false; btn.innerHTML = ICON.save+'Αποθήκευση Προγράμματος στη Βιβλιοθήκη'; }
+  if(ok){
+    toast('Το πρόγραμμα αποθηκεύτηκε στη βιβλιοθήκη!');
+    state.tplBuilder = freshTplBuilder();
+    renderTplFormArea();
+    state.tplTemplates = await loadTemplatePrograms();
+    renderTplListArea();
+  } else {
+    toast('Σφάλμα αποθήκευσης. Δοκίμασε ξανά.');
+  }
+}
+
+function renderTplListArea(){
+  const area = document.getElementById('tpl-list-area');
+  if(!area) return;
+  const list = state.tplTemplates;
+  area.innerHTML = `
+    <div class="section-title"><span class="dot"></span>Αποθηκευμένα Έτοιμα Προγράμματα (${list.length})</div>
+    ${list.length===0 ? `<div class="empty" style="padding:20px 0;"><p>Δεν έχεις αποθηκεύσει ακόμα κάποιο πρόγραμμα.</p></div>` :
+      list.map(t=>`
+        <div class="tl-card" style="margin-bottom:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <div>
+            <div style="font-size:11px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.05em;">${escHtml(t.gender)} · ${escHtml(t.top_category)} · ${escHtml(t.sub_category)}</div>
+            <div style="font-weight:700;font-size:14px;color:#dffaff;margin-top:2px;">${escHtml(t.name)}</div>
+            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;">${t.num_days} ημέρες</div>
+          </div>
+          <button class="btn btn-outline" style="padding:6px 10px;font-size:11px;flex-shrink:0;" data-tpl-delete="${escAttr(t.id)}">Διαγραφή</button>
+        </div>
+      `).join('')
+    }`;
+  document.querySelectorAll('[data-tpl-delete]').forEach(el=>{
+    el.addEventListener('click', async ()=>{
+      if(!confirm('Σίγουρα θέλεις να διαγράψεις αυτό το πρόγραμμα από τη βιβλιοθήκη;')) return;
+      const id = el.getAttribute('data-tpl-delete');
+      const ok = await deleteTemplateProgram(id);
+      if(ok){ state.tplTemplates = state.tplTemplates.filter(x=>x.id!==id); renderTplListArea(); toast('Διαγράφηκε.'); }
+      else toast('Σφάλμα διαγραφής.');
+    });
+  });
+}
+
+/* ===================================================================
    TOAST
    =================================================================== */
 let toastTimer=null;
@@ -1158,6 +1638,7 @@ function renderNav(){
     {id:'history', label:'Ιστορικό Πελάτη', icon:ICON.history},
   ];
   if(auth.role === 'supervisor'){
+    items.push({id:'tplbuilder', label:'Έτοιμα Προγράμματα', icon:ICON.key});
     items.push({id:'announcements', label:'Μηνύματα', icon:ICON.message});
   }
   const navHtml = items.map(it=>`
@@ -2443,17 +2924,43 @@ async function renderAppClient(){
   document.getElementById('sidebar-logout').addEventListener('click', doLogout);
 
   state.clientNav = { view:'programs', programId:null, dayIndex:null, itemIndex:null };
+  state.clientLibraryMode = false;
 
   const main = document.getElementById('main');
   main.innerHTML = `
     <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
+    <div class="auth-tabs" style="max-width:420px;margin-bottom:20px;">
+      <button id="client-mode-mine" class="active">Τα Προγράμματά μου</button>
+      <button id="client-mode-library">Έτοιμα Προγράμματα</button>
+    </div>
     <div id="client-content"></div>
   `;
+  document.getElementById('client-mode-mine').addEventListener('click', ()=>{
+    state.clientLibraryMode = false;
+    document.getElementById('client-mode-mine').classList.add('active');
+    document.getElementById('client-mode-library').classList.remove('active');
+    const ap = document.getElementById('client-announce-panel');
+    if(ap && ap.innerHTML.trim()) ap.style.display='block';
+    renderClientMain();
+  });
+  document.getElementById('client-mode-library').addEventListener('click', async ()=>{
+    state.clientLibraryMode = true;
+    document.getElementById('client-mode-library').classList.add('active');
+    document.getElementById('client-mode-mine').classList.remove('active');
+    document.getElementById('client-announce-panel').style.display='none';
+    state.tplLibNav = { view:'gender', gender:null, topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null };
+    if(!state.tplTemplatesLoaded){
+      document.getElementById('client-content').innerHTML = `<div class="panel pad" style="color:var(--ink-soft);">Φόρτωση...</div>`;
+      state.tplTemplates = await loadTemplatePrograms();
+      state.tplTemplatesLoaded = true;
+    }
+    renderTplLibMain();
+  });
   loadAnnouncements().then(list=>{
     if(list.length===0) return;
     const panel = document.getElementById('client-announce-panel');
     if(!panel) return;
-    panel.style.display = 'block';
+    if(!state.clientLibraryMode) panel.style.display = 'block';
     panel.innerHTML = `
       <div class="section-title"><span class="dot"></span>Ανακοινώσεις</div>
       ${list.slice(0,5).map(a=>{
@@ -2683,6 +3190,313 @@ function bindClientNavEvents(){
   });
 }
 
+/* ===================================================================
+   ΒΙΒΛΙΟΘΗΚΗ ΕΤΟΙΜΩΝ ΠΡΟΓΡΑΜΜΑΤΩΝ — περιήγηση πελάτη
+   Φύλο → Κατηγορία → Υποκατηγορία → Προγράμματα → Λεπτομέρειες →
+   Ημέρες → Ασκήσεις → Λεπτομέρεια Άσκησης + Εξοπλισμός
+   =================================================================== */
+function tplLibEmptyState(msg){
+  return `<div class="panel pad empty"><div class="icon">🗂️</div><p>${escHtml(msg)}</p></div>`;
+}
+function tplPhotoBlock(url, label){
+  return url
+    ? `<img src="${escAttr(url)}" class="equip-photo" alt="">`
+    : `<div class="equip-photo-empty">${escHtml(label||'ΦΩΤΟΓΡΑΦΙΑ')}</div>`;
+}
+
+function renderTplLibMain(){
+  const content = document.getElementById('client-content');
+  if(!content) return;
+  const nav = state.tplLibNav;
+  let html = '';
+  if(nav.view==='gender') html = renderTplLibGenderView();
+  else if(nav.view==='topcat') html = renderTplLibTopCatView();
+  else if(nav.view==='subcat') html = renderTplLibSubCatView();
+  else if(nav.view==='programs') html = renderTplLibProgramsView();
+  else if(nav.view==='detail') html = renderTplLibDetailView();
+  else if(nav.view==='days') html = renderTplLibDaysView();
+  else if(nav.view==='items') html = renderTplLibItemsView();
+  else if(nav.view==='exercise') html = renderTplLibExerciseView();
+  else html = renderTplLibGenderView();
+  content.innerHTML = html;
+  bindTplLibEvents();
+}
+function tplLibCurrentProgram(){
+  return state.tplTemplates.find(t=>t.id===state.tplLibNav.programId) || null;
+}
+
+function renderTplLibGenderView(){
+  return `
+    <div class="topbar"><div><h1>Έτοιμα Προγράμματα</h1><div class="sub">Επίλεξε πρώτα φύλο και μετά κατηγορία προγράμματος</div></div></div>
+    <div class="panel pad">
+      <div class="role-choice">
+        ${TPL_GENDERS.map(g=>`
+          <button class="role-btn" data-tpllib-gender="${escAttr(g)}">
+            <div class="ricon">${ICON.plan}</div>
+            <div class="rtext"><div class="rt1">${escHtml(g)}</div></div>
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderTplLibTopCatView(){
+  const gender = state.tplLibNav.gender;
+  const seen = new Map();
+  state.tplTemplates.filter(t=>t.gender===gender).forEach(t=>{ if(!seen.has(t.top_category)) seen.set(t.top_category, t); });
+  const cats = [...seen.values()];
+  return `
+    <div class="auth-back" data-tpllib-back="gender">${ICON.back}Φύλο</div>
+    <div class="topbar"><div><h1>Προγράμματα ${escHtml(gender)}</h1></div></div>
+    ${cats.length===0 ? tplLibEmptyState('Δεν υπάρχουν ακόμα έτοιμα προγράμματα για αυτή την επιλογή.') :
+      cats.map(t=>`
+      <div class="panel" style="margin-bottom:16px;overflow:hidden;">
+        ${tplPhotoBlock(t.top_category_photo_url, 'ΦΩΤΟΓΡΑΦΙΑ ΚΑΤΗΓΟΡΙΑΣ')}
+        <div class="pad">
+          <div class="set-box" style="margin-bottom:8px;">${escHtml(t.top_category)}</div>
+          <h3 style="font-size:16px;margin-bottom:12px;">ΠΡΟΓΡΑΜΜΑΤΑ ${escHtml(t.top_category)}</h3>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" data-tpllib-topcat="${escAttr(t.top_category)}">ΕΠΙΛΟΓΗ ΚΑΤΗΓΟΡΙΑΣ</button>
+        </div>
+      </div>`).join('')
+    }`;
+}
+
+function renderTplLibSubCatView(){
+  const { gender, topCategory } = state.tplLibNav;
+  const seen = new Map();
+  state.tplTemplates.filter(t=>t.gender===gender && t.top_category===topCategory).forEach(t=>{ if(!seen.has(t.sub_category)) seen.set(t.sub_category, t); });
+  const subs = [...seen.values()];
+  return `
+    <div class="auth-back" data-tpllib-back="topcat">${ICON.back}Κατηγορίες</div>
+    <div class="topbar"><div><h1>Προγράμματα ${escHtml(topCategory)} — ${escHtml(gender)}</h1></div></div>
+    ${subs.map(t=>`
+      <div class="panel" style="margin-bottom:16px;overflow:hidden;">
+        ${tplPhotoBlock(t.sub_category_photo_url, 'ΦΩΤΟΓΡΑΦΙΑ ΚΑΤΗΓΟΡΙΑΣ')}
+        <div class="pad">
+          <div class="set-box" style="margin-bottom:8px;">ΚΑΤΗΓΟΡΙΑ</div>
+          <h3 style="font-size:16px;margin-bottom:10px;">${escHtml(t.sub_category)}</h3>
+          ${t.sub_category_description ? `<div class="info-card"><div class="lbl">Περιγραφή</div><div class="txt">${escNL(t.sub_category_description)}</div></div>`:''}
+          ${t.sub_category_results ? `<div class="info-card"><div class="lbl">Αποτελέσματα</div><div class="txt">${escNL(t.sub_category_results)}</div></div>`:''}
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" data-tpllib-subcat="${escAttr(t.sub_category)}">ΠΡΟΒΟΛΗ ΠΡΟΓΡΑΜΜΑΤΩΝ</button>
+        </div>
+      </div>`).join('')}`;
+}
+
+function renderTplLibProgramsView(){
+  const { gender, topCategory, subCategory } = state.tplLibNav;
+  const progs = state.tplTemplates.filter(t=>t.gender===gender && t.top_category===topCategory && t.sub_category===subCategory);
+  return `
+    <div class="auth-back" data-tpllib-back="subcat">${ICON.back}Κατηγορία</div>
+    <div class="topbar"><div><h1>${escHtml(subCategory)}</h1></div></div>
+    ${progs.length===0 ? tplLibEmptyState('Δεν υπάρχουν ακόμα προγράμματα εδώ.') :
+      progs.map(t=>`
+      <div class="panel" style="margin-bottom:16px;overflow:hidden;">
+        ${tplPhotoBlock(t.photo_url, 'ΦΩΤΟΓΡΑΦΙΑ ΠΡΟΓΡΑΜΜΑΤΟΣ')}
+        <div class="pad">
+          <div class="set-box" style="margin-bottom:8px;">${t.num_days} ΗΜΕΡΕΣ</div>
+          <h3 style="font-size:16px;margin-bottom:8px;">${escHtml(t.name)}</h3>
+          ${t.description ? `<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;">${escNL(t.description)}</p>`:''}
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" data-tpllib-program="${escAttr(t.id)}">ΠΛΗΡΟΦΟΡΙΕΣ</button>
+        </div>
+      </div>`).join('')
+    }`;
+}
+
+function renderTplLibDetailView(){
+  const t = tplLibCurrentProgram();
+  if(!t) return tplLibEmptyState('Δεν βρέθηκε το πρόγραμμα.');
+  return `
+    <div class="auth-back" data-tpllib-back="programs">${ICON.back}Προγράμματα</div>
+    <div class="topbar"><div><h1>${escHtml(t.name)}</h1></div></div>
+    <div class="panel pad">
+      ${t.description ? `<div class="info-card"><div class="lbl">Περιγραφή</div><div class="txt">${escNL(t.description)}</div></div>`:''}
+      ${t.results ? `<div class="info-card"><div class="lbl">Αποτελέσματα</div><div class="txt">${escNL(t.results)}</div></div>`:''}
+      ${t.nutrition ? `<div class="info-card"><div class="lbl">Διατροφή</div><div class="txt">${escNL(t.nutrition)}</div></div>`:''}
+      ${t.notes ? `<div class="info-card"><div class="lbl">Παρατηρήσεις</div><div class="txt">${escNL(t.notes)}</div></div>`:''}
+      <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:10px;" data-tpllib-start="${escAttr(t.id)}">▶ ΕΝΑΡΞΗ ΠΡΟΓΡΑΜΜΑΤΟΣ</button>
+    </div>`;
+}
+
+function renderTplLibDaysView(){
+  const t = tplLibCurrentProgram();
+  if(!t) return tplLibEmptyState('Δεν βρέθηκε το πρόγραμμα.');
+  const days = (t.data && t.data.days) || [];
+  return `
+    <div class="auth-back" data-tpllib-back="detail">${ICON.back}Πληροφορίες</div>
+    <div class="topbar"><div><h1>${escHtml(t.name)}</h1></div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${days.map((d,i)=>{
+        const muscleNames = d.items.filter(it=>it.type==='muscle').map(it=>it.groupLabel).filter((v,idx,a)=>a.indexOf(v)===idx);
+        const hasCardio = d.items.some(it=>it.type==='cardio');
+        return `<button class="role-btn" data-tpllib-day="${i}" style="align-items:flex-start;">
+          <div class="ricon">${ICON.plan}</div>
+          <div class="rtext"><div class="rt1">${escHtml(d.label)}</div><div class="rt2">${escHtml(muscleNames.join(', '))}${hasCardio?(muscleNames.length?' + Αερόβιο':'Αερόβιο'):''}</div></div>
+        </button>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderTplLibItemsView(){
+  const t = tplLibCurrentProgram();
+  if(!t) return tplLibEmptyState('Δεν βρέθηκε το πρόγραμμα.');
+  const day = (t.data.days||[])[state.tplLibNav.dayIndex];
+  if(!day) return tplLibEmptyState('Δεν βρέθηκε η ημέρα.');
+  return `
+    <div class="auth-back" data-tpllib-back="days">${ICON.back}Ημέρες</div>
+    <div class="topbar"><div><h1 style="font-size:20px;">${escHtml(day.label)}</h1></div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${day.items.map((it,i)=>{
+        if(it.type==='muscle'){
+          return `<button class="role-btn" data-tpllib-item="${i}" style="align-items:flex-start;">
+            <div class="ricon">${ICON.plan}</div>
+            <div class="rtext"><div class="rt1">${escHtml(it.groupLabel)}</div><div class="rt2">${escHtml(it.exercise)}</div></div>
+          </button>`;
+        }
+        return `<button class="role-btn" data-tpllib-item="${i}" style="align-items:flex-start;">
+          <div class="ricon">${ICON.plan}</div>
+          <div class="rtext"><div class="rt1">🏃 ${escHtml(it.equipment)}</div><div class="rt2">Αερόβια άσκηση</div></div>
+        </button>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderTplLibExerciseView(){
+  const t = tplLibCurrentProgram();
+  if(!t) return tplLibEmptyState('Δεν βρέθηκε το πρόγραμμα.');
+  const day = (t.data.days||[])[state.tplLibNav.dayIndex];
+  const it = day && day.items[state.tplLibNav.itemIndex];
+  if(!it) return `<div class="auth-back" data-tpllib-back="items">${ICON.back}Πίσω</div>` + tplLibEmptyState('Δεν βρέθηκε η άσκηση.');
+
+  if(it.type==='cardio'){
+    const desc = describeCardioSlot(it);
+    return `
+      <div class="auth-back" data-tpllib-back="items">${ICON.back}Πίσω</div>
+      <div class="panel pad">
+        <div class="section-title"><span class="dot"></span>${escHtml(desc.equipment)}</div>
+        <table class="pp-table"><tbody>${desc.lines.map(l=>`<tr><td>${escHtml(l)}</td></tr>`).join('')}</tbody></table>
+        ${desc.instruction ? `<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin-top:14px;">${escHtml(desc.instruction)}</p>`:''}
+      </div>`;
+  }
+
+  const infoRows = TPL_EXERCISE_FIELDS.filter(f=>it[f.key]);
+  return `
+    <div class="auth-back" data-tpllib-back="items">${ICON.back}Πίσω</div>
+    <div style="font-size:11px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${escHtml(it.groupLabel)}</div>
+    <h2 style="font-size:20px;margin-bottom:14px;">${escHtml(it.exercise)}</h2>
+    <div class="panel pad" style="margin-bottom:16px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div class="calc-field-box"><label>SET</label><div class="val">${it.set}</div></div>
+        <div class="calc-field-box"><label>REP</label><div class="val">${escHtml(it.rep)}</div></div>
+        <div class="calc-field-box"><label>ΤΕΜΠΟ</label><div class="val">${escHtml(it.tempo)}</div></div>
+        <div class="calc-field-box"><label>Διάλειμμα</label><div class="val">${escHtml(it.rest)}</div></div>
+      </div>
+      <div class="calc-field-box" style="margin-bottom:14px;"><label>Ένταση</label><div class="val" style="font-size:15px;">${escHtml(failureLabel(it.failure))}</div></div>
+      ${infoRows.map(f=>`<div class="info-card"><div class="lbl">${escHtml(f.label)}</div><div class="txt">${escNL(it[f.key])}</div></div>`).join('')}
+      <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:6px;" id="tpllib-start-exercise">▶ Έναρξη Προπόνησης</button>
+    </div>
+    ${(it.equipment&&it.equipment.length) ? `
+      <div class="section-title"><span class="dot"></span>Προτεινόμενος Εξοπλισμός</div>
+      ${it.equipment.map((eq,ei)=>`
+        <div class="panel" style="margin-bottom:14px;overflow:hidden;">
+          ${tplPhotoBlock(eq.photoUrl, 'ΦΩΤΟΓΡΑΦΙΑ ΜΗΧΑΝΗΜΑΤΟΣ')}
+          <div class="pad">
+            <div class="priority-badge">${ei+1}η ΠΡΟΤΕΡΑΙΟΤΗΤΑ</div>
+            <h3 style="font-size:15px;margin-bottom:10px;">${escHtml(eq.name)}</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn btn-outline" ${eq.exercisePhotoUrl?`data-tpllib-eqphoto="${escAttr(eq.exercisePhotoUrl)}"`:'disabled'}>ΑΣΚΗΣΗ</button>
+              <button class="btn btn-outline" ${eq.videoUrl?`data-tpllib-eqvideo="${escAttr(eq.videoUrl)}"`:'disabled'}>VIDEO</button>
+              <button class="btn btn-outline" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΧΡΟΝΟΜΕΤΡΟ</button>
+              <button class="btn btn-outline" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΥΠΟΛΟΓΙΣΤΗΣ KG</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    ` : ''}`;
+}
+
+function bindTplLibEvents(){
+  document.querySelectorAll('[data-tpllib-gender]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav = { view:'topcat', gender: el.getAttribute('data-tpllib-gender'), topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null };
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-topcat]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'subcat';
+      state.tplLibNav.topCategory = el.getAttribute('data-tpllib-topcat');
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-subcat]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'programs';
+      state.tplLibNav.subCategory = el.getAttribute('data-tpllib-subcat');
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-program]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'detail';
+      state.tplLibNav.programId = el.getAttribute('data-tpllib-program');
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-start]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'days';
+      state.tplLibNav.dayIndex = 0;
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-day]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'items';
+      state.tplLibNav.dayIndex = parseInt(el.getAttribute('data-tpllib-day'));
+      state.tplLibNav.itemIndex = null;
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-item]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.tplLibNav.view = 'exercise';
+      state.tplLibNav.itemIndex = parseInt(el.getAttribute('data-tpllib-item'));
+      renderTplLibMain();
+    });
+  });
+  document.querySelectorAll('[data-tpllib-back]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const target = el.getAttribute('data-tpllib-back');
+      state.tplLibNav.view = target;
+      if(target==='gender'){ state.tplLibNav = { view:'gender', gender:null, topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null }; }
+      else if(target==='topcat'){ state.tplLibNav.topCategory=null; state.tplLibNav.subCategory=null; state.tplLibNav.programId=null; }
+      else if(target==='subcat'){ state.tplLibNav.subCategory=null; state.tplLibNav.programId=null; }
+      else if(target==='programs'){ state.tplLibNav.programId=null; }
+      else if(target==='detail'){ state.tplLibNav.dayIndex=null; }
+      else if(target==='days'){ state.tplLibNav.itemIndex=null; }
+      else if(target==='items'){ state.tplLibNav.itemIndex=null; }
+      renderTplLibMain();
+    });
+  });
+  document.getElementById('tpllib-start-exercise')?.addEventListener('click', ()=>{
+    const t = tplLibCurrentProgram();
+    const day = t && (t.data.days||[])[state.tplLibNav.dayIndex];
+    const it = day && day.items[state.tplLibNav.itemIndex];
+    if(it && it.type==='muscle') openWorkoutMode(it);
+  });
+  document.querySelectorAll('[data-tpllib-eqphoto]').forEach(el=>{
+    el.addEventListener('click', ()=>{ window.open(el.getAttribute('data-tpllib-eqphoto'), '_blank'); });
+  });
+  document.querySelectorAll('[data-tpllib-eqvideo]').forEach(el=>{
+    el.addEventListener('click', ()=>{ window.open(el.getAttribute('data-tpllib-eqvideo'), '_blank'); });
+  });
+  document.querySelectorAll('[data-tpllib-eqworkout]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const raw = el.getAttribute('data-tpllib-eqworkout');
+      if(!raw) return;
+      try{ openWorkoutMode(JSON.parse(raw)); }catch(e){}
+    });
+  });
+}
+
 function bindHistoryEvents(){
   const search = document.getElementById('hist-search');
   if(search){
@@ -2809,6 +3623,8 @@ function render(skipNav){
     bindBuilderEvents();
   } else if(state.tab==='announcements'){
     renderAnnouncementsTab();
+  } else if(state.tab==='tplbuilder'){
+    renderTplBuilderTab();
   } else {
     main.innerHTML = renderHistory();
     bindHistoryEvents();
