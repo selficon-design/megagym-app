@@ -2353,7 +2353,6 @@ function renderHistory(){
   `;
 }
 function renderRecordBodyForCard(record){
-  workoutCatalog = [];
   let body = '';
   if(record.nutrition){
     body += `<div style="margin-bottom:10px;font-size:11.5px;"><b>Διατροφή:</b> ${escHtml(record.nutrition.kcal)}</div>`;
@@ -2383,6 +2382,7 @@ function categoryBadgeLabel(record){
   return CATEGORY_INFO.fatburn.title;
 }
 function renderProgramsTimeline(progs){
+  workoutCatalog = [];
   if(progs.length===0){
     return `<div class="empty" style="padding:30px 0;"><div class="icon">🗂️</div><p>Δεν υπάρχουν ακόμα αποθηκευμένα προγράμματα.</p></div>`;
   }
