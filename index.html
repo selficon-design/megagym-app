@@ -2662,7 +2662,7 @@ function renderRoot(){
   } else if(auth.status === 'client'){
     authRoot.classList.add('hidden');
     appRoot.classList.remove('hidden');
-    mobileTopbar.classList.add('hidden');
+    mobileTopbar.classList.remove('hidden');
     renderAppClient();
   } else {
     appRoot.classList.add('hidden');
