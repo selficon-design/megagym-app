@@ -413,14 +413,10 @@ input,select{font-family:inherit;}
 /* preview inline (screen) reuse of pp classes */
 .preview-wrap{margin-top:22px;}
 
-/* Πλαίσιο προεπισκόπησης κινητού — ώστε ο προπονητής σε desktop να βλέπει
-   την εφαρμογή στο πλάτος που θα τη βλέπει ο πελάτης στο κινητό του */
+/* Πλαίσιο προεπισκόπησης κινητού — μόνο περιορισμός πλάτους, χωρίς δικό του πλαίσιο
+   (τα εσωτερικά panels/κάρτες έχουν ήδη τα δικά τους πλαίσια) */
 .mobile-preview-frame{
   max-width:430px;margin:0 auto;
-  border:2px solid var(--line-strong);border-radius:26px;
-  padding:18px 16px 26px;
-  background:radial-gradient(circle at 50% 0%, rgba(0,166,255,.06), transparent 60%), rgba(3,9,15,.5);
-  box-shadow:0 0 40px rgba(0,150,255,.12), inset 0 0 30px rgba(0,0,0,.35);
 }
 
 /* Το PDF-capture wrapper δεν πρέπει ποτέ να εξαρτάται από εξωτερική γραμματοσειρά,
@@ -446,7 +442,8 @@ input,select{font-family:inherit;}
 }
 .auth-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5;}
 .auth-back{
-  display:inline-flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:12px;
+  width:100%;
   padding:8px 18px 8px 8px;
   border:2px solid var(--cyan);
   border-radius:16px;
@@ -540,46 +537,104 @@ input,select{font-family:inherit;}
   border-radius:12px;padding:9px 16px;font-weight:800;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:.05em;margin-bottom:6px;
 }
 .timer-status{min-height:20px;color:var(--ink-soft);margin-top:10px;font-size:12.5px;}
+
+/* Πλαίσιο πληροφορίας στρογγυλοποίησης — "CALPIN 2.5 · Τα κιλά υπολογίζονται στο σύνολο" */
+.calc-type-box{
+  margin:0 0 16px;padding:11px;border:1px solid #5b4b1a;border-radius:12px;
+  background:#2a2413;color:var(--gold2);font-weight:800;font-family:'Rajdhani',sans-serif;font-size:13px;text-align:center;
+}
+
 .calc-keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
 .calc-key{
-  min-height:52px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.55);
-  color:#eefcff;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  min-height:52px;border-radius:12px;border:1px solid rgba(61,216,255,.28);
+  background:linear-gradient(145deg,rgba(24,48,67,.82),rgba(8,20,31,.95));
+  color:#eefcff;font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;
+  box-shadow:inset 0 0 7px rgba(61,216,255,.05);
 }
 .calc-key:hover{border-color:var(--cyan);box-shadow:0 0 26px rgba(0,200,255,.55);}
-.calc-key.clear{border-color:rgba(255,68,75,.6);color:#ff9494;}
-.calc-key.delete{border-color:rgba(255,159,26,.6);color:#ffcf9e;}
+.calc-key.clear{border-color:rgba(239,45,53,.65);background:linear-gradient(145deg,#6b2329,#321116);color:#ff9494;}
+.calc-key.delete{border-color:rgba(255,159,26,.58);background:linear-gradient(145deg,#654719,#2e210d);color:#ffcf9e;}
+
+/* REPS / KG επιλογείς — αχνό χρυσό-καφέ ανενεργό, συμπαγές χρυσό ενεργό */
 .calc-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .calc-selector button{
-  min-height:50px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.5);
-  color:#eefcff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
+  min-height:52px;border-radius:12px;border:1px solid rgba(255,159,26,.82);
+  background:linear-gradient(145deg,rgba(76,45,10,.64),rgba(27,18,8,.93));
+  color:#fff6e6;font-family:'Rajdhani',sans-serif;font-weight:800;font-size:15px;letter-spacing:.03em;
 }
-.calc-selector button.active{background:var(--accent);border-color:var(--accent);color:#1a1200;box-shadow:0 0 16px rgba(255,159,26,.4);}
-.calc-field-box{background:#202020;border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:8px;}
-.calc-field-box label{display:block;font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
-.calc-field-box .val{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold2);}
-.calc-result-box{
-  background:rgba(3,11,18,.7);border:1.5px solid rgba(255,159,26,.4);border-radius:14px;padding:18px;text-align:center;margin-top:14px;
+.calc-selector button.active{
+  background:linear-gradient(145deg,#ffad32,#d66e00);color:#16100a;border-color:#ffc465;
+  box-shadow:0 0 0 4px rgba(255,159,26,.14), 0 0 18px rgba(255,159,26,.4);
 }
-.calc-result-label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.calc-next-weight{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:#ffcf7a;text-shadow:0 0 16px rgba(255,159,26,.4);}
-.calc-change{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;margin-top:4px;}
+
+/* Πλαίσια τιμών εισαγωγής (ΕΠΑΝΑΛΗΨΕΙΣ / ΚΙΛΑ) — άσπρος αριθμός, κυανό περίγραμμα */
+.calc-input-box{
+  background:#101010;border:2px solid rgba(61,216,255,.5);border-radius:11px;
+  padding:11px;margin-bottom:8px;box-shadow:inset 0 0 8px rgba(0,180,255,.06);
+}
+.calc-input-box label{display:block;font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.calc-input-box .val{font-family:'Orbitron','Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#f7fdff;text-align:center;}
+
+/* Αποτέλεσμα — δύο ξεχωριστά πλαίσια, όπως στο πρωτότυπο */
+.calc-result-label{font-size:12px;color:var(--ink-soft);text-align:center;margin-bottom:8px;font-family:'Rajdhani',sans-serif;font-weight:600;}
+.calc-next-weight-box{
+  min-height:76px;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--red);border-radius:13px;background:#202020;margin-bottom:14px;
+}
+.calc-next-weight{font-family:'Rajdhani',sans-serif;font-size:40px;font-weight:900;color:#fff;}
+.calc-change-box{
+  min-height:60px;display:flex;align-items:center;justify-content:center;
+  border:2px solid #777;border-radius:12px;background:#101010;margin-bottom:14px;transition:border-color .2s ease;
+}
+.calc-change-box.positive{border-color:var(--green);}
+.calc-change-box.negative{border-color:#ff5a5a;}
+.calc-change{font-family:'Rajdhani',sans-serif;font-size:27px;font-weight:900;color:#eee;}
 .calc-change.positive{color:#63e879;}
 .calc-change.negative{color:#ff7a7a;}
-.calc-message{font-size:11.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+.calc-message{font-size:11.5px;color:var(--ink-soft);margin-top:2px;margin-bottom:14px;line-height:1.5;text-align:center;}
 .calc-message.error{color:#ff9494;}
+.calc-reset-btn{
+  width:100%;min-height:46px;border-radius:11px;border:1px solid #666;background:transparent;color:#ccc;
+  font-weight:800;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+}
+.calc-reset-btn:hover{border-color:var(--cyan);color:#fff;}
+
 
 /* ============ INFO CARDS (λεπτομέρειες άσκησης / κατηγορίας) ============ */
 .info-card{
-  background:rgba(13,31,48,.55);border-left:3px solid var(--accent);border-radius:8px;
+  background:rgba(13,31,48,.55);border-left:3px solid var(--gold2);border-radius:8px;
   padding:12px 14px;margin-bottom:10px;
 }
-.info-card .lbl{font-size:10.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
-.info-card .txt{font-size:13px;color:#dfeaf2;line-height:1.55;}
-.equip-photo{width:100%;height:150px;object-fit:cover;display:block;background:rgba(3,11,18,.5);}
-.equip-photo-empty{width:100%;height:110px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;background:rgba(3,11,18,.5);text-align:center;padding:10px;}
+.info-card .lbl{font-size:10.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#ffffff;margin-bottom:5px;}
+.info-card .txt{font-size:13px;font-weight:400;color:#dfeaf2;line-height:1.55;}
+.equip-photo-wrap{
+  height:195px;display:flex;align-items:center;justify-content:center;
+  background:rgba(3,11,18,.5);overflow:hidden;
+}
+.equip-photo{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
+.equip-photo-empty{width:100%;height:143px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;background:rgba(3,11,18,.5);text-align:center;padding:10px;}
 .priority-badge{
   display:inline-block;background:var(--accent-soft);color:#ffcf9e;border:1px solid rgba(255,159,26,.5);
   border-radius:20px;padding:4px 12px;font-size:10.5px;font-weight:700;letter-spacing:0.04em;margin-bottom:8px;
+}
+.btn-info{
+  border-color:rgba(61,216,255,.9);
+  background:linear-gradient(145deg, rgba(10,42,62,.85), rgba(5,20,32,.94));
+  color:#eefcff;
+  box-shadow:inset 0 0 14px rgba(61,216,255,.15), 0 0 20px rgba(0,185,255,.32);
+}
+.btn-info:hover{border-color:#56e2ff;box-shadow:inset 0 0 20px rgba(61,216,255,.22), 0 0 46px rgba(0,190,255,.6);}
+.eq-action-btn{
+  justify-content:center;text-align:center;color:#ffffff;font-weight:700;
+  border:2px solid rgba(61,216,255,.8);
+  box-shadow:inset 0 0 18px rgba(61,216,255,.22), 0 0 16px rgba(0,185,255,.25);
+  line-height:1.3;
+}
+.eq-action-btn:hover{border-color:#56e2ff;box-shadow:inset 0 0 22px rgba(61,216,255,.3), 0 0 30px rgba(0,190,255,.5);}
+.eq-action-btn.tall{min-height:64px;}
+.eq-section-title{
+  text-align:center;color:#ffffff;font-family:'Orbitron','Arial Black',sans-serif;font-weight:800;
+  font-size:15px;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:14px;
 }
 </style>
 </head>
@@ -812,8 +867,9 @@ let state = {
   saveBusy:false,
   inviteModalOpen: false,
   inviteCode: '',
-  workoutModalOpen: false,
   workoutExercise: null,
+  lightbox: null, // {type:'photo'|'video', url}
+  tplLibShellContext: 'trainer', // 'client' | 'trainer' — ποιο "κέλυφος" να ξαναφτιάξει το κουμπί πίσω
   openTlEntries: {},   // id -> bool
   clientNav: { view:'programs', programId:null, dayIndex:null, itemIndex:null },
   clientLibraryMode: false, // false = τα δικά μου προγράμματα, true = βιβλιοθήκη έτοιμων
@@ -1103,6 +1159,7 @@ async function updateTemplatePublish(id, isPublished){
 function escNL(s){ return escHtml(s).replace(/\n/g,'<br>'); }
 
 async function renderTplPreviewTab(){
+  state.tplLibShellContext = 'trainer';
   const main = document.getElementById('main');
   main.innerHTML = `
     <h1 style="margin-bottom:2px;">Βιβλιοθήκη Προγραμμάτων</h1>
@@ -1117,6 +1174,56 @@ async function renderTplPreviewTab(){
     state.tplTemplatesLoaded = true;
   }
   renderTplLibMain();
+}
+function rebuildTplPreviewShell(){
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <h1 style="margin-bottom:2px;">Βιβλιοθήκη Προγραμμάτων</h1>
+    <div class="sub" style="margin-bottom:18px;">Έτσι ακριβώς τη βλέπουν οι πελάτες σου στο κινητό τους</div>
+    <div class="mobile-preview-frame">
+      <div id="client-content"></div>
+    </div>
+  `;
+  renderTplLibMain();
+}
+function rebuildClientDashboardShell(){
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="mobile-preview-frame">
+      <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
+      <div class="auth-tabs" style="margin-bottom:20px;">
+        <button id="client-mode-mine" class="${!state.clientLibraryMode?'active':''}">Τα Προγράμματά μου</button>
+        <button id="client-mode-library" class="${state.clientLibraryMode?'active':''}">Έτοιμα Προγράμματα</button>
+      </div>
+      <div id="client-content"></div>
+    </div>
+  `;
+  bindClientModeToggle();
+  if(state.clientLibraryMode) renderTplLibMain(); else renderClientMain();
+}
+function bindClientModeToggle(){
+  document.getElementById('client-mode-mine').addEventListener('click', ()=>{
+    state.clientLibraryMode = false;
+    document.getElementById('client-mode-mine').classList.add('active');
+    document.getElementById('client-mode-library').classList.remove('active');
+    renderClientMain();
+  });
+  document.getElementById('client-mode-library').addEventListener('click', async ()=>{
+    state.clientLibraryMode = true;
+    state.tplLibShellContext = 'client';
+    document.getElementById('client-mode-library').classList.add('active');
+    document.getElementById('client-mode-mine').classList.remove('active');
+    if(!state.tplTemplatesLoaded){
+      document.getElementById('client-content').innerHTML = `<div style="color:var(--ink-soft);">Φόρτωση...</div>`;
+      state.tplTemplates = await loadTemplatePrograms();
+      state.tplTemplatesLoaded = true;
+    }
+    renderTplLibMain();
+  });
+}
+function returnFromWorkoutTplLib(){
+  if(state.tplLibShellContext === 'client') rebuildClientDashboardShell();
+  else rebuildTplPreviewShell();
 }
 
 async function renderTplBuilderTab(){
@@ -2544,23 +2651,23 @@ function parseRepRangeStr(repStr){
   const max = Math.max(min, Number(String(numbers[1]||numbers[0]||10).replace(',','.')));
   return { min, max };
 }
-function openWorkoutMode(ex){
+let workoutReturnRender = null;
+function openWorkoutMode(ex, returnFn){
   const key = ex.exercise+'|'+ex.set+'|'+ex.rep+'|'+ex.rest;
   const maxRest = parseRestSeconds(ex.rest);
   const totalSets = Math.max(1, parseInt(ex.set,10)||1);
   if(timerState.exerciseKey !== key){
     if(timerState.interval) clearInterval(timerState.interval);
     timerState = { exerciseKey:key, max:maxRest, remaining:maxRest, totalSets, nextSet:1, running:false, paused:false, interval:null };
+    workoutCalcField = null;
+    workoutCalcValues = { reps:'', kg:'' };
   }
-  workoutCalcField = null;
-  workoutCalcValues = { reps:'', kg:'' };
   state.workoutExercise = ex;
-  state.workoutModalOpen = true;
-  renderModal();
+  if(returnFn) workoutReturnRender = returnFn;
+  renderWorkoutPage();
 }
-function closeWorkoutModal(){
-  state.workoutModalOpen = false;
-  renderModal();
+function closeWorkoutPage(){
+  if(workoutReturnRender) workoutReturnRender();
 }
 function updateWorkoutTimerUI(){
   const numberEl=document.getElementById('timerNumber');
@@ -2632,6 +2739,12 @@ function resetWorkoutTimer(){
 }
 
 function selectWorkoutCalcField(field){
+  if(workoutCalcField === field){
+    // ήδη ενεργό — ξαναπατώντας μηδενίζεται για νέα καταχώρηση
+    workoutCalcValues[field] = '';
+    updateWorkoutCalcDisplay();
+    return;
+  }
   workoutCalcField = field;
   document.getElementById('repsButton')?.classList.toggle('active', field==='reps');
   document.getElementById('kgButton')?.classList.toggle('active', field==='kg');
@@ -2660,6 +2773,7 @@ function clearWorkoutCalcField(){
 }
 function clearWorkoutCalcResults(){
   const nw=document.getElementById('nextWeight'); if(nw) nw.textContent='—';
+  const cb=document.getElementById('changeBox'); if(cb) cb.classList.remove('positive','negative');
   const cr=document.getElementById('changeResult'); if(cr){ cr.textContent='—'; cr.classList.remove('positive','negative'); }
   const cm=document.getElementById('calcMessage'); if(cm){ cm.textContent=''; cm.classList.remove('error'); }
 }
@@ -2701,73 +2815,75 @@ function calculateWorkoutNextWeight(){
   const change = nextWeight-kg;
 
   const nw=document.getElementById('nextWeight'); if(nw) nw.innerHTML = `${formatCalcNum(nextWeight)} KG`;
+  const cb=document.getElementById('changeBox');
   const cr=document.getElementById('changeResult');
+  if(cb) cb.classList.remove('positive','negative');
   if(cr){
     cr.classList.remove('positive','negative');
-    if(change>0){ cr.textContent=`+${formatCalcNum(change)} KG`; cr.classList.add('positive'); }
-    else if(change<0){ cr.textContent=`${formatCalcNum(change)} KG`; cr.classList.add('negative'); }
+    if(change>0){ cr.textContent=`+${formatCalcNum(change)} KG`; cr.classList.add('positive'); cb?.classList.add('positive'); }
+    else if(change<0){ cr.textContent=`${formatCalcNum(change)} KG`; cr.classList.add('negative'); cb?.classList.add('negative'); }
     else cr.textContent='0 KG';
   }
   const cm=document.getElementById('calcMessage');
   if(cm){ cm.classList.remove('error'); cm.textContent = explanation+` Υπολογισμένη μεταβολή: ${weightPercent>=0?'+':''}${formatCalcNum(weightPercent)}%. Στρογγυλοποίηση ανά 2,5 kg.`; }
 }
-function renderWorkoutModal(){
+function renderWorkoutPage(){
   const ex = state.workoutExercise;
   const progress = timerState.max>0 ? Math.max(0,(timerState.remaining/timerState.max)*100) : 0;
   const range = parseRepRangeStr(ex.rep);
-  return `
-    <div class="modal-overlay" id="workout-overlay">
-      <div class="modal" style="max-width:460px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
-          <div>
-            <h2 style="margin-bottom:2px;font-size:18px;">${escHtml(ex.exercise)}</h2>
-            <div class="sub" style="margin-bottom:0;text-transform:uppercase;">${escHtml(ex.groupLabel||'')} · SET ${ex.set} · REP ${escHtml(String(ex.rep))}</div>
-          </div>
-          <button id="workout-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
-        </div>
+  const html = `
+    <div class="auth-back" id="workout-back">${ICON.back}Πίσω</div>
+    <div class="panel pad" style="margin-bottom:18px;">
+      <h2 style="font-size:18px;margin-bottom:2px;">${escHtml(ex.exercise)}</h2>
+      <div class="sub" style="margin-bottom:0;text-transform:uppercase;">${escHtml(ex.groupLabel||'')} · SET ${ex.set} · REP ${escHtml(String(ex.rep))}</div>
 
-        <div style="text-align:center;margin-top:6px;">
-          <div id="setBox" class="set-box">${timerState.nextSet>timerState.totalSets?'ΟΛΟΚΛΗΡΩΘΗΚΑΝ ΟΛΑ ΤΑ ΣΕΤ':`ΕΠΟΜΕΝΟ ΣΕΤ ${timerState.nextSet} ΑΠΟ ${timerState.totalSets}`}</div>
-          <div id="timerRing" class="timer-ring" style="--progress:${progress}">
-            <div id="timerNumber" class="timer-number">${timerState.remaining}</div>
-          </div>
-          <div class="timer-controls" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <button class="btn btn-critical" id="startBtn">START</button>
-            <button class="btn btn-outline" id="stopBtn">STOP</button>
-          </div>
-          <div id="timerStatus" class="timer-status">Χρόνος διαλείμματος: ${timerState.max} sec</div>
-          <button class="btn btn-outline" style="width:100%;margin-top:10px;justify-content:center;" id="resetTimerBtn">ΕΠΑΝΑΦΟΡΑ</button>
+      <div style="text-align:center;margin-top:16px;">
+        <div id="setBox" class="set-box">${timerState.nextSet>timerState.totalSets?'ΟΛΟΚΛΗΡΩΘΗΚΑΝ ΟΛΑ ΤΑ ΣΕΤ':`ΕΠΟΜΕΝΟ ΣΕΤ ${timerState.nextSet} ΑΠΟ ${timerState.totalSets}`}</div>
+        <div id="timerRing" class="timer-ring" style="--progress:${progress}">
+          <div id="timerNumber" class="timer-number">${timerState.remaining}</div>
         </div>
-
-        <div style="margin-top:22px;padding-top:18px;border-top:1px solid rgba(61,216,255,.15);">
-          <div class="section-title" style="justify-content:center;"><span class="dot"></span>Υπολογιστής Κιλών Επόμενου Σετ</div>
-          <p style="font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.5;">Στόχος: ${range.min}–${range.max} επαναλήψεις. Γράψε πόσες επαναλήψεις και πόσα κιλά είχες στο προηγούμενο σετ.</p>
-          <div class="calc-selector">
-            <button type="button" id="repsButton">REPS</button>
-            <button type="button" id="kgButton">KG</button>
-          </div>
-          <div class="calc-field-box"><label>Επαναλήψεις</label><div class="val" id="repsVal">0</div></div>
-          <div class="calc-field-box"><label>Κιλά</label><div class="val" id="kgVal">0</div></div>
-          <div class="calc-keypad">
-            ${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="calc-key" data-calc-num="${n}">${n}</button>`).join('')}
-            <button type="button" class="calc-key clear" id="calcClearBtn">C</button>
-            <button type="button" class="calc-key" data-calc-num="0">0</button>
-            <button type="button" class="calc-key delete" id="calcDeleteBtn">⌫</button>
-          </div>
-          <button class="btn btn-critical" style="width:100%;justify-content:center;" id="calcComputeBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΕΠΟΜΕΝΟΥ ΣΕΤ</button>
-          <div class="calc-result-box">
-            <div class="calc-result-label">Κιλά επόμενου σετ</div>
-            <div class="calc-next-weight" id="nextWeight">—</div>
-            <div class="calc-change" id="changeResult">—</div>
-            <div class="calc-message" id="calcMessage"></div>
-          </div>
+        <div class="timer-controls" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button class="btn btn-critical" id="startBtn">START</button>
+          <button class="btn btn-outline" id="stopBtn">STOP</button>
         </div>
+        <div id="timerStatus" class="timer-status">Χρόνος διαλείμματος: ${timerState.max} sec</div>
+        <button class="btn btn-outline" style="width:100%;margin-top:10px;justify-content:center;" id="resetTimerBtn">ΕΠΑΝΑΦΟΡΑ</button>
       </div>
+    </div>
+
+    <div class="panel pad">
+      <div class="section-title" style="justify-content:center;"><span class="dot"></span>Υπολογιστής Κιλών Επόμενου Σετ</div>
+      <div class="calc-type-box">CALPIN 2.5 · Τα κιλά υπολογίζονται στο σύνολο</div>
+      <p style="font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.5;margin-top:0;">Γράψε πόσες επαναλήψεις και πόσα κιλά είχες στο προηγούμενο σετ. Στόχος άσκησης: ${range.min}–${range.max} επαναλήψεις.</p>
+      <div class="calc-selector">
+        <button type="button" id="repsButton">REPS</button>
+        <button type="button" id="kgButton">KG</button>
+      </div>
+      <div class="calc-input-box"><label>Επαναλήψεις</label><div class="val" id="repsVal">${escHtml(workoutCalcValues.reps||'0')}</div></div>
+      <div class="calc-input-box"><label>Κιλά</label><div class="val" id="kgVal">${escHtml(workoutCalcValues.kg||'0')}</div></div>
+      <div class="calc-keypad">
+        ${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="calc-key" data-calc-num="${n}">${n}</button>`).join('')}
+        <button type="button" class="calc-key clear" id="calcClearBtn">C</button>
+        <button type="button" class="calc-key" data-calc-num="0">0</button>
+        <button type="button" class="calc-key delete" id="calcDeleteBtn">⌫</button>
+      </div>
+      <button class="btn btn-critical" style="width:100%;justify-content:center;margin-bottom:16px;" id="calcComputeBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΕΠΟΜΕΝΟΥ ΣΕΤ</button>
+
+      <div class="calc-result-label">Κιλά επόμενου σετ</div>
+      <div class="calc-next-weight-box"><div class="calc-next-weight" id="nextWeight">—</div></div>
+
+      <div class="calc-result-label">Αύξηση ή μείωση κιλών</div>
+      <div class="calc-change-box" id="changeBox"><div class="calc-change" id="changeResult">—</div></div>
+
+      <div class="calc-message" id="calcMessage"></div>
+      <button class="calc-reset-btn" id="calcResetBtn">ΜΗΔΕΝΙΣΜΟΣ</button>
     </div>`;
+  const container = document.getElementById('main');
+  if(container) container.innerHTML = html;
+  bindWorkoutPageEvents();
 }
-function bindWorkoutModalEvents(){
-  document.getElementById('workout-close-x')?.addEventListener('click', closeWorkoutModal);
-  document.getElementById('workout-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='workout-overlay') closeWorkoutModal(); });
+function bindWorkoutPageEvents(){
+  document.getElementById('workout-back')?.addEventListener('click', closeWorkoutPage);
   document.getElementById('startBtn')?.addEventListener('click', startWorkoutTimer);
   document.getElementById('stopBtn')?.addEventListener('click', stopWorkoutTimer);
   document.getElementById('resetTimerBtn')?.addEventListener('click', resetWorkoutTimer);
@@ -2779,23 +2895,70 @@ function bindWorkoutModalEvents(){
   document.getElementById('calcClearBtn')?.addEventListener('click', clearWorkoutCalcField);
   document.getElementById('calcDeleteBtn')?.addEventListener('click', deleteWorkoutCalcNumber);
   document.getElementById('calcComputeBtn')?.addEventListener('click', calculateWorkoutNextWeight);
+  document.getElementById('calcResetBtn')?.addEventListener('click', ()=>{
+    workoutCalcField = null; workoutCalcValues = { reps:'', kg:'' };
+    document.getElementById('repsButton')?.classList.remove('active');
+    document.getElementById('kgButton')?.classList.remove('active');
+    updateWorkoutCalcDisplay();
+  });
+  // Δείξε τα ήδη επιλεγμένα REPS/KG (αν επιστρέψαμε σε ήδη ξεκινημένο υπολογισμό)
+  if(workoutCalcField){
+    document.getElementById(workoutCalcField==='reps'?'repsButton':'kgButton')?.classList.add('active');
+  }
   updateWorkoutTimerUI();
 }
-function bindWorkoutButtons(){
+function openLightbox(type, url){
+  state.lightbox = { type, url };
+  renderModal();
+}
+function closeLightbox(){
+  state.lightbox = null;
+  renderModal();
+}
+function isYouTubeUrl(url){ return /youtube\.com|youtu\.be/i.test(url||''); }
+function toYouTubeEmbed(url){
+  const m = String(url).match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{6,})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+}
+function renderLightbox(){
+  const lb = state.lightbox;
+  let body;
+  if(lb.type==='photo'){
+    body = `<img src="${escAttr(lb.url)}" style="width:100%;max-height:75vh;object-fit:contain;border-radius:14px;background:#0a0a0a;display:block;">`;
+  } else if(isYouTubeUrl(lb.url)){
+    body = `<iframe src="${escAttr(toYouTubeEmbed(lb.url))}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  } else {
+    body = `<video src="${escAttr(lb.url)}" controls autoplay style="width:100%;max-height:75vh;border-radius:14px;background:#000;display:block;"></video>`;
+  }
+  return `
+    <div class="modal-overlay" id="lightbox-overlay">
+      <div class="modal" style="max-width:640px;padding:16px;">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+          <button id="lightbox-close" style="background:rgba(255,255,255,.08);border:2px solid var(--cyan);color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;box-shadow:0 0 16px rgba(0,184,255,.4);">✕</button>
+        </div>
+        ${body}
+      </div>
+    </div>`;
+}
+function bindLightboxEvents(){
+  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='lightbox-overlay') closeLightbox(); });
+}
+function bindWorkoutButtons(returnFn){
   document.querySelectorAll('[data-workout-idx]').forEach(el=>{
     el.addEventListener('click', ()=>{
       const idx = parseInt(el.getAttribute('data-workout-idx'));
       const ex = workoutCatalog[idx];
-      if(ex) openWorkoutMode(ex);
+      if(ex) openWorkoutMode(ex, returnFn);
     });
   });
 }
 
 function renderModal(){
   const root = document.getElementById('modal-root');
-  if(state.workoutModalOpen && state.workoutExercise){
-    root.innerHTML = renderWorkoutModal();
-    bindWorkoutModalEvents();
+  if(state.lightbox){
+    root.innerHTML = renderLightbox();
+    bindLightboxEvents();
     return;
   }
   if(state.inviteModalOpen){
@@ -3058,6 +3221,7 @@ async function renderAppClient(){
   });
   document.getElementById('client-mode-library').addEventListener('click', async ()=>{
     state.clientLibraryMode = true;
+    state.tplLibShellContext = 'client';
     document.getElementById('client-mode-library').classList.add('active');
     document.getElementById('client-mode-mine').classList.remove('active');
     document.getElementById('client-announce-panel').style.display='none';
@@ -3299,7 +3463,7 @@ function bindClientNavEvents(){
     if(!p) return;
     const items = getClientDayItems(p.record, nav.dayIndex);
     const item = items[nav.itemIndex];
-    if(item && item.type==='muscle') openWorkoutMode(item);
+    if(item && item.type==='muscle') openWorkoutMode(item, rebuildClientDashboardShell);
   });
 }
 
@@ -3313,7 +3477,7 @@ function tplLibEmptyState(msg){
 }
 function tplPhotoBlock(url, label){
   return url
-    ? `<img src="${escAttr(url)}" class="equip-photo" alt="">`
+    ? `<div class="equip-photo-wrap"><img src="${escAttr(url)}" class="equip-photo" alt=""></div>`
     : `<div class="equip-photo-empty">${escHtml(label||'ΦΩΤΟΓΡΑΦΙΑ')}</div>`;
 }
 
@@ -3469,7 +3633,7 @@ function renderTplLibDetailView(){
       ${t.results ? `<div class="info-card"><div class="lbl">Αποτελέσματα</div><div class="txt">${escNL(t.results)}</div></div>`:''}
       ${t.nutrition ? `<div class="info-card"><div class="lbl">Διατροφή</div><div class="txt">${escNL(t.nutrition)}</div></div>`:''}
       ${t.notes ? `<div class="info-card"><div class="lbl">Παρατηρήσεις</div><div class="txt">${escNL(t.notes)}</div></div>`:''}
-      <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:10px;" data-tpllib-start="${escAttr(t.id)}">▶ ΕΝΑΡΞΗ ΠΡΟΓΡΑΜΜΑΤΟΣ</button>
+      <button class="btn btn-info" style="width:100%;justify-content:center;margin-top:10px;" data-tpllib-start="${escAttr(t.id)}">▶ ΕΝΑΡΞΗ ΠΡΟΓΡΑΜΜΑΤΟΣ</button>
       ${isClient ? `<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px;" id="tpllib-save-mine" data-tpl-id="${escAttr(t.id)}">${ICON.save}Αποθήκευση στα Προγράμματά μου</button>`:''}
     </div>`;
 }
@@ -3552,7 +3716,7 @@ function renderTplLibExerciseView(){
       <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:6px;" id="tpllib-start-exercise">▶ Έναρξη Προπόνησης</button>
     </div>
     ${(it.equipment&&it.equipment.length) ? `
-      <div class="section-title"><span class="dot"></span>Προτεινόμενος Εξοπλισμός</div>
+      <div class="eq-section-title">Προτεινόμενος Εξοπλισμός</div>
       ${it.equipment.map((eq,ei)=>`
         <div class="panel" style="margin-bottom:14px;overflow:hidden;">
           ${tplPhotoBlock(eq.photoUrl, 'ΦΩΤΟΓΡΑΦΙΑ ΜΗΧΑΝΗΜΑΤΟΣ')}
@@ -3560,10 +3724,10 @@ function renderTplLibExerciseView(){
             <div class="priority-badge">${ei+1}η ΠΡΟΤΕΡΑΙΟΤΗΤΑ</div>
             <h3 style="font-size:15px;margin-bottom:10px;">${escHtml(eq.name)}</h3>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <button class="btn btn-outline" ${eq.exercisePhotoUrl?`data-tpllib-eqphoto="${escAttr(eq.exercisePhotoUrl)}"`:'disabled'}>ΑΣΚΗΣΗ</button>
-              <button class="btn btn-outline" ${eq.videoUrl?`data-tpllib-eqvideo="${escAttr(eq.videoUrl)}"`:'disabled'}>VIDEO</button>
-              <button class="btn btn-outline" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΧΡΟΝΟΜΕΤΡΟ</button>
-              <button class="btn btn-outline" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΥΠΟΛΟΓΙΣΤΗΣ KG</button>
+              <button class="btn eq-action-btn" ${eq.exercisePhotoUrl?`data-tpllib-eqphoto="${escAttr(eq.exercisePhotoUrl)}"`:'disabled'}>ΑΣΚΗΣΗ</button>
+              <button class="btn eq-action-btn" ${eq.videoUrl?`data-tpllib-eqvideo="${escAttr(eq.videoUrl)}"`:'disabled'}>VIDEO</button>
+              <button class="btn eq-action-btn tall" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΧΡΟΝΟΜΕΤΡΟ</button>
+              <button class="btn eq-action-btn tall" data-tpllib-eqworkout="${it.exercise?escAttr(JSON.stringify({exercise:it.exercise,groupLabel:it.groupLabel,set:it.set,rep:it.rep,rest:it.rest})):''}">ΥΠΟΛΟΓΙΣΤΗΣ<br>KG</button>
             </div>
           </div>
         </div>`).join('')}
@@ -3641,7 +3805,7 @@ function bindTplLibEvents(){
     const t = tplLibCurrentProgram();
     const day = t && (t.data.days||[])[state.tplLibNav.dayIndex];
     const it = day && day.items[state.tplLibNav.itemIndex];
-    if(it && it.type==='muscle') openWorkoutMode(it);
+    if(it && it.type==='muscle') openWorkoutMode(it, returnFromWorkoutTplLib);
   });
   document.getElementById('tpllib-save-mine')?.addEventListener('click', async ()=>{
     const btn = document.getElementById('tpllib-save-mine');
@@ -3657,16 +3821,16 @@ function bindTplLibEvents(){
     }
   });
   document.querySelectorAll('[data-tpllib-eqphoto]').forEach(el=>{
-    el.addEventListener('click', ()=>{ window.open(el.getAttribute('data-tpllib-eqphoto'), '_blank'); });
+    el.addEventListener('click', ()=>{ openLightbox('photo', el.getAttribute('data-tpllib-eqphoto')); });
   });
   document.querySelectorAll('[data-tpllib-eqvideo]').forEach(el=>{
-    el.addEventListener('click', ()=>{ window.open(el.getAttribute('data-tpllib-eqvideo'), '_blank'); });
+    el.addEventListener('click', ()=>{ openLightbox('video', el.getAttribute('data-tpllib-eqvideo')); });
   });
   document.querySelectorAll('[data-tpllib-eqworkout]').forEach(el=>{
     el.addEventListener('click', ()=>{
       const raw = el.getAttribute('data-tpllib-eqworkout');
       if(!raw) return;
-      try{ openWorkoutMode(JSON.parse(raw)); }catch(e){}
+      try{ openWorkoutMode(JSON.parse(raw), returnFromWorkoutTplLib); }catch(e){}
     });
   });
 }
@@ -3694,7 +3858,7 @@ function renderHistoryListOnly(){
   if(search){ search.focus(); search.selectionStart = search.selectionEnd = search.value.length; }
 }
 function bindHistoryDetailEvents(){
-  bindWorkoutButtons();
+  bindWorkoutButtons(()=>render(true));
   document.querySelectorAll('[data-tlhead]').forEach(el=>{
     el.addEventListener('click', ()=>{
       const id = el.getAttribute('data-tlhead');
