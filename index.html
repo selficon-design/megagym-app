@@ -21,7 +21,9 @@
   --paper-2:rgba(61,216,255,.06);
   --panel:rgba(13,31,48,.68);
   --panel-solid:#0d1b28;
-  --line:rgba(76,208,255,.48);
+  --line:rgba(76,208,255,.42);
+  --line-strong:rgba(76,208,255,.92);
+  --gold2:#f2d56b;
   --accent:#ff9f1a;
   --accent-dark:#c97400;
   --accent-soft:rgba(255,159,26,.14);
@@ -146,7 +148,7 @@ input,select{font-family:inherit;}
 .panel{
   position:relative;overflow:hidden;
   background:linear-gradient(145deg, rgba(19,42,62,.78), rgba(7,17,28,.84));
-  border:2px solid var(--line);
+  border:2px solid var(--line-strong);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   backdrop-filter:blur(15px) saturate(135%);
@@ -329,7 +331,7 @@ input,select{font-family:inherit;}
 
 .client-card{
   display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;
-  border:2px solid var(--line);background:rgba(13,31,48,.4);cursor:pointer;margin-bottom:8px;
+  border:2px solid var(--line-strong);background:rgba(13,31,48,.4);cursor:pointer;margin-bottom:8px;
   transition:border-color .12s, background .12s;
 }
 .client-card:hover{border-color:var(--cyan);box-shadow:0 0 40px rgba(0,200,255,.45);}
@@ -349,7 +351,7 @@ input,select{font-family:inherit;}
   background:var(--accent);border:2px solid var(--panel-solid);box-shadow:0 0 8px rgba(255,159,26,.7);
 }
 .tl-card{
-  border:2px solid var(--line);border-radius:14px;background:rgba(13,31,48,.5);overflow:hidden;
+  border:2px solid var(--line-strong);border-radius:14px;background:rgba(13,31,48,.5);overflow:hidden;
 }
 .tl-head{
   display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;
@@ -411,6 +413,16 @@ input,select{font-family:inherit;}
 /* preview inline (screen) reuse of pp classes */
 .preview-wrap{margin-top:22px;}
 
+/* Πλαίσιο προεπισκόπησης κινητού — ώστε ο προπονητής σε desktop να βλέπει
+   την εφαρμογή στο πλάτος που θα τη βλέπει ο πελάτης στο κινητό του */
+.mobile-preview-frame{
+  max-width:430px;margin:0 auto;
+  border:2px solid var(--line-strong);border-radius:26px;
+  padding:18px 16px 26px;
+  background:radial-gradient(circle at 50% 0%, rgba(0,166,255,.06), transparent 60%), rgba(3,9,15,.5);
+  box-shadow:0 0 40px rgba(0,150,255,.12), inset 0 0 30px rgba(0,0,0,.35);
+}
+
 /* Το PDF-capture wrapper δεν πρέπει ποτέ να εξαρτάται από εξωτερική γραμματοσειρά,
    και μένει πάντα ανοιχτόχρωμο ανεξάρτητα από το θέμα της οθόνης */
 #pdf-capture-wrap, #pdf-capture-wrap *{
@@ -422,7 +434,7 @@ input,select{font-family:inherit;}
 #auth-root{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
 .auth-card{
   background:linear-gradient(145deg, rgba(19,42,62,.85), rgba(7,17,28,.92));
-  border:2px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:32px;max-width:400px;width:100%;
+  border:2px solid var(--line-strong);border-radius:20px;box-shadow:var(--shadow);padding:32px;max-width:400px;width:100%;
   backdrop-filter:blur(15px) saturate(135%);
 }
 .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
@@ -456,7 +468,7 @@ input,select{font-family:inherit;}
 
 .role-choice{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
 .role-btn{
-  display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--line-strong);
   border-radius:14px;background:rgba(13,31,48,.5);text-align:left;width:100%;
   transition:border-color .15s, background .15s, transform .1s;
 }
@@ -525,13 +537,13 @@ input,select{font-family:inherit;}
 @keyframes tPulseRed{0%,100%{opacity:1;transform:scale(1.04)}50%{opacity:.18;transform:scale(.96)}}
 .set-box{
   display:inline-block;border:1px solid rgba(255,159,26,.5);background:var(--accent-soft);color:#ffcf9e;
-  border-radius:12px;padding:9px 16px;font-weight:800;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:.05em;margin-bottom:6px;
+  border-radius:12px;padding:9px 16px;font-weight:800;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:.05em;margin-bottom:6px;
 }
 .timer-status{min-height:20px;color:var(--ink-soft);margin-top:10px;font-size:12.5px;}
 .calc-keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
 .calc-key{
   min-height:52px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.55);
-  color:#eefcff;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;
+  color:#eefcff;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
 }
 .calc-key:hover{border-color:var(--cyan);box-shadow:0 0 26px rgba(0,200,255,.55);}
 .calc-key.clear{border-color:rgba(255,68,75,.6);color:#ff9494;}
@@ -539,17 +551,17 @@ input,select{font-family:inherit;}
 .calc-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .calc-selector button{
   min-height:50px;border-radius:12px;border:1px solid var(--line);background:rgba(13,31,48,.5);
-  color:#eefcff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
+  color:#eefcff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
 }
 .calc-selector button.active{background:var(--accent);border-color:var(--accent);color:#1a1200;box-shadow:0 0 16px rgba(255,159,26,.4);}
-.calc-field-box{background:rgba(3,11,18,.7);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
-.calc-field-box label{display:block;font-size:10.5px;color:var(--cyan-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
-.calc-field-box .val{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;color:#fff;}
+.calc-field-box{background:#202020;border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:8px;}
+.calc-field-box label{display:block;font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.calc-field-box .val{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold2);}
 .calc-result-box{
   background:rgba(3,11,18,.7);border:1.5px solid rgba(255,159,26,.4);border-radius:14px;padding:18px;text-align:center;margin-top:14px;
 }
 .calc-result-label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.calc-next-weight{font-family:'Orbitron',sans-serif;font-size:34px;font-weight:900;color:#ffcf7a;text-shadow:0 0 16px rgba(255,159,26,.4);}
+.calc-next-weight{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:#ffcf7a;text-shadow:0 0 16px rgba(255,159,26,.4);}
 .calc-change{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;margin-top:4px;}
 .calc-change.positive{color:#63e879;}
 .calc-change.negative{color:#ff7a7a;}
@@ -1093,8 +1105,11 @@ function escNL(s){ return escHtml(s).replace(/\n/g,'<br>'); }
 async function renderTplPreviewTab(){
   const main = document.getElementById('main');
   main.innerHTML = `
-    <div class="topbar"><div><h1>Προεπισκόπηση Βιβλιοθήκης</h1><div class="sub">Έτσι ακριβώς θα τη βλέπουν οι πελάτες σου</div></div></div>
-    <div id="client-content" style="color:var(--ink-soft);">Φόρτωση...</div>
+    <h1 style="margin-bottom:2px;">Βιβλιοθήκη Προγραμμάτων</h1>
+    <div class="sub" style="margin-bottom:18px;">Έτσι ακριβώς τη βλέπουν οι πελάτες σου στο κινητό τους</div>
+    <div class="mobile-preview-frame">
+      <div id="client-content" style="color:var(--ink-soft);">Φόρτωση...</div>
+    </div>
   `;
   state.tplLibNav = { view:'gender', gender:null, topCategory:null, subCategory:null, programId:null, dayIndex:null, itemIndex:null };
   if(!state.tplTemplatesLoaded){
@@ -3024,12 +3039,14 @@ async function renderAppClient(){
 
   const main = document.getElementById('main');
   main.innerHTML = `
-    <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
-    <div class="auth-tabs" style="max-width:420px;margin-bottom:20px;">
-      <button id="client-mode-mine" class="active">Τα Προγράμματά μου</button>
-      <button id="client-mode-library">Έτοιμα Προγράμματα</button>
+    <div class="mobile-preview-frame">
+      <div class="panel pad" id="client-announce-panel" style="margin-bottom:20px;display:none;"></div>
+      <div class="auth-tabs" style="margin-bottom:20px;">
+        <button id="client-mode-mine" class="active">Τα Προγράμματά μου</button>
+        <button id="client-mode-library">Έτοιμα Προγράμματα</button>
+      </div>
+      <div id="client-content"></div>
     </div>
-    <div id="client-content"></div>
   `;
   document.getElementById('client-mode-mine').addEventListener('click', ()=>{
     state.clientLibraryMode = false;
