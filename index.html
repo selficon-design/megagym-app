@@ -612,11 +612,11 @@ input,select{font-family:inherit;}
 .info-card .lbl{font-size:10.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#ffffff;margin-bottom:5px;}
 .info-card .txt{font-size:13px;font-weight:400;color:#dfeaf2;line-height:1.55;}
 .equip-photo-wrap{
-  height:195px;display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
   background:rgba(3,11,18,.5);overflow:hidden;
 }
-.equip-photo{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
-.equip-photo-empty{width:100%;height:143px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;background:rgba(3,11,18,.5);text-align:center;padding:10px;}
+.equip-photo{height:100%;width:100%;object-fit:contain;display:block;}
+.equip-photo-empty{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:11px;background:rgba(3,11,18,.5);text-align:center;padding:10px;}
 .priority-badge{
   display:inline-block;background:var(--accent-soft);color:#ffcf9e;border:1px solid rgba(255,159,26,.5);
   border-radius:20px;padding:4px 12px;font-size:10.5px;font-weight:700;letter-spacing:0.04em;margin-bottom:8px;
@@ -703,15 +703,15 @@ if(!window.supabase || typeof window.supabase.createClient !== 'function'){
    DATA — προερχόμενα από το ΑΣΚΗΣΕΙΣ_ΑΝΑ_ΜΥΙΚΗ_ΟΜΑΔΑ.xlsx
    =================================================================== */
 const EXERCISES = {
-  "ΣΤΗΘΟΣ": ["ΠΙΕΣΕΙΣ ΣΤΗΘΟΥΣ ΟΡΙΖΟΝΤΙΟΣ","ΠΙΕΣΕΙΣ ΣΤΗΘΟΥΣ ΕΠΙΚΛΙΝΗΣ","ΠΙΕΣΕΙΣ ΣΤΗΘΟΥΣ ΚΑΤΑΚΛΙΝΗΣ","ΑΝΟΙΓΜΑΤΑ ΜΕ ΑΛΤΗΡΕΣ ΟΡΙΖΟΝΤΙΟΣ","ΑΝΟΙΓΜΑΤΑ ΜΕ ΑΛΤΗΡΕΣ ΕΠΙΚΛΙΝΗΣ","PECK DECK","ΣΤΗΘΟΣ CROSS OVER","PECTORAL FLY","ΒΥΘΙΣΕΙΣ ΔΙΖΥΓΟ","ΆΛΛΟ"],
-  "ΠΛΑΤΗ": ["ΤΡΟΧΑΛΙΑ ΕΛΞΕΙΣ ΑΝΟΙΧΤΗ ΛΑΒΗ","ΤΡΟΧΑΛΙΑ ΕΛΞΕΙΣ ΑΝΑΠΟΔΗ ΚΛΕΙΣΤΗ ΛΑΒΗ","ΚΟΠΙΛΑΤΙΚΗ ΣΤΗΝ ΤΡΟΧΑΛΙΑ ΚΛΕΙΣΤΗ ΛΑΒΗ","ΚΟΠΙΛΑΤΙΚΗ ΜΕ ΜΠΑΡΑ","ΕΛΞΕΙΣ ΜΕ ΑΛΤΗΡΑ ΣΤΟ ΠΛΑΙ","ΣΤΑΥΡΟΣ ΜΕ ΜΑΞΙΛΑΡΙ","ΜΟΝΟΖΥΓΟ ΑΝΟΙΧΤΗ ΛΑΒΗ","ΜΟΝΟΖΥΓΟ ΚΛΕΙΣΤΗ ΛΑΒΗ","ΆΛΛΟ"],
-  "ΩΜΟΙ": ["ΠΙΕΣΕΙΣ ΟΜΩΝ TECHNOGYM","ΠΙΕΣΕΙΣ ΟΜΩΝ SELF ICON","ΠΙΕΣΕΙΣ ΟΜΩΝ ΟΡΘΙΟΣ","ΑΝΟΙΓΜΑΤΑ ΟΜΩΝ ΟΡΘΙΟΣ","ΑΝΑΣΗΚΩΣΕΙΣ ΟΜΩΝ ΜΕ ΑΛΤΗΡΕΣ","ΑΝΑΣΗΚΩΣΕΙΣ ΟΜΩΝ ΜΕ ΜΠΑΡΑ","ΑΝΟΙΓΜΑΤΑ ΟΜΩΝ ΣΕ ΕΠΙΚΛΙΝΗ ΠΑΓΚΟ","ΑΝΑΣΗΚΩΣΕΙΣ ΟΜΩΝ ΣΕ ΕΠΙΚΛΙΝΗ ΠΑΓΚΟ","FACE PULLS ΤΡΟΧΑΛΙΑ ΜΕ ΣΧΟΙΝΙ","ΆΛΛΟ"],
-  "ΔΙΚΕΦΑΛΟΙ": ["ΚΑΜΨΕΙΣ ΜΕ ΑΛΤΗΡΕΣ","ΚΑΜΨΕΙΣ ΜΕ ΜΠΑΡΑ ΙΣΙΑ","ΚΑΜΨΕΙΣ ΜΕ ΣΤΡΑΒΟΜΠΑΡΑ","ΣΦΥΡΙΑ ΜΕ ΑΛΤΗΡΕΣ","ΚΑΜΨΕΙΣ ΣΕ SELFICON","ΚΑΜΨΕΙΣ ΣΕ ΤΡΟΧΑΛΙΑ","ΔΙΚΕΦΑΛΟΙ ΣΕ ΕΠΙΚΛΙΝΗ ΠΑΓΚΟ","ΔΙΚΕΦΑΛΟΙ ΣΕ SMITH MACHINE","ΆΛΛΟ"],
-  "ΤΡΙΚΕΦΑΛΟΙ": ["ΕΚΤΑΣΕΙΣ ΤΡΙΚΕΦΑΛΩΝ ΤΡΟΧΑΛΙΑ ΙΣΙΑ ΛΑΒΗ","ΕΚΤΑΣΕΙΣ ΤΡΙΚΕΦΑΛΩΝ ΤΡΟΧΑΛΙΑ ΓΩΝΙΑ ΛΑΒΗ","ΕΚΤΑΣΕΙΣ ΤΡΙΚΕΦΑΛΩΝ ΤΡΟΧΑΛΙΑ ΣΧΟΙΝΙ","ΠΙΕΣΙΕ ΣΕ ΠΑΓΚΟ ΜΕ ΚΛΕΙΣΤΗ ΛΑΒΗ","ΓΑΛΙΚΕΣ ΕΚΤΑΣΕΙΣ ΣΕ ΠΑΓΚΟ","ΜΗΧΑΝΗΜΑ SELFICON","ΆΛΛΟ"],
-  "ΠΟΔΙΑ": ["LEG PRESS","LEG EXTENSION","LEG EXTENSION ΞΑΠΛΩΤΟ","ΠΡΕΣΣΑ TECHNOGYM","ΠΡΕΣΣΑ SELF ICON","HACH SQUAT SELF ICON","SQUAT ΜΗΧΑΝΗΜΑ SELF ICON","POWERTECH SELF ICON","DEAD LIFT ME ΛΥΓΙΣΜΕΝΑ ΠΟΔΙΑ","DEAD LIFT ME ΑΛΥΓΙΣΤΑ ΠΟΔΙΑ","SQUAT ΣΕ RACK","SQUAT ΣΕ SMITH","SUMO SQUAT ΣΕ SMITH","BULGARIAN SQUAT ΜΕ ΑΛΤΗΡΕΣ","ΆΛΛΟ"],
-  "ΓΑΜΠΕΣ": ["ΚΑΘΙΣΤΟΣ SELF ICON","ΟΡΘΙΟΣ POWERTECH SELF ICON","ΟΡΘΙΟΣ SQUAT ΜΗΧΑΝΗΜΑ SELF ICON","ΆΛΛΟ"],
-  "ΚΟΙΛΙΑΚΟΙ": ["ΜΗΧΑΝΗΜΑ TECNOGYM","ΠΑΓΚΟ ΚΟΙΛΙΑΚΩΝ","ΆΛΛΟ"],
-  "ΡΑΧΙΑΙΟΙ": ["ΠΑΓΚΟΣ ΡΑΧΙΑΙΩΝ","ΆΛΛΟ"]
+  "ΣΤΗΘΟΣ": ["Πιέσεις στήθους σε οριζόντια θέση - Horizontal Chest Press", "Πιέσεις στήθους σε επικλινή θέση - Incline Chest Press", "Πιέσεις στήθους σε κατακλινή θέση - Decline Chest Press", "Βυθίσεις στήθους - Chest Dips", "Ανοίγματα στήθους σε οριζόντια θέση - Horizontal Chest Fly", "Ανοίγματα στήθους σε επικλινή θέση - Incline Chest Fly", "Ανοίγματα στήθους σε κατακλινή θέση - Decline Chest Fly", "Ανοίγματα στήθους σε όρθια θέση - Standing Chest Fly", "Εκτάσεις στήθους - Peck Deck", "Πιέσεις στήθους με αλτήρες σε οριζόντια θέση - Flat Dumbbell Bench Press", "Πιέσεις στήθους με αλτήρες σε επικλινή θέση - Incline dumbbell bench press", "ΆΛΛΟ"],
+  "ΠΛΑΤΗ": ["Έλξεις πλάτης από πάνω προς τα κάτω ανοιχτή λαβη - Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή ανάποδη λαβή- Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή λαβή V - Vertical Pulldown", "Έλξεις σώματος προς τα πάνω ανοιχτή λαβή - Pull-Up", "Έλξεις σώματος προς τα πάνω κλειστή λαβή - Pull-Up", "Κωπηλατική οριζόντια κλειστή λαβή - Seated close-grip cable row", "Κωπηλατική οριζόντια ανοιχτή λαβή - Wide-Grip Seated Cable Row", "Κωπηλατική οριζόντια ανοιχτή ανάποδη λαβή - Supinated wide-grip seated", "Κωπηλατική επικλινή με στήριξη στήθους - Incline Lever Row", "Όρθια κωπιλατική στην τροχαλία - Standing cable row", "Σκυφτή κωπιλατική με μπάρα - Βarbell bent-over row", "Σκυφτή κωπιλατική με κλειστή λαβή σταυρός - Close-Grip Bent-Over Row", "Σκυφτή κωπιλατική στον επικλινή με ανάποδη λαβή - Chest-Supported Reverse-Grip Incline Row", "Pull over με μπάρα - Βarbell pullover", "Pull over με αλτήρα - Βarbell pullover", "Straight-Arm Pulldown - Έλξεις Τροχαλίας Με Τεντωμένα Χέρια", "Ανάστροφες εκτάσεις ώμων - Reverse Fly", "Κωπηλατική με ένα χέρι σε πάγκο - Single-Arm Dumbbell Row", "ΆΛΛΟ"],
+  "ΩΜΟΙ": ["Πλάγιες εκτάσεις ώμων όρθιος  - Lateral Raises", "Πλάγιες εκτάσεις ώμων όρθιος ένα χέρι - One-Arm Dumbbell Lateral Raise", "Πλάγιες εκτάσεις ώμων καθηστός  - Seated lateral raise", "Πλάγιες εκτάσεις ώμων επικλινή  - Incline lateral raise", "Εκτάσεις ώμων - πλάτης σκυφτός - Bent-over lateral raises", "Εκτάσεις ώμων - πλάτης σκυφτός καθηστός  - Seated Bent-Over Lateral Raise", "Όρθια κωπηλατική με μπάρα ( σαγόνι )  - barbell upright row", "Όρθια κωπηλατική με σχοινί ( σαγόνι )  - Cable upright row", "Πιέσεις ώμων όρθιος - Standing Overhead Press", "Πιέσεις ώμων καθηστός - Seated Shoulder Press", "Όρθιες έλξεις ώμων στην τροχαλία με σχοινί ( κεφάλι ) - Cable Face Pull", "Εμπρόσθιες άρσεις ώμων - Front Raise", "ΆΛΛΟ"],
+  "ΔΙΚΕΦΑΛΟΙ": ["Κάμψεις δικεφάλων (λαβή ίσια)- Bicep Curl", "Κάμψεις δικεφάλων (λαβή Ζ) - Bicep Curl Ζ", "Κάμψεις δικεφάλων σφυριά - Bicep Hammer curl", "Κάμψεις δικεφάλων σε μαξιλάρι - Bicep preacher curl", "Κάμψεις δικεφάλων σε επικλινή - Ιncline dumbbell curls", "Κάμψεις δικεφάλων σε Smith - Smith machine bicep curl", "Κάμψεις δικεφάλων αυτοσυγκέντρωσης - Concentration bicep curl", "ΆΛΛΟ"],
+  "ΤΡΙΚΕΦΑΛΟΙ": ["Πιέσεις στον πάγκο με κλειστή λαβή - Close-grip bench press", "Πιέσεις τρικεφάλων στην τροχαλία ίσια λαβή - Straight Bar Tricep Pushdown", "Πιέσεις τρικεφάλων στην τροχαλία γωνιακή λαβή - V-bar triceps pushdown", "Πιέσεις τρικεφάλων στην τροχαλία σχοινί - Cable Rope Pushdown", "Πιέσεις τρικεφάλων τροχαλία ανάστροφη λαβή - Reverse Grip Triceps Pushdown", "Γαλικές εκτάσεις τρικεφάλων V - Skull Crushers", "Βυθίσεις τρικεφάλων - Triceps dip", "Εκτάσεις τρικεφάλου με ένα χέρι τροχαλία - Single-Arm Cable Tricep Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι όρθιος - Standing Overhead Dumbbell Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι καθιστός - Seated Overhead Dumbbell Tricep Extension", "Εκτάσεις τρικεφάλων καθηστός σκυφτός σε πάγκο - Seated bent-over two-arm dumbbell kickback", "ΆΛΛΟ"],
+  "ΠΟΔΙΑ": ["Εκτάσεις δικεφάλων καθηστος - Leg Extension", "Κάμψεις τετρακεφάλων καθηστός - Leg Curl", "Κάμψεις τετρακεφάλων ξαπλωτός - Prone Leg Curl", "Άρσεις θανάτου με λυγισμένα πόδια -", "Άρσεις θανάτου με αλύγιστα πόδια -", "Sumo Dedlift", "Πιέσεις ποδιών Leg Press", "Καθίσματα - Squats", "Προβολές ποδιών Forward Lunges", "Άρσεις γοφών - Hip Thrust", "Λακτίσματα γλουτιαίων - Glute Kickbacks", "Bulgarian Squat", "Προσαγωγοί", "Απαγωγοί", "ΆΛΛΟ"],
+  "ΓΑΜΠΕΣ": ["Γάμπες Καθηστός", "Γάμπες Όρθιος", "ΆΛΛΟ"],
+  "ΚΟΙΛΙΑΚΟΙ": ["Κοιλιακοί σε μηχάνημα", "Κοιλιακοι σε πάγκο με κλίση", "Κοιλιακοί ανασηκώσεις ποδιών", "ΆΛΛΟ"],
+  "ΡΑΧΙΑΙΟΙ": ["Ραχιαίοι σε μηχάνημα", "Ραχιαίοι σε πάγκο", "ΆΛΛΟ"],
 };
 
 // Ειδική ομάδα ημέρας: "ΓΑΜΠΕΣ Η ΒΟΗΘΗΤΙΚΗ ΩΜΩΝ" -> ένωση ΓΑΜΠΕΣ + ΩΜΟΙ
@@ -805,7 +805,7 @@ const COMBO_WEIGHTS_FIXED = { set:3, rep:'10-12', rest:'90sec' };
 /* Ένταση (FAILURE) — σε κάθε άσκηση με βάρη, σε όλους τους τύπους προγράμματος */
 const FAILURE_OPTIONS = [0,-1,-2,-3];
 function failureLabel(v){ return 'UNTIL FAILURE '+(v===undefined||v===null?0:v); }
-const FAILURE_EXPLANATION = 'UNTIL FAILURE 0 σημαίνει μέχρι «μυϊκής αποτυχίας» — προσπαθείς να εκτελέσεις επαναλήψεις μέχρι να μην μπορείς να κάνεις άλλη. UNTIL FAILURE -1 σημαίνει ότι σταματάς μία επανάληψη πριν την αποτυχία, UNTIL FAILURE -2 δύο επαναλήψεις πριν, UNTIL FAILURE -3 τρεις επαναλήψεις πριν. Τελικός στόχος είναι όλα τα σετ να φτάνουν σε UNTIL FAILURE 0. Τελικός σκοπός σου, προκειμένου να πάρεις όλα τα οφέλη του προγράμματος, είναι να πηγαίνεις σε όλες τις ασκήσεις και σε όλα τα σετ έως UNTIL FAILURE 0. Μπορείς στην αρχή να πηγαίνεις UNTIL FAILURE -3 σε όλα τα σετ και μετά UNTIL FAILURE -2, ή να πηγαίνεις UNTIL FAILURE 0 μόνο στο τελευταίο ή στα δύο τελευταία σετ.';
+const FAILURE_EXPLANATION = 'UNTIL FAILURE 0 σημαίνει μέχρι «μυϊκής αποτυχίας». Δηλαδή προσπαθείς να εκτελέσεις επαναλήψεις μέχρι να μην μπορείς να κάνεις άλλη. UNTIL FAILURE -1 σημαίνει ότι σταματάς μία επανάληψη πριν την αποτυχία, UNTIL FAILURE -2 σταματάς δύο επαναλήψεις πριν την αποτυχία, UNTIL FAILURE -3 σταματάς τρεις επαναλήψεις πριν. Ο τελικός στόχος σου, προκειμένου να πάρεις όλα τα οφέλη του προγράμματος, είναι να πηγαίνεις σε όλες τις ασκήσεις και σε όλα τα σετ έως UNTIL FAILURE 0 — από το πρώτο σετ! Μπορείς στην αρχή να πηγαίνεις UNTIL FAILURE -3 σε όλα τα σετ και μετά UNTIL FAILURE -2, ή να πηγαίνεις UNTIL FAILURE 0 μόνο στο τελευταίο ή στα δύο τελευταία σετ, έως ότου φτάσεις στη μέγιστη απόδοση «FULL UNTIL FAILURE 0». (UNTIL FAILURE +1, UNTIL FAILURE +2, UNTIL FAILURE +3 — δηλαδή με βοήθεια παρτενέρ (spotter) στις τελευταίες επαναλήψεις — δεν πηγαίνουμε ποτέ, αν είμαστε NATURAL αθλούμενοι, αλλά ούτε κι αν δεν είμαστε, γιατί η πιθανότητα καταβολισμού, δηλαδή καύσης μυϊκού ιστού, είναι πολύ μεγάλη. «Καλύτερα να είσαι UNDER παρά OVER», όπως λένε οι expert των προγραμμάτων TRANSFORMATION.)';
 
 /* ===================================================================
    ΕΤΟΙΜΑ ΠΡΟΓΡΑΜΜΑΤΑ (Template Library) — δεδομένα builder
@@ -813,8 +813,8 @@ const FAILURE_EXPLANATION = 'UNTIL FAILURE 0 σημαίνει μέχρι «μυ�
 const TPL_MUSCLE_GROUPS = ["CHEST - ΣΤΗΘΟΣ", "BACΚ -  ΠΛΑΤΗ", "SHOULDERS - ΩΜΟΙ", "BICEPS - ΔΙΚΕΦΑΛΟΙ", "TRICEPS - ΤΡΙΚΕΦΑΛΟΙ", "LEGS - ΠΟΔΙΑ", "CALVES - ΓΑΜΠΕΣ", "ABS -  ΚΟΙΛΙΑΚΟΙ", "BACK MUSCLES - ΡΑΧΙΑΙΟΙ"];
 
 const TPL_EXERCISES = {
-  "CHEST - ΣΤΗΘΟΣ": ["Πιέσεις στήθους σε οριζόντια θέση - Horizontal Chest Press", "Πιέσεις στήθους σε επικλινή θέση - Incline Chest Press", "Πιέσεις στήθους σε κατακλινή θέση - Decline Chest Press", "Βυθίσεις στήθους - Chest Dips", "Ανοίγματα στήθους σε οριζόντια θέση - Horizontal Chest Fly", "Ανοίγματα στήθους σε επικλινή θέση - Incline Chest Fly", "Ανοίγματα στήθους σε κατακλινή θέση - Decline Chest Fly", "Ανοίγματα στήθους σε όρθια θέση - Standing Chest Fly", "Εκτάσεις στήθους - Peck Deck"],
-  "BACΚ -  ΠΛΑΤΗ": ["Έλξεις πλάτης από πάνω προς τα κάτω ανοιχτή λαβη - Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή ανάποδη λαβή- Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή λαβή V - Vertical Pulldown", "Έλξεις σώματος προς τα πάνω ανοιχτή λαβή - Pull-Up", "Έλξεις σώματος προς τα πάνω κλειστή λαβή - Pull-Up", "Κωπηλατική οριζόντια κλειστή λαβή - Seated close-grip cable row", "Κωπηλατική οριζόντια ανοιχτή λαβή - Wide-Grip Seated Cable Row", "Κωπηλατική οριζόντια ανοιχτή ανάποδη λαβή - Supinated wide-grip seated", "Κωπηλατική επικλινή με στήριξη στήθους - Incline Lever Row", "Όρθια κωπιλατική στην τροχαλία - Standing cable row", "Σκυφτή κωπιλατική με μπάρα - Βarbell bent-over row", "Σκυφτή κωπιλατική με κλειστή λαβή σταυρός - Close-Grip Bent-Over Row", "Σκυφτή κωπιλατική στον επικλινή με ανάποδη λαβή - Chest-Supported Reverse-Grip Incline Row", "Pull over με μπάρα - Βarbell pullover", "Pull over με αλτήρα - Βarbell pullover", "Straight-Arm Pulldown - Έλξεις Τροχαλίας Με Τεντωμένα Χέρια", "Ανάστροφες εκτάσεις ώμων - Reverse Fly"],
+  "CHEST - ΣΤΗΘΟΣ": ["Πιέσεις στήθους σε οριζόντια θέση - Horizontal Chest Press", "Πιέσεις στήθους σε επικλινή θέση - Incline Chest Press", "Πιέσεις στήθους σε κατακλινή θέση - Decline Chest Press", "Βυθίσεις στήθους - Chest Dips", "Ανοίγματα στήθους σε οριζόντια θέση - Horizontal Chest Fly", "Ανοίγματα στήθους σε επικλινή θέση - Incline Chest Fly", "Ανοίγματα στήθους σε κατακλινή θέση - Decline Chest Fly", "Ανοίγματα στήθους σε όρθια θέση - Standing Chest Fly", "Εκτάσεις στήθους - Peck Deck", "Πιέσεις στήθους με αλτήρες σε οριζόντια θέση - Flat Dumbbell Bench Press", "Πιέσεις στήθους με αλτήρες σε επικλινή θέση - Incline dumbbell bench press"],
+  "BACΚ -  ΠΛΑΤΗ": ["Έλξεις πλάτης από πάνω προς τα κάτω ανοιχτή λαβη - Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή ανάποδη λαβή- Vertical Pulldown", "Έλξεις πλάτης από πάνω προς τα κάτω κλειστή λαβή V - Vertical Pulldown", "Έλξεις σώματος προς τα πάνω ανοιχτή λαβή - Pull-Up", "Έλξεις σώματος προς τα πάνω κλειστή λαβή - Pull-Up", "Κωπηλατική οριζόντια κλειστή λαβή - Seated close-grip cable row", "Κωπηλατική οριζόντια ανοιχτή λαβή - Wide-Grip Seated Cable Row", "Κωπηλατική οριζόντια ανοιχτή ανάποδη λαβή - Supinated wide-grip seated", "Κωπηλατική επικλινή με στήριξη στήθους - Incline Lever Row", "Όρθια κωπιλατική στην τροχαλία - Standing cable row", "Σκυφτή κωπιλατική με μπάρα - Βarbell bent-over row", "Σκυφτή κωπιλατική με κλειστή λαβή σταυρός - Close-Grip Bent-Over Row", "Σκυφτή κωπιλατική στον επικλινή με ανάποδη λαβή - Chest-Supported Reverse-Grip Incline Row", "Pull over με μπάρα - Βarbell pullover", "Pull over με αλτήρα - Βarbell pullover", "Straight-Arm Pulldown - Έλξεις Τροχαλίας Με Τεντωμένα Χέρια", "Ανάστροφες εκτάσεις ώμων - Reverse Fly", "Κωπηλατική με ένα χέρι σε πάγκο - Single-Arm Dumbbell Row"],
   "SHOULDERS - ΩΜΟΙ": ["Πλάγιες εκτάσεις ώμων όρθιος  - Lateral Raises", "Πλάγιες εκτάσεις ώμων όρθιος ένα χέρι - One-Arm Dumbbell Lateral Raise", "Πλάγιες εκτάσεις ώμων καθηστός  - Seated lateral raise", "Πλάγιες εκτάσεις ώμων επικλινή  - Incline lateral raise", "Εκτάσεις ώμων - πλάτης σκυφτός - Bent-over lateral raises", "Εκτάσεις ώμων - πλάτης σκυφτός καθηστός  - Seated Bent-Over Lateral Raise", "Όρθια κωπηλατική με μπάρα ( σαγόνι )  - barbell upright row", "Όρθια κωπηλατική με σχοινί ( σαγόνι )  - Cable upright row", "Πιέσεις ώμων όρθιος - Standing Overhead Press", "Πιέσεις ώμων καθηστός - Seated Shoulder Press", "Όρθιες έλξεις ώμων στην τροχαλία με σχοινί ( κεφάλι ) - Cable Face Pull", "Εμπρόσθιες άρσεις ώμων - Front Raise"],
   "BICEPS - ΔΙΚΕΦΑΛΟΙ": ["Κάμψεις δικεφάλων (λαβή ίσια)- Bicep Curl", "Κάμψεις δικεφάλων (λαβή Ζ) - Bicep Curl Ζ", "Κάμψεις δικεφάλων σφυριά - Bicep Hammer curl", "Κάμψεις δικεφάλων σε μαξιλάρι - Bicep preacher curl", "Κάμψεις δικεφάλων σε επικλινή - Ιncline dumbbell curls", "Κάμψεις δικεφάλων σε Smith - Smith machine bicep curl", "Κάμψεις δικεφάλων αυτοσυγκέντρωσης - Concentration bicep curl"],
   "TRICEPS - ΤΡΙΚΕΦΑΛΟΙ": ["Πιέσεις στον πάγκο με κλειστή λαβή - Close-grip bench press", "Πιέσεις τρικεφάλων στην τροχαλία ίσια λαβή - Straight Bar Tricep Pushdown", "Πιέσεις τρικεφάλων στην τροχαλία γωνιακή λαβή - V-bar triceps pushdown", "Πιέσεις τρικεφάλων στην τροχαλία σχοινί - Cable Rope Pushdown", "Πιέσεις τρικεφάλων τροχαλία ανάστροφη λαβή - Reverse Grip Triceps Pushdown", "Γαλικές εκτάσεις τρικεφάλων V - Skull Crushers", "Βυθίσεις τρικεφάλων - Triceps dip", "Εκτάσεις τρικεφάλου με ένα χέρι τροχαλία - Single-Arm Cable Tricep Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι όρθιος - Standing Overhead Dumbbell Extension", "Εκτάσεις τρικεφάλων πίσω από το κεφάλι καθιστός - Seated Overhead Dumbbell Tricep Extension", "Εκτάσεις τρικεφάλων καθηστός σκυφτός σε πάγκο - Seated bent-over two-arm dumbbell kickback"],
@@ -1101,7 +1101,7 @@ async function upsertCustomer(customer){
 function normalizeStoredProgram(stored){
   if(Array.isArray(stored)){
     // παλιά μορφή, πριν τις κατηγορίες: απλός πίνακας ημερών, πάντα "muscle"
-    return { category:'muscle', subtype:null, notes:'', instructions:'', nutrition:null, days:stored, cardioSlots:null };
+    return { category:'muscle', subtype:null, notes:'', instructions:'', nutrition:null, days:stored, cardioSlots:null, fromTemplate:false, templateName:'' };
   }
   return {
     category: stored.category || 'muscle',
@@ -1110,7 +1110,9 @@ function normalizeStoredProgram(stored){
     instructions: stored.instructions || '',
     nutrition: stored.nutrition || null,
     days: stored.days || null,
-    cardioSlots: stored.cardioSlots || null
+    cardioSlots: stored.cardioSlots || null,
+    fromTemplate: !!stored.fromTemplate,
+    templateName: stored.templateName || ''
   };
 }
 async function loadProgramsFor(code){
@@ -2524,6 +2526,11 @@ function buildPrintHtml(record, client){
   if(record.notes){
     topInfo += `<div class="pp-day"><h3>Παρατηρήσεις</h3><p style="font-size:11px;line-height:1.5;margin:0;">${escHtml(record.notes)}</p></div>`;
   }
+  const hasFailureExercises = record.category==='muscle' || record.subtype==='weights' ||
+    (record.subtype==='combo' && (record.days||[]).some(d=>d.groups && d.groups.length>0));
+  if(hasFailureExercises){
+    topInfo += `<div class="pp-day"><h3>Τι σημαίνει η Ένταση (UNTIL FAILURE)</h3><p style="font-size:10.5px;color:#3A3F45;line-height:1.5;margin:0;">${escHtml(FAILURE_EXPLANATION)}</p></div>`;
+  }
 
   let body = '';
   if(record.subtype === 'cardio'){
@@ -3309,10 +3316,11 @@ function renderClientProgramsListView(){
       ${progs.length===0 ? `<div class="empty" style="padding:30px 0;"><div class="icon">🗂️</div><p>Δεν υπάρχουν ακόμα αποθηκευμένα προγράμματα.</p></div>` :
         progs.map((p,i)=>{
           const d = new Date(p.createdAt);
-          return `<div class="client-card" data-open-program="${escAttr(p.id)}">
+          const fromTpl = p.record && p.record.fromTemplate;
+          return `<div class="client-card" data-open-program="${escAttr(p.id)}" ${fromTpl?'style="border-color:var(--accent);box-shadow:0 0 18px rgba(255,159,26,.35);"':''}>
             <div class="client-avatar">${progs.length-i}</div>
             <div class="client-meta">
-              <div class="name">${escHtml(categoryBadgeLabel(p.record))}</div>
+              <div class="name">${escHtml(categoryBadgeLabel(p.record))}${fromTpl?' <span style="color:var(--accent);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;">· Έτοιμο</span>':''}</div>
               <div class="sub">${d.toLocaleDateString('el-GR')} · ${d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'})}</div>
             </div>
           </div>`;
@@ -3401,6 +3409,7 @@ function renderClientExerciseView(item){
         <div class="calc-field-box"><label>Διάλειμμα</label><div class="val">${escHtml(String(item.rest))}</div></div>
         <div class="calc-field-box"><label>Ένταση</label><div class="val" style="font-size:15px;">${escHtml(failureLabel(item.failure))}</div></div>
       </div>
+      <div class="info-card"><div class="lbl">Τι σημαίνει η Ένταση (UNTIL FAILURE)</div><div class="txt">${escHtml(FAILURE_EXPLANATION)}</div></div>
       <button class="btn btn-critical" style="width:100%;justify-content:center;" id="client-start-exercise">▶ Έναρξη Προπόνησης</button>
     </div>`;
 }
@@ -3529,7 +3538,8 @@ function mapTemplateToCustomRecord(t){
     notes: t.notes || '',
     instructions: t.description || '',
     nutrition: t.nutrition ? { kcal:'', text: t.nutrition } : null,
-    days: null, cardioSlots: null
+    days: null, cardioSlots: null,
+    fromTemplate: true, templateName: t.name || ''
   };
   if(subtype === 'cardio'){
     record.cardioSlots = mappedDays.reduce((acc,d)=>acc.concat(d.cardioSlots),[]);
@@ -3716,6 +3726,7 @@ function renderTplLibExerciseView(){
         <div class="calc-field-box"><label>Διάλειμμα</label><div class="val">${escHtml(it.rest)}</div></div>
       </div>
       <div class="calc-field-box" style="margin-bottom:14px;"><label>Ένταση</label><div class="val" style="font-size:15px;">${escHtml(failureLabel(it.failure))}</div></div>
+      <div class="info-card"><div class="lbl">Τι σημαίνει η Ένταση (UNTIL FAILURE)</div><div class="txt">${escHtml(FAILURE_EXPLANATION)}</div></div>
       ${infoRows.map(f=>`<div class="info-card"><div class="lbl">${escHtml(f.label)}</div><div class="txt">${escNL(it[f.key])}</div></div>`).join('')}
       <button class="btn btn-critical" style="width:100%;justify-content:center;margin-top:6px;" id="tpllib-start-exercise">▶ Έναρξη Προπόνησης</button>
     </div>
