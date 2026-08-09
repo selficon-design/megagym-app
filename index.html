@@ -127,16 +127,20 @@ input,select{font-family:inherit;}
 @media (max-width: 860px){
   .sidebar{display:none;}
   .mobile-topbar{
-    display:flex;align-items:center;justify-content:space-between;
+    display:flex;flex-direction:column;gap:10px;
     background:linear-gradient(145deg, rgba(12,31,48,.95), rgba(5,13,22,.98));
     border-bottom:1px solid rgba(61,216,255,.25);
     color:#fff;padding:14px 18px;position:sticky;top:0;z-index:40;
   }
   .mobile-topbar .brand{margin-bottom:0;}
-  .mobile-tabs{display:flex;gap:8px;}
+  .mobile-tabs{
+    display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    margin:0 -18px;padding:0 18px 2px;
+  }
+  .mobile-tabs::-webkit-scrollbar{height:0;}
   .mobile-tabs button{
     background:rgba(61,216,255,0.08);color:#c8dde8;border:1px solid transparent;border-radius:8px;
-    padding:8px 10px;font-size:12px;font-weight:600;
+    padding:8px 12px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0;
   }
   .mobile-tabs button.active{background:rgba(255,159,26,.22);border-color:rgba(255,159,26,.55);color:#fff;}
   .main{padding:20px 16px 60px;}
@@ -643,16 +647,16 @@ input,select{font-family:inherit;}
 <div id="auth-root" class="hidden"></div>
 
 <div class="mobile-topbar hidden" id="mobile-topbar">
-  <div class="brand">
-    <div class="brand-mark">Φ</div>
-    <div class="brand-text"><div class="t1">ΦΟΡΜΑ</div></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;">
-    <div class="mobile-tabs" id="mobile-tabs"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+    <div class="brand">
+      <div class="brand-mark">Φ</div>
+      <div class="brand-text"><div class="t1">ΦΟΡΜΑ</div></div>
+    </div>
     <button id="mobile-logout" title="Αποσύνδεση" style="width:38px;height:38px;flex-shrink:0;border-radius:10px;border:1px solid rgba(239,45,53,.35);background:rgba(239,45,53,.12);color:#ffb3b3;display:flex;align-items:center;justify-content:center;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
     </button>
   </div>
+  <div class="mobile-tabs" id="mobile-tabs"></div>
 </div>
 
 <div id="app" class="hidden">
