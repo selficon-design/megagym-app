@@ -657,6 +657,19 @@ input,select{font-family:inherit;}
 }
 .calc-reset-btn:hover{border-color:var(--cyan);color:#fff;}
 
+/* ============ 5 ΚΟΥΜΠΙΑ ΠΟΙΟΤΗΤΑΣ ΕΚΤΕΛΕΣΗΣ (AWV) ============ */
+.fq-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.fq-btn{
+  width:100%;min-height:48px;border-radius:11px;border:2px solid transparent;
+  color:#ffffff;font-family:'Rajdhani',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:.03em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 0 0 rgba(0,0,0,0);transition:box-shadow .15s ease, transform .1s ease, border-color .15s ease;
+  opacity:.72;
+}
+.fq-btn .fq-pct{font-family:'Orbitron',sans-serif;font-weight:900;font-size:13px;opacity:.85;}
+.fq-btn:hover{opacity:.92;transform:translateY(-1px);}
+.fq-btn.active{opacity:1;border-color:#fff;box-shadow:0 0 22px currentColor;transform:translateY(-1px);}
+
 
 /* ============ INFO CARDS (λεπτομέρειες άσκησης / κατηγορίας) ============ */
 .info-card{
@@ -997,6 +1010,15 @@ const CALC_TYPES = {
   }
 };
 const DEFAULT_CALC_TYPE = 'CALPIN_2_5';
+/* Οι 5 επιλογές ποιότητας εκτέλεσης σετ — καθορίζουν το ποσοστό του
+   Actual Workout Volume (AWV) σε σχέση με το Workout Volume (WV) */
+const FAILURE_QUALITY_OPTIONS = [
+  { key:'F0_ORANGE', label:'UNTIL FAILURE 0', sub:'ORANGE', pct:100, bg:'#ff9f1a' },
+  { key:'F0_RED',    label:'UNTIL FAILURE 0', sub:'RED',    pct:94,  bg:'#ef2d35' },
+  { key:'F1',        label:'UNTIL FAILURE -1', sub:'',      pct:85,  bg:'#1a3c66' },
+  { key:'F2',        label:'UNTIL FAILURE -2', sub:'',      pct:79,  bg:'#3bd8ff' },
+  { key:'F3',        label:'UNTIL FAILURE -3', sub:'',      pct:77,  bg:'#37e56f' },
+];
 function normalizeEquipmentItem(eq){
   const calcType = eq.calcType && CALC_TYPES[eq.calcType] ? eq.calcType : DEFAULT_CALC_TYPE;
   return { ...eq, calcType };
@@ -1462,7 +1484,8 @@ function renderWorkoutCalendar(logs, year, month){
     const d = new Date(l.created_at);
     const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     if(!dailyData[key]) dailyData[key] = 0;
-    dailyData[key] += (Number(l.kg)||0)*(Number(l.reps)||0);
+    const awv = (l.awv!==null && l.awv!==undefined) ? Number(l.awv) : (Number(l.kg)||0)*(Number(l.reps)||0);
+    dailyData[key] += awv;
   });
   const monthNames = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
   const dayLabels = ['Δ','Τ','Τ','Π','Π','Σ','Κ'];
@@ -1530,22 +1553,34 @@ function renderWorkoutLogHtml(logs){
   return order.map(dayKey=>{
     const entries = groups[dayKey];
     const programNames = [...new Set(entries.map(e=>e.program_name).filter(Boolean))];
-    const dayVolume = entries.reduce((sum,e)=> sum + (Number(e.kg)||0)*(Number(e.reps)||0), 0);
+    const dayWV = entries.reduce((sum,e)=> sum + ((e.wv!==null&&e.wv!==undefined)?Number(e.wv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+    const dayAWV = entries.reduce((sum,e)=> sum + ((e.awv!==null&&e.awv!==undefined)?Number(e.awv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+    const dayWVE = dayWV>0 ? (dayAWV/dayWV)*100 : 0;
     return `
     <div class="panel pad" style="margin-bottom:16px;">
       <div class="section-title"><span class="dot"></span>${escHtml(dayKey)}</div>
       ${programNames.length ? `<div style="font-size:11.5px;color:var(--cyan-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">${programNames.map(escHtml).join(' · ')}</div>`:''}
-      <div class="calc-info-note" style="text-align:left;margin-bottom:14px;">Όγκος Προπόνησης Ημέρας: <strong style="color:var(--gold2);">${formatCalcNum(dayVolume)} kg</strong> <span style="opacity:.7;font-style:italic;">(Σ κιλά × επαναλήψεις)</span></div>
+      <div class="calc-info-note" style="text-align:left;margin-bottom:14px;line-height:1.7;">
+        Workout Volume (WV): <strong style="color:#eefcff;">${formatCalcNum(dayWV)} kg</strong><br>
+        Actual Workout Volume (AWV): <strong style="color:var(--gold2);">${formatCalcNum(dayAWV)} kg</strong><br>
+        Workout Volume Efficiency (WVE): <strong style="color:var(--green);">${formatCalcNum(dayWVE)}%</strong>
+      </div>
       ${entries.map(e=>{
         const t = new Date(e.created_at).toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'});
+        const fq = FAILURE_QUALITY_OPTIONS.find(f=>f.key===e.failure_quality);
+        const awvVal = (e.awv!==null&&e.awv!==undefined) ? Number(e.awv) : null;
         return `<div class="tl-card" style="margin-bottom:8px;padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
             <div>
               <div style="font-weight:700;font-size:13px;color:#dffaff;text-transform:uppercase;">${escHtml(e.exercise)}</div>
               <div style="font-size:11px;color:var(--ink-soft);margin-top:2px;">${escHtml(e.group_label||'')} ${e.set_number?'· SET '+e.set_number:''} · ${t}</div>
               ${e.equipment_name ? `<div style="font-size:10.5px;color:var(--cyan-soft);margin-top:2px;">⚙ ${escHtml(e.equipment_name)}</div>`:''}
+              ${fq ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:8px;background:${fq.bg};color:#fff;font-size:9.5px;font-weight:800;">${escHtml(fq.label)}${fq.sub?' '+escHtml(fq.sub):''} · ${fq.pct}%</div>`:''}
             </div>
-            <div class="mono" style="font-size:13px;color:var(--gold2);font-weight:700;white-space:nowrap;">${e.reps} reps · ${e.kg} kg</div>
+            <div style="text-align:right;white-space:nowrap;">
+              <div class="mono" style="font-size:13px;color:var(--gold2);font-weight:700;">${e.reps} reps · ${e.kg} kg</div>
+              ${awvVal!==null ? `<div style="font-size:10px;color:var(--green);margin-top:2px;">AWV ${formatCalcNum(awvVal)} kg</div>`:''}
+            </div>
           </div>
         </div>`;
       }).join('')}
@@ -3102,6 +3137,7 @@ let timerDecimalInterval = null;
 let workoutCalcField = null;
 let workoutCalcValues = { reps:'', kg:'' };
 let workoutCalcRevealed = { reps:false, kg:false };
+let workoutFailureQuality = null; // key από FAILURE_QUALITY_OPTIONS
 
 function parseRestSeconds(restStr){
   const m = String(restStr||'').match(/\d+/);
@@ -3124,6 +3160,7 @@ function openWorkoutMode(ex, returnFn){
     workoutCalcField = null;
     workoutCalcValues = { reps:'', kg:'' };
     workoutCalcRevealed = { reps:false, kg:false };
+    workoutFailureQuality = null;
   }
   state.workoutExercise = ex;
   if(returnFn) workoutReturnRender = returnFn;
@@ -3283,6 +3320,7 @@ function calculateWorkoutNextWeight(){
   const reps0 = Number(workoutCalcValues.reps);
   const kg0 = Number(workoutCalcValues.kg);
   if(!Number.isFinite(reps0)||!Number.isFinite(kg0)||reps0<=0||kg0<=0){ showWorkoutCalcError('Οι τιμές πρέπει να είναι μεγαλύτερες από το μηδέν.'); return; }
+  if(!workoutFailureQuality){ showWorkoutCalcError('Επίλεξε πρώτα την ποιότητα εκτέλεσης του σετ (τα 5 έγχρωμα κουμπιά).'); return; }
 
   const btn = document.getElementById('calcComputeBtn');
   const nw=document.getElementById('nextWeight');
@@ -3347,6 +3385,9 @@ function performWorkoutCalculation(){
   const logCtx = state.workoutLogContext;
   if(logCtx && logCtx.customerCode){
     const setNumber = Math.min(timerState.nextSet||1, timerState.totalSets||1);
+    const fq = FAILURE_QUALITY_OPTIONS.find(f=>f.key===workoutFailureQuality) || FAILURE_QUALITY_OPTIONS[0];
+    const wv = kg * reps;
+    const awv = wv * (fq.pct/100);
     logWorkoutSet({
       customer_code: logCtx.customerCode,
       program_name: logCtx.programName || null,
@@ -3357,9 +3398,13 @@ function performWorkoutCalculation(){
       kg: kg,
       calc_type: calcType.key,
       equipment_name: primaryEq ? primaryEq.name : null,
+      wv: wv,
+      awv: awv,
+      failure_quality: fq.key,
+      failure_quality_pct: fq.pct,
       created_by: auth.user ? auth.user.id : null
     }).then(ok=>{
-      toast(ok ? 'Το σετ καταγράφηκε ✓' : 'Σφάλμα καταγραφής σετ.');
+      toast(ok ? `Το σετ καταγράφηκε ✓ (AWV ${formatCalcNum(awv)} kg)` : 'Σφάλμα καταγραφής σετ.');
     });
   } else {
     toast('Προεπισκόπηση — δεν καταγράφεται σε ημερολόγιο πελάτη.');
@@ -3420,6 +3465,15 @@ function renderWorkoutPage(){
         <button type="button" class="calc-key" data-calc-num="0">0</button>
         <button type="button" class="calc-key delete" id="calcDeleteBtn">⌫</button>
       </div>
+      <div class="eq-section-title" style="font-size:13px;margin-bottom:10px;">Ποιότητα Εκτέλεσης Σετ</div>
+      <div class="fq-list">
+        ${FAILURE_QUALITY_OPTIONS.map(f=>`
+          <button type="button" class="fq-btn ${workoutFailureQuality===f.key?'active':''}" data-fq-key="${f.key}" style="background:${f.bg};color:#fff;">
+            <span>${escHtml(f.label)}${f.sub?' – '+escHtml(f.sub):''}</span>
+            <span class="fq-pct">${f.pct}%</span>
+          </button>
+        `).join('')}
+      </div>
       <button class="btn btn-critical" style="width:100%;justify-content:center;" id="calcComputeBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET</button>
       <div style="text-align:center;font-size:10.5px;color:var(--ink-soft);font-style:italic;margin:5px 0 16px;">Calculate next set's weight</div>
 
@@ -3449,10 +3503,18 @@ function bindWorkoutPageEvents(){
   });
   document.getElementById('calcClearBtn')?.addEventListener('click', clearWorkoutCalcField);
   document.getElementById('calcDeleteBtn')?.addEventListener('click', deleteWorkoutCalcNumber);
+  document.querySelectorAll('[data-fq-key]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      workoutFailureQuality = el.getAttribute('data-fq-key');
+      document.querySelectorAll('[data-fq-key]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-fq-key')===workoutFailureQuality));
+    });
+  });
   document.getElementById('calcComputeBtn')?.addEventListener('click', calculateWorkoutNextWeight);
   document.getElementById('calcResetBtn')?.addEventListener('click', ()=>{
     workoutCalcField = null; workoutCalcValues = { reps:'', kg:'' };
     workoutCalcRevealed = { reps:false, kg:false };
+    workoutFailureQuality = null;
+    document.querySelectorAll('[data-fq-key]').forEach(b=>b.classList.remove('active'));
     document.getElementById('repsButton')?.classList.remove('active');
     document.getElementById('kgButton')?.classList.remove('active');
     document.getElementById('repsFieldBox')?.classList.add('hidden');
