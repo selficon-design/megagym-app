@@ -579,6 +579,23 @@ input,select{font-family:inherit;}
   background:rgba(61,216,255,.06);color:var(--cyan-soft);font-weight:500;font-family:'Rajdhani',sans-serif;font-size:11px;text-align:center;opacity:0.85;
 }
 
+/* ============ ΗΜΕΡΟΛΟΓΙΟ ΠΡΟΠΟΝΗΣΕΩΝ — μηνιαίο πλέγμα ============ */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-headcell{text-align:center;font-size:10.5px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;padding-bottom:4px;}
+.cal-cell{
+  aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);background:rgba(3,11,18,.5);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;
+}
+.cal-cell.empty{border:none;background:transparent;}
+.cal-cell.has-workout{
+  background:linear-gradient(145deg,rgba(76,45,10,.55),rgba(27,18,8,.85));
+  border:1.5px solid #ffc465;box-shadow:0 0 12px rgba(255,159,26,.35);cursor:pointer;
+}
+.cal-cell.has-workout:hover{box-shadow:0 0 22px rgba(255,159,26,.6);}
+.cal-daynum{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:#eefcff;}
+.cal-cell.has-workout .cal-daynum{color:#ffd9a0;}
+.cal-volume{font-family:'Orbitron',sans-serif;font-size:8.5px;font-weight:700;color:var(--gold2);margin-top:1px;line-height:1.1;text-align:center;}
+
 .calc-keypad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
 .calc-key{
   min-height:52px;border-radius:12px;border:1px solid rgba(61,216,255,.28);
@@ -1013,6 +1030,9 @@ let state = {
   lightbox: null, // {type:'photo'|'video', url}
   instructionsModalOpen: false,
   workoutLogContext: { customerCode:null, programName:'' },
+  workoutCalMonth: new Date().getMonth(),
+  workoutCalYear: new Date().getFullYear(),
+  workoutLogsCache: [],
   tplLibShellContext: 'trainer', // 'client' | 'trainer' — ποιο "κέλυφος" να ξαναφτιάξει το κουμπί πίσω
   copiedFromProgramId: null, // αν φτιάχνουμε πρόγραμμα ξεκινώντας από αντιγραφή, το id του αρχικού
   editingProgramId: null,    // αν κάνουμε πραγματική διόρθωση (update) υπάρχοντος προγράμματος, το id του
@@ -1433,7 +1453,66 @@ async function renderClientWorkoutLog(){
   if(!content || !auth.customer) return;
   content.innerHTML = `<div style="color:var(--ink-soft);">Φόρτωση...</div>`;
   const logs = await loadWorkoutLogs(auth.customer.code);
-  content.innerHTML = renderWorkoutLogHtml(logs);
+  content.innerHTML = renderWorkoutLogFull(logs);
+  bindWorkoutCalendarEvents('client-content');
+}
+function renderWorkoutCalendar(logs, year, month){
+  const dailyData = {};
+  logs.forEach(l=>{
+    const d = new Date(l.created_at);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if(!dailyData[key]) dailyData[key] = 0;
+    dailyData[key] += (Number(l.kg)||0)*(Number(l.reps)||0);
+  });
+  const monthNames = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+  const dayLabels = ['Δ','Τ','Τ','Π','Π','Σ','Κ'];
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const startWeekday = (firstDay.getDay()+6)%7; // Δευτέρα=0 ... Κυριακή=6
+
+  let cells = '';
+  for(let i=0;i<startWeekday;i++) cells += `<div class="cal-cell empty"></div>`;
+  for(let day=1; day<=daysInMonth; day++){
+    const key = `${year}-${month}-${day}`;
+    const volume = dailyData[key];
+    const hasWorkout = volume!==undefined;
+    cells += `<div class="cal-cell ${hasWorkout?'has-workout':''}" ${hasWorkout?`data-cal-day="${escAttr(key)}"`:''}>
+      <div class="cal-daynum">${day}</div>
+      ${hasWorkout ? `<div class="cal-volume">${formatCalcNum(volume)}kg</div>`:''}
+    </div>`;
+  }
+  return `
+    <div class="panel pad" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <button class="btn btn-outline" id="cal-prev-month" style="padding:8px 14px;">←</button>
+        <div class="eq-section-title" style="margin:0;">${escHtml(monthNames[month])} ${year}</div>
+        <button class="btn btn-outline" id="cal-next-month" style="padding:8px 14px;">→</button>
+      </div>
+      <div class="cal-grid">
+        ${dayLabels.map(l=>`<div class="cal-headcell">${l}</div>`).join('')}
+        ${cells}
+      </div>
+    </div>`;
+}
+function renderWorkoutLogFull(logs){
+  state.workoutLogsCache = logs;
+  return renderWorkoutCalendar(logs, state.workoutCalYear, state.workoutCalMonth) + renderWorkoutLogHtml(logs);
+}
+function bindWorkoutCalendarEvents(containerId){
+  document.getElementById('cal-prev-month')?.addEventListener('click', ()=>{
+    state.workoutCalMonth--;
+    if(state.workoutCalMonth<0){ state.workoutCalMonth=11; state.workoutCalYear--; }
+    const el = document.getElementById(containerId);
+    el.innerHTML = renderWorkoutLogFull(state.workoutLogsCache);
+    bindWorkoutCalendarEvents(containerId);
+  });
+  document.getElementById('cal-next-month')?.addEventListener('click', ()=>{
+    state.workoutCalMonth++;
+    if(state.workoutCalMonth>11){ state.workoutCalMonth=0; state.workoutCalYear++; }
+    const el = document.getElementById(containerId);
+    el.innerHTML = renderWorkoutLogFull(state.workoutLogsCache);
+    bindWorkoutCalendarEvents(containerId);
+  });
 }
 function renderWorkoutLogHtml(logs){
   if(!logs.length){
@@ -4469,7 +4548,8 @@ function bindHistoryDetailEvents(){
     btn.disabled = true; btn.textContent = 'Φόρτωση...';
     const logs = await loadWorkoutLogs(state.selectedCustomerCode);
     btn.style.display = 'none';
-    area.innerHTML = renderWorkoutLogHtml(logs);
+    area.innerHTML = renderWorkoutLogFull(logs);
+    bindWorkoutCalendarEvents('hist-log-area');
   });
   document.querySelectorAll('[data-hist-edit]').forEach(el=>{
     el.addEventListener('click', ()=>{
