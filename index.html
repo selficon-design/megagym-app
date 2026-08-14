@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 /* ============ TOKENS ============ */
 :root{
   --bg-0:#05080d;
@@ -592,6 +592,141 @@ input,select{font-family:inherit;}
   border:1.5px solid #ffc465;box-shadow:0 0 12px rgba(255,159,26,.35);cursor:pointer;
 }
 .cal-cell.has-workout:hover{box-shadow:0 0 22px rgba(255,159,26,.6);}
+.cal-cell.today{border-color:#8cffa0 !important;box-shadow:0 0 14px rgba(140,255,160,.55) !important;cursor:pointer;}
+.cal-cell.today:hover{box-shadow:0 0 24px rgba(140,255,160,.8) !important;}
+.cal-cell.selected-compare{outline:3px solid #c86bff;outline-offset:2px;}
+
+.day-compare-btn{
+  background:rgba(140,50,255,.1);
+  border:1.5px solid #b347ff;color:#e3c3ff;font-weight:800;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 0 20px rgba(179,71,255,.5), inset 0 0 16px rgba(179,71,255,.12);
+  min-height:52px;text-shadow:0 0 10px rgba(179,71,255,.8);
+}
+.day-compare-btn:hover{box-shadow:0 0 34px rgba(179,71,255,.8), inset 0 0 20px rgba(179,71,255,.2);}
+.month-compare-btn{
+  background:rgba(0,90,255,.1);border-color:#1e6bff;color:#a8d0ff;
+  box-shadow:0 0 20px rgba(30,107,255,.55), inset 0 0 16px rgba(30,107,255,.14);
+  text-shadow:0 0 10px rgba(30,107,255,.85);
+}
+.month-compare-btn:hover{box-shadow:0 0 34px rgba(30,107,255,.85), inset 0 0 20px rgba(30,107,255,.22);}
+.progress-chart-btn{
+  background:rgba(255,90,0,.1);border-color:#ff5c00;color:#ffcfa3;
+  box-shadow:0 0 20px rgba(255,92,0,.55), inset 0 0 16px rgba(255,92,0,.14);
+  text-shadow:0 0 10px rgba(255,92,0,.85);
+}
+.progress-chart-btn:hover{box-shadow:0 0 34px rgba(255,92,0,.85), inset 0 0 20px rgba(255,92,0,.22);}
+
+/* ============ ΓΡΑΦΗΜΑ ΣΥΓΚΡΙΣΗΣ ΗΜΕΡΩΝ (Day Comparison) ============ */
+.dc-hero-title{
+  text-align:center;font-family:'Orbitron',sans-serif;font-weight:400;font-size:18px;
+  color:#9fe3ff;letter-spacing:.14em;text-transform:uppercase;line-height:1.4;
+  text-shadow:0 0 12px rgba(30,160,255,1), 0 0 30px rgba(0,140,255,1), 0 0 54px rgba(0,140,255,.6), 0 0 80px rgba(0,140,255,.3);
+  margin-bottom:6px;
+  animation:dcTitlePulse 3s ease-in-out infinite;
+}
+@keyframes dcTitlePulse{0%,100%{opacity:1;}50%{opacity:.82;}}
+.dc-hero-sub{text-align:center;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;color:var(--ink-soft);margin-bottom:24px;letter-spacing:.02em;}
+.dc-metric-block{margin-bottom:26px;}
+.dc-metric-title{font-family:'Rajdhani',sans-serif;font-weight:800;font-size:12.5px;color:#eefcff;text-transform:uppercase;letter-spacing:.05em;text-align:center;margin-bottom:4px;}
+.dc-metric-title-en{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;color:#8fb8d6;text-align:center;margin-bottom:14px;}
+.dc-bars-row{display:flex;align-items:flex-end;justify-content:center;gap:28px;height:170px;padding:0 10px;}
+.dc-bar-col{display:flex;flex-direction:column;align-items:center;width:70px;height:100%;justify-content:flex-end;}
+.dc-bar-value{font-family:'Orbitron',sans-serif;font-weight:800;font-size:13px;margin-bottom:6px;white-space:nowrap;}
+.dc-bar-track{
+  width:44px;height:100%;display:flex;align-items:flex-end;
+  background:rgba(0,110,255,.06);border:1px solid rgba(0,140,255,.5);border-radius:8px;overflow:hidden;
+  position:relative;backdrop-filter:blur(2px);
+  box-shadow:0 0 22px rgba(0,140,255,.4);
+}
+.dc-bar-fill{
+  width:100%;height:0%;position:relative;overflow:hidden;
+  transition:height 2.2s cubic-bezier(.16,.9,.25,1);
+  background:linear-gradient(180deg, #6fd3ff, #0066cc);
+  box-shadow:inset 0 0 18px rgba(120,220,255,.8), 0 0 30px rgba(0,150,255,.8);
+}
+.dc-bar-fill.today{background:linear-gradient(180deg, #ffb347, #ff5c00);box-shadow:inset 0 0 18px rgba(255,150,60,.8), 0 0 30px rgba(255,90,0,.8);}
+.dc-bar-fill::before{
+  content:"";position:absolute;left:-30%;right:-30%;top:0;height:14px;
+  background:repeating-linear-gradient(90deg, rgba(255,255,255,.5) 0 8px, transparent 8px 20px);
+  opacity:.5;animation:dcLiquidWave 2.4s ease-in-out infinite;
+}
+@keyframes dcLiquidWave{0%,100%{transform:translateX(0) translateY(0);}50%{transform:translateX(8px) translateY(-1px);}}
+.dc-bar-tag{margin-top:8px;font-family:'Orbitron',sans-serif;font-weight:400;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);text-align:center;}
+.dc-gauges-row{display:flex;justify-content:center;gap:34px;margin-top:6px;}
+.dc-awv-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;}
+.dc-eff-divider{width:1px;height:110px;background:linear-gradient(180deg,transparent,rgba(55,229,111,.5),transparent);}
+.dc-eff-mini-row{display:flex;gap:12px;}
+.dc-cat-row{display:flex;align-items:center;justify-content:center;gap:14px;}
+.dc-cat-row .dc-bars-row{gap:16px;height:130px;}
+.dc-cat-row .dc-bar-col{width:56px;}
+.dc-cat-row .dc-bar-track{width:34px;}
+.dc-cat-row .dc-gauges-row{gap:16px;margin-top:0;}
+.dc-cat-row .dc-gauge{width:88px;height:88px;}
+.dc-cat-row .dc-gauge-value{font-size:14px;}
+.dc-eff-wrap{display:flex;flex-direction:column;align-items:center;}
+.dc-eff-circle{
+  width:58px;height:58px;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:conic-gradient(#37e56f calc(var(--gpct)*1%), rgba(55,229,111,.12) 0);
+  box-shadow:0 0 20px rgba(55,229,111,.75), inset 0 0 10px rgba(0,0,0,.5);
+  border:1px solid rgba(55,229,111,.55);
+}
+.dc-eff-circle::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#0b1017;}
+.dc-eff-value{position:relative;z-index:2;font-family:'Orbitron',sans-serif;font-weight:700;font-size:10.5px;color:#baffc9;text-shadow:0 0 8px rgba(55,229,111,.7);}
+.dc-eff-label{margin-top:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:8px;color:var(--ink-soft);text-transform:uppercase;text-align:center;line-height:1.3;}
+.mc-month-picker{display:flex;align-items:center;gap:6px;background:rgba(0,110,255,.06);border:1px solid rgba(0,140,255,.35);border-radius:8px;padding:4px 6px;}
+.mc-month-arrow{background:none;border:none;color:var(--ink-soft);font-size:13px;cursor:pointer;padding:2px 4px;}
+.mc-month-arrow:hover{color:#7fd8ff;}
+.mc-month-label{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;white-space:nowrap;}
+.dc-gauge-wrap{display:flex;flex-direction:column;align-items:center;}
+.dc-gauge{
+  width:118px;height:118px;border-radius:50%;position:relative;
+  display:grid;place-items:center;
+  background:conic-gradient(var(--gcolor) calc(var(--gpct)*1%), rgba(20,160,255,.1) 0);
+  box-shadow:0 0 28px var(--gglow), inset 0 0 18px rgba(0,0,0,.5);
+  border:1px solid rgba(30,144,255,.45);
+}
+.dc-gauge::after{
+  content:"";position:absolute;inset:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, rgba(61,216,255,.14), rgba(3,11,18,.92) 70%);
+  border:1px solid rgba(61,216,255,.2);
+}
+.dc-gauge-value{position:relative;z-index:2;font-family:'Orbitron',sans-serif;font-weight:700;font-size:19px;color:#eefcff;text-shadow:0 0 10px rgba(140,225,255,.7);}
+.dc-verdict{
+  text-align:center;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;line-height:1.6;
+  padding:14px;border-radius:12px;margin:18px 0 24px;
+  background:rgba(61,216,255,.06);border:1.5px solid rgba(61,216,255,.35);color:#dfeaf2;
+  backdrop-filter:blur(2px);
+}
+.dc-verdict .en{display:block;font-size:11px;font-style:italic;color:var(--ink-soft);margin-top:5px;}
+
+/* ============ ΓΡΑΦΗΜΑ ΠΡΟΟΔΟΥ (Progress Chart) ============ */
+.pc-range-btn{
+  padding:9px 2px;border-radius:8px;border:1px solid rgba(0,140,255,.4);
+  background:rgba(0,110,255,.06);color:var(--ink-soft);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10.5px;cursor:pointer;
+}
+.pc-range-btn.active{background:linear-gradient(135deg,#0066ff,#00c2ff);color:#fff;border-color:#00c2ff;box-shadow:0 0 14px rgba(0,180,255,.5);}
+.pc-chart-row{display:flex;align-items:flex-end;gap:8px;height:180px;overflow-x:auto;padding:4px 4px 8px;margin-bottom:6px;}
+.pc-bar-col{display:flex;flex-direction:column;align-items:center;min-width:26px;height:100%;justify-content:flex-end;flex-shrink:0;}
+.pc-bar-value{font-family:'Orbitron',sans-serif;font-weight:700;font-size:8.5px;color:#7fd8ff;margin-bottom:4px;white-space:nowrap;}
+.pc-bar-track{
+  width:16px;height:100%;display:flex;align-items:flex-end;
+  background:rgba(0,110,255,.06);border:1px solid rgba(0,140,255,.35);border-radius:5px;overflow:hidden;
+}
+.pc-bar-fill{width:100%;height:0%;background:linear-gradient(180deg,#6fd3ff,#0066cc);box-shadow:inset 0 0 10px rgba(120,220,255,.6), 0 0 12px rgba(0,140,255,.5);transition:height 1.4s cubic-bezier(.16,.9,.25,1);}
+.pc-bar-label{margin-top:6px;font-family:'Rajdhani',sans-serif;font-size:8.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;white-space:nowrap;}
+.dc-verdict strong{color:#ff8c1a;}
+.dc-day-label{
+  text-align:center;font-family:'Orbitron',sans-serif;font-weight:400;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  padding:10px;border-radius:10px;margin-bottom:2px;
+  background:rgba(0,120,255,.08);color:#7fd8ff;border:1px solid rgba(0,140,255,.45);
+  text-shadow:0 0 10px rgba(30,144,255,.9);
+  box-shadow:0 0 18px rgba(0,110,255,.3);
+}
+.dc-day-label-gr{text-align:center;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;color:#9fdcff;margin-top:3px;}
+.dc-day-label-en{text-align:center;font-family:'Rajdhani',sans-serif;font-weight:500;font-size:10.5px;color:var(--ink-soft);margin-bottom:14px;margin-top:2px;}
+
+.cal-cell.has-workout{cursor:pointer;}
 .cal-daynum{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:#eefcff;}
 .cal-cell.has-workout .cal-daynum{color:#ffd9a0;}
 .cal-volume{font-family:'Orbitron',sans-serif;font-size:8.5px;font-weight:700;color:var(--gold2);margin-top:1px;line-height:1.1;text-align:center;}
@@ -1013,8 +1148,8 @@ const DEFAULT_CALC_TYPE = 'CALPIN_2_5';
 /* Οι 5 επιλογές ποιότητας εκτέλεσης σετ — καθορίζουν το ποσοστό του
    Actual Workout Volume (AWV) σε σχέση με το Workout Volume (WV) */
 const FAILURE_QUALITY_OPTIONS = [
-  { key:'F0_ORANGE', label:'UNTIL FAILURE 0', sub:'ORANGE', pct:100, bg:'#ff9f1a' },
-  { key:'F0_RED',    label:'UNTIL FAILURE 0', sub:'RED',    pct:94,  bg:'#ef2d35' },
+  { key:'F0_RED',    label:'UNTIL FAILURE 0', sub:'RED',    pct:100, bg:'#ef2d35' },
+  { key:'F0_ORANGE', label:'UNTIL FAILURE 0', sub:'ORANGE', pct:94,  bg:'#ff9f1a' },
   { key:'F1',        label:'UNTIL FAILURE -1', sub:'',      pct:85,  bg:'#1a3c66' },
   { key:'F2',        label:'UNTIL FAILURE -2', sub:'',      pct:79,  bg:'#3bd8ff' },
   { key:'F3',        label:'UNTIL FAILURE -3', sub:'',      pct:77,  bg:'#37e56f' },
@@ -1051,10 +1186,19 @@ let state = {
   workoutExercise: null,
   lightbox: null, // {type:'photo'|'video', url}
   instructionsModalOpen: false,
+  fqRequiredModalOpen: false,
+  repsKgRequiredModalOpen: false,
   workoutLogContext: { customerCode:null, programName:'' },
   workoutCalMonth: new Date().getMonth(),
   workoutCalYear: new Date().getFullYear(),
   workoutLogsCache: [],
+  selectedComparisonDay: null,
+  dayComparisonModalOpen: false,
+  monthComparisonModalOpen: false,
+  monthCompareA: null,
+  monthCompareB: null,
+  progressChartModalOpen: false,
+  progressChartRange: '3m',
   tplLibShellContext: 'trainer', // 'client' | 'trainer' — ποιο "κέλυφος" να ξαναφτιάξει το κουμπί πίσω
   copiedFromProgramId: null, // αν φτιάχνουμε πρόγραμμα ξεκινώντας από αντιγραφή, το id του αρχικού
   editingProgramId: null,    // αν κάνουμε πραγματική διόρθωση (update) υπάρχοντος προγράμματος, το id του
@@ -1347,8 +1491,10 @@ async function logWorkoutSet(entry){
   if(error) console.error('logWorkoutSet error:', error);
   return !error;
 }
-async function loadWorkoutLogs(customerCode){
-  const { data, error } = await sb.from('workout_logs').select('*').eq('customer_code', customerCode).order('created_at', { ascending:false });
+async function loadWorkoutLogs(customerCode, sinceISO){
+  let q = sb.from('workout_logs').select('*').eq('customer_code', customerCode);
+  if(sinceISO) q = q.gte('created_at', sinceISO);
+  const { data, error } = await q.order('created_at', { ascending:false });
   if(error){ console.error(error); return []; }
   return data||[];
 }
@@ -1470,23 +1616,57 @@ function returnFromWorkoutTplLib(){
   if(state.tplLibShellContext === 'client') rebuildClientDashboardShell();
   else rebuildTplPreviewShell();
 }
+function ninetyDaysAgoISO(){
+  const d = new Date();
+  d.setDate(d.getDate()-90);
+  return d.toISOString();
+}
+async function loadAndRenderWorkoutLog(customerCode, containerId){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = `<div style="color:var(--ink-soft);">Φόρτωση...</div>`;
+  const logs = await loadWorkoutLogs(customerCode, ninetyDaysAgoISO());
+  container.innerHTML = renderWorkoutLogFull(logs) + (logs.length ? `
+    <button class="btn btn-outline" id="load-older-logs" style="width:100%;justify-content:center;margin-top:4px;">Φόρτωσε Παλαιότερα Δεδομένα (πριν 90 ημέρες)</button>
+  ` : '');
+  bindWorkoutCalendarEvents(containerId);
+  document.getElementById('load-older-logs')?.addEventListener('click', async ()=>{
+    const btn = document.getElementById('load-older-logs');
+    btn.disabled = true; btn.textContent = 'Φόρτωση...';
+    const allLogs = await loadWorkoutLogs(customerCode);
+    container.innerHTML = renderWorkoutLogFull(allLogs);
+    bindWorkoutCalendarEvents(containerId);
+  });
+}
 async function renderClientWorkoutLog(){
   const content = document.getElementById('client-content');
   if(!content || !auth.customer) return;
   content.innerHTML = `<div style="color:var(--ink-soft);">Φόρτωση...</div>`;
-  const logs = await loadWorkoutLogs(auth.customer.code);
-  content.innerHTML = renderWorkoutLogFull(logs);
-  bindWorkoutCalendarEvents('client-content');
+  await loadAndRenderWorkoutLog(auth.customer.code, 'client-content');
 }
 function renderWorkoutCalendar(logs, year, month){
   const dailyData = {};
+  const now = new Date();
+  const todayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+  let monthWV = 0, monthAWV = 0;
+  const monthDaySet = new Set();
   logs.forEach(l=>{
     const d = new Date(l.created_at);
     const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     if(!dailyData[key]) dailyData[key] = 0;
-    const awv = (l.awv!==null && l.awv!==undefined) ? Number(l.awv) : (Number(l.kg)||0)*(Number(l.reps)||0);
+    const wv = (l.wv!==null && l.wv!==undefined) ? Number(l.wv) : (Number(l.kg)||0)*(Number(l.reps)||0);
+    const awv = (l.awv!==null && l.awv!==undefined) ? Number(l.awv) : wv;
     dailyData[key] += awv;
+    if(d.getFullYear()===year && d.getMonth()===month){
+      monthWV += wv; monthAWV += awv;
+      monthDaySet.add(key);
+    }
   });
+  const monthWVE = monthWV>0 ? (monthAWV/monthWV)*100 : 0;
+  const totalSessions = monthDaySet.size;
+  const daysInMonthForAvg = new Date(year, month+1, 0).getDate();
+  const avgPerWeek = totalSessions / (daysInMonthForAvg/7);
+
   const monthNames = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
   const dayLabels = ['Δ','Τ','Τ','Π','Π','Σ','Κ'];
   const firstDay = new Date(year, month, 1);
@@ -1499,7 +1679,8 @@ function renderWorkoutCalendar(logs, year, month){
     const key = `${year}-${month}-${day}`;
     const volume = dailyData[key];
     const hasWorkout = volume!==undefined;
-    cells += `<div class="cal-cell ${hasWorkout?'has-workout':''}" ${hasWorkout?`data-cal-day="${escAttr(key)}"`:''}>
+    const isToday = key===todayKey;
+    cells += `<div class="cal-cell ${hasWorkout?'has-workout':''} ${isToday?'today':''}" ${hasWorkout?`data-cal-day="${escAttr(key)}"`:''}>
       <div class="cal-daynum">${day}</div>
       ${hasWorkout ? `<div class="cal-volume">${formatCalcNum(volume)}kg</div>`:''}
     </div>`;
@@ -1515,6 +1696,18 @@ function renderWorkoutCalendar(logs, year, month){
         ${dayLabels.map(l=>`<div class="cal-headcell">${l}</div>`).join('')}
         ${cells}
       </div>
+      <div class="calc-info-note" style="text-align:left;margin:16px 0 0;padding:12px;line-height:1.8;">
+        <div style="font-weight:800;color:#eefcff;font-size:11.5px;text-transform:uppercase;margin-bottom:6px;">Στατιστικά Μήνα · Month Stats</div>
+        Συνολικές Προπονήσεις Μήνα <span style="opacity:.7;font-style:italic;">(Total Workouts)</span>: <strong style="color:#eefcff;">${totalSessions}</strong><br>
+        Μέσος Όρος / Εβδομάδα <span style="opacity:.7;font-style:italic;">(Average / Week)</span>: <strong style="color:#eefcff;">${formatCalcNum(avgPerWeek)}</strong><br>
+        Όγκος Προπόνησης <span style="opacity:.7;font-style:italic;">(Workout Volume - WV)</span>: <strong style="color:#eefcff;">${formatCalcNum(monthWV)} kg</strong><br>
+        Αποδοτικός Όγκος Προπόνησης <span style="opacity:.7;font-style:italic;">(Actual Workout Volume - AWV)</span>: <strong style="color:var(--gold2);">${formatCalcNum(monthAWV)} kg</strong><br>
+        Απόδοση Προπόνησης <span style="opacity:.7;font-style:italic;">(Workout Volume Efficiency - WVE)</span>: <strong style="color:var(--green);">${formatCalcNum(monthWVE)}%</strong>
+      </div>
+      <div style="font-size:11px;color:var(--ink-soft);text-align:center;margin-top:12px;font-style:italic;">Επίλεξε μια ημέρα στο παρελθόν και μετά πάτησε το κουμπί.</div>
+      <button class="btn day-compare-btn" id="day-compare-btn" style="width:100%;justify-content:center;margin-top:8px;">ΣΥΓΚΡΙΣΗ ΗΜΕΡΩΝ - DAY COMPARISON</button>
+      <button class="btn day-compare-btn month-compare-btn" id="month-compare-btn" style="width:100%;justify-content:center;margin-top:8px;">ΣΥΓΚΡΙΣΗ ΜΗΝΩΝ - MONTH COMPARISON</button>
+      <button class="btn day-compare-btn progress-chart-btn" id="progress-chart-btn" style="width:100%;justify-content:center;margin-top:8px;">ΓΡΑΦΗΜΑ ΠΡΟΟΔΟΥ - PROGRESS CHART</button>
     </div>`;
 }
 function renderWorkoutLogFull(logs){
@@ -1525,45 +1718,328 @@ function bindWorkoutCalendarEvents(containerId){
   document.getElementById('cal-prev-month')?.addEventListener('click', ()=>{
     state.workoutCalMonth--;
     if(state.workoutCalMonth<0){ state.workoutCalMonth=11; state.workoutCalYear--; }
-    const el = document.getElementById(containerId);
-    el.innerHTML = renderWorkoutLogFull(state.workoutLogsCache);
-    bindWorkoutCalendarEvents(containerId);
+    rerenderWorkoutLogArea(containerId);
   });
   document.getElementById('cal-next-month')?.addEventListener('click', ()=>{
     state.workoutCalMonth++;
     if(state.workoutCalMonth>11){ state.workoutCalMonth=0; state.workoutCalYear++; }
-    const el = document.getElementById(containerId);
-    el.innerHTML = renderWorkoutLogFull(state.workoutLogsCache);
+    rerenderWorkoutLogArea(containerId);
+  });
+  document.querySelectorAll('[data-cal-day]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const key = el.getAttribute('data-cal-day');
+      state.selectedComparisonDay = key;
+      document.querySelectorAll('[data-cal-day]').forEach(c=>c.classList.remove('selected-compare'));
+      el.classList.add('selected-compare');
+      document.getElementById(`daypanel-${key}`)?.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+  document.getElementById('day-compare-btn')?.addEventListener('click', ()=>{
+    if(!state.selectedComparisonDay){
+      toast('Επίλεξε πρώτα μια χρωματιστή ημέρα στο ημερολόγιο.');
+      return;
+    }
+    state.dayComparisonModalOpen = true;
+    renderModal();
+  });
+  document.getElementById('month-compare-btn')?.addEventListener('click', ()=>{
+    const curYear = state.workoutCalYear, curMonth = state.workoutCalMonth;
+    let prevYear = curYear, prevMonth = curMonth - 1;
+    if(prevMonth < 0){ prevMonth = 11; prevYear--; }
+    state.monthCompareA = { year: prevYear, month: prevMonth };
+    state.monthCompareB = { year: curYear, month: curMonth };
+    state.monthComparisonModalOpen = true;
+    renderModal();
+  });
+  document.getElementById('progress-chart-btn')?.addEventListener('click', ()=>{
+    state.progressChartModalOpen = true;
+    renderModal();
+  });
+}
+function rerenderWorkoutLogArea(containerId){
+  const el = document.getElementById(containerId);
+  const hadLoadOlderBtn = !!document.getElementById('load-older-logs');
+  el.innerHTML = renderWorkoutLogFull(state.workoutLogsCache) + (hadLoadOlderBtn ? `
+    <button class="btn btn-outline" id="load-older-logs" style="width:100%;justify-content:center;margin-top:4px;">Φόρτωσε Παλαιότερα Δεδομένα (πριν 90 ημέρες)</button>
+  ` : '');
+  bindWorkoutCalendarEvents(containerId);
+  document.getElementById('load-older-logs')?.addEventListener('click', async ()=>{
+    const btn = document.getElementById('load-older-logs');
+    btn.disabled = true; btn.textContent = 'Φόρτωση...';
+    const code = state.workoutLogsCache[0]?.customer_code || state.selectedCustomerCode || (auth.customer && auth.customer.code);
+    const allLogs = await loadWorkoutLogs(code);
+    el.innerHTML = renderWorkoutLogFull(allLogs);
     bindWorkoutCalendarEvents(containerId);
   });
+}
+function renderCompareChartHTML(idPrefix, aggA, aggB, tagA, tagB, subA, subB, colorA, colorB){
+  return `
+    <div class="dc-metric-block">
+      <div class="dc-metric-title">Όγκος Προπόνησης</div>
+      <div class="dc-metric-title-en">WORKOUT VOLUME (WV)</div>
+      <div class="dc-cat-row">
+        <div class="dc-bars-row">
+          <div class="dc-bar-col">
+            <div class="dc-bar-value" style="color:${colorA};">${formatCalcNum(aggA.wv)} kg</div>
+            <div class="dc-bar-track"><div class="dc-bar-fill past" id="${idPrefix}-bar-awv"></div></div>
+            <div class="dc-bar-tag">${escHtml(tagA)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subA)}</span></div>
+          </div>
+          <div class="dc-bar-col">
+            <div class="dc-bar-value" style="color:${colorB};">${formatCalcNum(aggB.wv)} kg</div>
+            <div class="dc-bar-track"><div class="dc-bar-fill today" id="${idPrefix}-bar-bwv"></div></div>
+            <div class="dc-bar-tag">${escHtml(tagB)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subB)}</span></div>
+          </div>
+        </div>
+        <div class="dc-eff-wrap">
+          <div class="dc-eff-circle" id="${idPrefix}-eff-wv" style="--gpct:0;"><div class="dc-eff-value" id="${idPrefix}-eff-wv-txt">0%</div></div>
+          <div class="dc-eff-label">Σύγκριση<br>Comparison</div>
+        </div>
+      </div>
+    </div>
+    <div class="dc-metric-block">
+      <div class="dc-metric-title">Αποδοτικός Όγκος Προπόνησης</div>
+      <div class="dc-metric-title-en">ACTUAL WORKOUT VOLUME (AWV)</div>
+      <div class="dc-cat-row">
+        <div class="dc-bars-row">
+          <div class="dc-bar-col">
+            <div class="dc-bar-value" style="color:${colorA};">${formatCalcNum(aggA.awv)} kg</div>
+            <div class="dc-bar-track"><div class="dc-bar-fill past" id="${idPrefix}-bar-aawv"></div></div>
+            <div class="dc-bar-tag">${escHtml(tagA)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subA)}</span></div>
+          </div>
+          <div class="dc-bar-col">
+            <div class="dc-bar-value" style="color:${colorB};">${formatCalcNum(aggB.awv)} kg</div>
+            <div class="dc-bar-track"><div class="dc-bar-fill today" id="${idPrefix}-bar-bawv"></div></div>
+            <div class="dc-bar-tag">${escHtml(tagB)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subB)}</span></div>
+          </div>
+        </div>
+        <div class="dc-eff-wrap">
+          <div class="dc-eff-circle" id="${idPrefix}-eff-awv" style="--gpct:0;"><div class="dc-eff-value" id="${idPrefix}-eff-awv-txt">0%</div></div>
+          <div class="dc-eff-label">Σύγκριση<br>Comparison</div>
+        </div>
+      </div>
+    </div>
+    <div class="dc-metric-block">
+      <div class="dc-metric-title">Απόδοση Προπόνησης</div>
+      <div class="dc-metric-title-en">WORKOUT VOLUME EFFICIENCY (WVE)</div>
+      <div class="dc-cat-row">
+        <div class="dc-gauges-row" style="margin-top:0;">
+          <div class="dc-gauge-wrap">
+            <div class="dc-gauge" id="${idPrefix}-gauge-a" style="--gcolor:${colorA};--gglow:${colorA}bb;--gpct:0;">
+              <div class="dc-gauge-value">${formatCalcNum(aggA.wve)}%</div>
+            </div>
+            <div class="dc-bar-tag" style="margin-top:8px;">${escHtml(tagA)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subA)}</span></div>
+          </div>
+          <div class="dc-gauge-wrap">
+            <div class="dc-gauge" id="${idPrefix}-gauge-b" style="--gcolor:${colorB};--gglow:${colorB}bb;--gpct:0;">
+              <div class="dc-gauge-value">${formatCalcNum(aggB.wve)}%</div>
+            </div>
+            <div class="dc-bar-tag" style="margin-top:8px;">${escHtml(tagB)}<br><span style="opacity:.65;font-size:8.5px;">${escHtml(subB)}</span></div>
+          </div>
+        </div>
+        <div class="dc-eff-wrap">
+          <div class="dc-eff-circle" id="${idPrefix}-eff-wve" style="--gpct:0;"><div class="dc-eff-value" id="${idPrefix}-eff-wve-txt">0%</div></div>
+          <div class="dc-eff-label">Σύγκριση<br>Comparison</div>
+        </div>
+      </div>
+    </div>`;
+}
+function animateCompareChart(idPrefix, aggA, aggB){
+  const maxWV = Math.max(aggA.wv, aggB.wv, 1);
+  const maxAWV = Math.max(aggA.awv, aggB.awv, 1);
+  setTimeout(()=>{
+    const aWV = document.getElementById(`${idPrefix}-bar-awv`);
+    const bWV = document.getElementById(`${idPrefix}-bar-bwv`);
+    if(aWV) aWV.style.height = ((aggA.wv/maxWV)*100)+'%';
+    if(bWV) bWV.style.height = ((aggB.wv/maxWV)*100)+'%';
+  }, 150);
+  setTimeout(()=>{
+    const aAWV = document.getElementById(`${idPrefix}-bar-aawv`);
+    const bAWV = document.getElementById(`${idPrefix}-bar-bawv`);
+    if(aAWV) aAWV.style.height = ((aggA.awv/maxAWV)*100)+'%';
+    if(bAWV) bAWV.style.height = ((aggB.awv/maxAWV)*100)+'%';
+  }, 900);
+  setTimeout(()=>{
+    animateGaugeTo(document.getElementById(`${idPrefix}-gauge-a`), Math.min(aggA.wve,100), 1800);
+    animateGaugeTo(document.getElementById(`${idPrefix}-gauge-b`), Math.min(aggB.wve,100), 1800);
+  }, 1700);
+  setTimeout(()=>{
+    function pctChange(a,b){ if(a<=0) return b>0?100:0; return ((b-a)/a)*100; }
+    const metrics = [
+      { key:'wv', a:aggA.wv, b:aggB.wv },
+      { key:'awv', a:aggA.awv, b:aggB.awv },
+      { key:'wve', a:aggA.wve, b:aggB.wve },
+    ];
+    metrics.forEach(m=>{
+      const pct = pctChange(m.a, m.b);
+      const circle = document.getElementById(`${idPrefix}-eff-${m.key}`);
+      const txt = document.getElementById(`${idPrefix}-eff-${m.key}-txt`);
+      if(txt) txt.textContent = `${pct>=0?'+':''}${formatCalcNum(pct)}%`;
+      animateGaugeTo(circle, Math.min(Math.abs(pct),100), 1400);
+    });
+  }, 2600);
+}
+async function renderProgressChartModal(root){
+  const rangeOptions = [
+    {key:'3m', label:'3 ΜΗΝΕΣ', months:3},
+    {key:'6m', label:'6 ΜΗΝΕΣ', months:6},
+    {key:'1y', label:'1 ΕΤΟΣ', months:12},
+    {key:'2y', label:'2 ΕΤΗ', months:24},
+    {key:'3y', label:'3 ΕΤΗ', months:36},
+  ];
+  root.innerHTML = `
+    <div class="modal-overlay" id="progresschart-overlay">
+      <div class="modal" style="max-width:500px;">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:-6px;">
+          <button id="progresschart-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+        </div>
+        <div class="dc-hero-title">Progress Chart</div>
+        <div class="dc-hero-sub">Γράφημα Προόδου</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:22px;">
+          ${rangeOptions.map(r=>`<button type="button" class="pc-range-btn ${state.progressChartRange===r.key?'active':''}" data-pc-range="${r.key}">${r.label}</button>`).join('')}
+        </div>
+        <div id="pc-chart-area"><div style="text-align:center;color:var(--ink-soft);padding:30px 0;">Φόρτωση...</div></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px;" id="progresschart-close-btn">Κλείσιμο</button>
+      </div>
+    </div>`;
+  document.getElementById('progresschart-close-x')?.addEventListener('click', ()=>{ state.progressChartModalOpen=false; renderModal(); });
+  document.getElementById('progresschart-close-btn')?.addEventListener('click', ()=>{ state.progressChartModalOpen=false; renderModal(); });
+  document.getElementById('progresschart-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='progresschart-overlay'){ state.progressChartModalOpen=false; renderModal(); } });
+  document.querySelectorAll('[data-pc-range]').forEach(el=>{
+    el.addEventListener('click', async ()=>{
+      state.progressChartRange = el.getAttribute('data-pc-range');
+      document.querySelectorAll('[data-pc-range]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-pc-range')===state.progressChartRange));
+      await loadAndRenderProgressChart();
+    });
+  });
+  await loadAndRenderProgressChart();
+}
+async function loadAndRenderProgressChart(){
+  const area = document.getElementById('pc-chart-area');
+  if(!area) return;
+  area.innerHTML = `<div style="text-align:center;color:var(--ink-soft);padding:30px 0;">Φόρτωση...</div>`;
+  const code = getCurrentLogCustomerCode();
+  const rangeMap = {'3m':3,'6m':6,'1y':12,'2y':24,'3y':36};
+  const months = rangeMap[state.progressChartRange] || 3;
+  const since = new Date();
+  since.setDate(1);
+  since.setMonth(since.getMonth() - (months-1));
+  const logs = code ? await loadWorkoutLogs(code, since.toISOString()) : [];
+
+  const buckets = [];
+  const now = new Date();
+  for(let i=months-1; i>=0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    buckets.push({ year: d.getFullYear(), month: d.getMonth(), awv: 0, label: d.toLocaleDateString('el-GR',{month:'short', year:'2-digit'}) });
+  }
+  logs.forEach(l=>{
+    const d = new Date(l.created_at);
+    const b = buckets.find(bk=>bk.year===d.getFullYear() && bk.month===d.getMonth());
+    if(b){
+      const awv = (l.awv!==null&&l.awv!==undefined) ? Number(l.awv) : (Number(l.kg)||0)*(Number(l.reps)||0);
+      b.awv += awv;
+    }
+  });
+  const maxAWV = Math.max(...buckets.map(b=>b.awv), 1);
+  if(!logs.length){
+    area.innerHTML = `<div style="text-align:center;color:var(--ink-soft);padding:20px 0;">Δεν υπάρχουν καταγεγραμμένες προπονήσεις σε αυτό το διάστημα.<br><span style="font-size:11px;font-style:italic;">No recorded workouts in this range.</span></div>`;
+    return;
+  }
+  area.innerHTML = `
+    <div class="dc-metric-title">Αποδοτικός Όγκος ανά Μήνα</div>
+    <div class="dc-metric-title-en">Actual Workout Volume per Month (AWV)</div>
+    <div class="pc-chart-row">
+      ${buckets.map((b,i)=>`
+        <div class="pc-bar-col">
+          <div class="pc-bar-value">${formatCalcNum(b.awv)}</div>
+          <div class="pc-bar-track"><div class="pc-bar-fill" id="pc-bar-${i}"></div></div>
+          <div class="pc-bar-label">${escHtml(b.label)}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  setTimeout(()=>{
+    buckets.forEach((b,i)=>{
+      const el = document.getElementById(`pc-bar-${i}`);
+      if(el) el.style.height = ((b.awv/maxAWV)*100)+'%';
+    });
+  }, 150);
+}
+function getCurrentLogCustomerCode(){
+  return state.workoutLogsCache[0]?.customer_code || state.selectedCustomerCode || (auth.customer && auth.customer.code) || null;
+}
+function animateGaugeTo(el, targetPct, duration){
+  if(!el) return;
+  const start = performance.now();
+  function step(now){
+    const t = Math.min((now-start)/duration, 1);
+    const eased = 1 - Math.pow(1-t, 3);
+    el.style.setProperty('--gpct', (eased*targetPct).toFixed(1));
+    if(t<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function getDayAggregate(logs, dayKey){
+  const entries = logs.filter(l=>{
+    const d = new Date(l.created_at);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}` === dayKey;
+  }).sort((a,b)=> new Date(a.created_at)-new Date(b.created_at));
+  const wv = entries.reduce((s,e)=> s+((e.wv!==null&&e.wv!==undefined)?Number(e.wv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+  const awv = entries.reduce((s,e)=> s+((e.awv!==null&&e.awv!==undefined)?Number(e.awv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+  const wve = wv>0 ? (awv/wv)*100 : 0;
+  const dateObj = entries.length ? new Date(entries[0].created_at) : null;
+  return { entries, wv, awv, wve, dateObj };
+}
+function getMostRecentDayKey(logs){
+  if(!logs.length) return null;
+  const sorted = [...logs].sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+  const d = new Date(sorted[0].created_at);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+function renderComparisonDayEntries(entries){
+  if(!entries.length) return `<div style="text-align:center;color:var(--ink-soft);font-size:12px;padding:14px 0;">Καμία καταγραφή</div>`;
+  return entries.map(e=>{
+    const t = new Date(e.created_at).toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'});
+    const fq = FAILURE_QUALITY_OPTIONS.find(f=>f.key===e.failure_quality);
+    return `<div class="tl-card" style="margin-bottom:8px;padding:10px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <div>
+          <div style="font-weight:700;font-size:12.5px;color:#dffaff;text-transform:uppercase;">${escHtml(e.exercise)}</div>
+          <div style="font-size:10.5px;color:var(--ink-soft);margin-top:2px;">${escHtml(e.group_label||'')} ${e.set_number?'· SET '+e.set_number:''} · ${t}</div>
+          ${fq ? `<div style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:7px;background:${fq.bg};color:#fff;font-size:9px;font-weight:800;">${escHtml(fq.label)}${fq.sub?' '+escHtml(fq.sub):''}</div>`:''}
+        </div>
+        <div style="text-align:right;white-space:nowrap;">
+          <div class="mono" style="font-size:12px;color:var(--gold2);font-weight:700;">${e.reps} reps · ${e.kg} kg</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 function renderWorkoutLogHtml(logs){
   if(!logs.length){
     return `<div class="panel pad empty"><div class="icon">📅</div><h3>Δεν υπάρχει ακόμα ημερολόγιο</h3><p>Κάθε φορά που υπολογίζεις τα κιλά του επόμενου σετ, καταγράφεται αυτόματα εδώ.</p></div>`;
   }
-  // Ομαδοποίηση ανά ημέρα
+  // Ομαδοποίηση ανά ημέρα (numeric key ίδιο format με το ημερολόγιο, για scroll-to-day)
   const groups = {};
   const order = [];
   logs.forEach(l=>{
     const d = new Date(l.created_at);
-    const dayKey = d.toLocaleDateString('el-GR');
-    if(!groups[dayKey]){ groups[dayKey] = []; order.push(dayKey); }
-    groups[dayKey].push(l);
+    const numKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if(!groups[numKey]){ groups[numKey] = { label: d.toLocaleDateString('el-GR'), entries: [] }; order.push(numKey); }
+    groups[numKey].entries.push(l);
   });
-  return order.map(dayKey=>{
-    const entries = groups[dayKey];
+  return order.map(numKey=>{
+    const { label: dayKey, entries } = groups[numKey];
     const programNames = [...new Set(entries.map(e=>e.program_name).filter(Boolean))];
     const dayWV = entries.reduce((sum,e)=> sum + ((e.wv!==null&&e.wv!==undefined)?Number(e.wv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
     const dayAWV = entries.reduce((sum,e)=> sum + ((e.awv!==null&&e.awv!==undefined)?Number(e.awv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
     const dayWVE = dayWV>0 ? (dayAWV/dayWV)*100 : 0;
     return `
-    <div class="panel pad" style="margin-bottom:16px;">
+    <div class="panel pad" id="daypanel-${escAttr(numKey)}" style="margin-bottom:16px;scroll-margin-top:16px;">
       <div class="section-title"><span class="dot"></span>${escHtml(dayKey)}</div>
       ${programNames.length ? `<div style="font-size:11.5px;color:var(--cyan-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">${programNames.map(escHtml).join(' · ')}</div>`:''}
-      <div class="calc-info-note" style="text-align:left;margin-bottom:14px;line-height:1.7;">
-        Workout Volume (WV): <strong style="color:#eefcff;">${formatCalcNum(dayWV)} kg</strong><br>
-        Actual Workout Volume (AWV): <strong style="color:var(--gold2);">${formatCalcNum(dayAWV)} kg</strong><br>
-        Workout Volume Efficiency (WVE): <strong style="color:var(--green);">${formatCalcNum(dayWVE)}%</strong>
+      <div class="calc-info-note" style="text-align:left;margin-bottom:14px;line-height:1.8;">
+        Όγκος Προπόνησης <span style="opacity:.7;font-style:italic;">(Workout Volume - WV)</span>: <strong style="color:#eefcff;">${formatCalcNum(dayWV)} kg</strong><br>
+        Αποδοτικός Όγκος Προπόνησης <span style="opacity:.7;font-style:italic;">(Actual Workout Volume - AWV)</span>: <strong style="color:var(--gold2);">${formatCalcNum(dayAWV)} kg</strong><br>
+        Απόδοση Προπόνησης <span style="opacity:.7;font-style:italic;">(Workout Volume Efficiency - WVE)</span>: <strong style="color:var(--green);">${formatCalcNum(dayWVE)}%</strong>
       </div>
       ${entries.map(e=>{
         const t = new Date(e.created_at).toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'});
@@ -3316,11 +3792,11 @@ function formatCalcNum(n){
   return Number.isInteger(v)?String(v):String(v).replace('.',',');
 }
 function calculateWorkoutNextWeight(){
-  if(!workoutCalcValues.reps || !workoutCalcValues.kg){ showWorkoutCalcError('Συμπλήρωσε πρώτα τις επαναλήψεις και τα κιλά.'); return; }
+  if(!workoutCalcValues.reps || !workoutCalcValues.kg){ state.repsKgRequiredModalOpen = true; renderModal(); return; }
   const reps0 = Number(workoutCalcValues.reps);
   const kg0 = Number(workoutCalcValues.kg);
   if(!Number.isFinite(reps0)||!Number.isFinite(kg0)||reps0<=0||kg0<=0){ showWorkoutCalcError('Οι τιμές πρέπει να είναι μεγαλύτερες από το μηδέν.'); return; }
-  if(!workoutFailureQuality){ showWorkoutCalcError('Επίλεξε πρώτα την ποιότητα εκτέλεσης του σετ (τα 5 έγχρωμα κουμπιά).'); return; }
+  if(!workoutFailureQuality){ state.fqRequiredModalOpen = true; renderModal(); return; }
 
   const btn = document.getElementById('calcComputeBtn');
   const nw=document.getElementById('nextWeight');
@@ -3474,7 +3950,7 @@ function renderWorkoutPage(){
           </button>
         `).join('')}
       </div>
-      <button class="btn btn-critical" style="width:100%;justify-content:center;" id="calcComputeBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET</button>
+      <button class="btn btn-critical" style="width:100%;justify-content:center;min-height:58px;font-size:15px;" id="calcComputeBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET</button>
       <div style="text-align:center;font-size:10.5px;color:var(--ink-soft);font-style:italic;margin:5px 0 16px;">Calculate next set's weight</div>
 
       <div class="calc-result-label">Κιλά Επόμενου SET <span style="color:var(--ink-soft);font-weight:400;font-style:italic;">· Next Set's Weight</span></div>
@@ -3601,6 +4077,170 @@ function renderModal(){
     document.getElementById('instructions-close-x')?.addEventListener('click', ()=>{ state.instructionsModalOpen=false; renderModal(); });
     document.getElementById('instructions-close-btn')?.addEventListener('click', ()=>{ state.instructionsModalOpen=false; renderModal(); });
     document.getElementById('instructions-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='instructions-overlay'){ state.instructionsModalOpen=false; renderModal(); } });
+    return;
+  }
+  if(state.fqRequiredModalOpen){
+    root.innerHTML = `
+      <div class="modal-overlay" id="fq-required-overlay">
+        <div class="modal" style="max-width:400px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <h2 style="font-size:16px;margin:0;">Ποιότητα Εκτέλεσης Σετ</h2>
+            <button id="fq-required-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+          </div>
+          <p style="font-size:13.5px;line-height:1.6;color:#eefcff;margin:0 0 12px;font-weight:700;">Επιλέξτε πρώτα επίπεδο ΠΟΙΟΤΗΤΑ ΕΚΤΕΛΕΣΗΣ SET και μετά πατήστε ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET.</p>
+          <div style="font-size:12.5px;line-height:1.65;color:#dfeaf2;display:flex;flex-direction:column;gap:8px;">
+            <div><strong style="color:#ef2d35;">UNTIL FAILURE 0 – RED</strong> αν πήγατε σε πολύ έντονο επίπεδο.</div>
+            <div><strong style="color:#ff9f1a;">UNTIL FAILURE 0 – ORANGE</strong> αν πιστεύετε ότι δεν μπορούσατε να βγάλετε άλλη επανάληψη, αλλά σίγουρα μπορούσατε μισή ακόμη.</div>
+            <div><strong style="color:#6fb3ff;">UNTIL FAILURE -1</strong> αν θα μπορούσατε να βγάλετε άλλη μία επανάληψη.</div>
+            <div><strong style="color:#3bd8ff;">UNTIL FAILURE -2</strong> αν θα μπορούσατε να βγάλετε άλλες δύο επαναλήψεις.</div>
+            <div><strong style="color:#37e56f;">UNTIL FAILURE -3</strong> αν θα μπορούσατε να βγάλετε άλλες τρεις επαναλήψεις.</div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px;" id="fq-required-close-btn">Κατάλαβα</button>
+        </div>
+      </div>`;
+    document.getElementById('fq-required-close-x')?.addEventListener('click', ()=>{ state.fqRequiredModalOpen=false; renderModal(); });
+    document.getElementById('fq-required-close-btn')?.addEventListener('click', ()=>{ state.fqRequiredModalOpen=false; renderModal(); });
+    document.getElementById('fq-required-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='fq-required-overlay'){ state.fqRequiredModalOpen=false; renderModal(); } });
+    return;
+  }
+  if(state.repsKgRequiredModalOpen){
+    root.innerHTML = `
+      <div class="modal-overlay" id="repskg-required-overlay">
+        <div class="modal" style="max-width:400px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <h2 style="font-size:16px;margin:0;">Επαναλήψεις &amp; Κιλά</h2>
+            <button id="repskg-required-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+          </div>
+          <p style="font-size:13.5px;line-height:1.7;color:#eefcff;margin:0;">Πατήστε πρώτα το κουμπί <strong style="color:var(--accent);">REPS</strong> και πληκτρολογήστε πόσες επαναλήψεις πετύχατε στο τελευταίο SET, και μετά πατήστε το κουμπί <strong style="color:var(--accent);">KG</strong> και πληκτρολογήστε πόσα κιλά είχατε στο τελευταίο SET.</p>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px;" id="repskg-required-close-btn">Κατάλαβα</button>
+        </div>
+      </div>`;
+    document.getElementById('repskg-required-close-x')?.addEventListener('click', ()=>{ state.repsKgRequiredModalOpen=false; renderModal(); });
+    document.getElementById('repskg-required-close-btn')?.addEventListener('click', ()=>{ state.repsKgRequiredModalOpen=false; renderModal(); });
+    document.getElementById('repskg-required-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='repskg-required-overlay'){ state.repsKgRequiredModalOpen=false; renderModal(); } });
+    return;
+  }
+  if(state.dayComparisonModalOpen){
+    const logs = state.workoutLogsCache || [];
+    const pastKey = state.selectedComparisonDay;
+    const todayKey = getMostRecentDayKey(logs);
+    const past = getDayAggregate(logs, pastKey);
+    const today = getDayAggregate(logs, todayKey);
+    const awvDiff = today.awv - past.awv;
+    const wveDiff = today.wve - past.wve;
+    const improved = awvDiff >= 0;
+    const verdictText = improved
+      ? `Βελτίωση Αποδοτικού Όγκου κατά <strong>${formatCalcNum(Math.abs(awvDiff))} kg</strong> (${wveDiff>=0?'+':''}${formatCalcNum(wveDiff)}% απόδοση) σε σχέση με τον παλιό σου εαυτό!<span class="en">Actual Workout Volume improved by ${formatCalcNum(Math.abs(awvDiff))} kg (${wveDiff>=0?'+':''}${formatCalcNum(wveDiff)}% efficiency) compared to your past self!</span>`
+      : `Ο παλιός σου εαυτός είχε <strong>${formatCalcNum(Math.abs(awvDiff))} kg</strong> μεγαλύτερο αποδοτικό όγκο (${formatCalcNum(wveDiff)}% απόδοση). Έλα να τον ξεπεράσεις!<span class="en">Your past self had ${formatCalcNum(Math.abs(awvDiff))} kg more actual volume (${formatCalcNum(wveDiff)}% efficiency). Time to beat it!</span>`;
+    const pastLabel = past.dateObj ? past.dateObj.toLocaleDateString('el-GR') : '—';
+    const todayLabel = today.dateObj ? today.dateObj.toLocaleDateString('el-GR') : '—';
+    root.innerHTML = `
+      <div class="modal-overlay" id="daycompare-overlay">
+        <div class="modal" style="max-width:460px;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:-6px;">
+            <button id="daycompare-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+          </div>
+          <div class="dc-hero-title">Your Past Self vs You Today</div>
+          <div class="dc-hero-sub">Ο Παλιός σου Εαυτός εναντίον του Νέου σου Εαυτού</div>
+          ${renderCompareChartHTML('dc', past, today, 'Past Self', 'You Today', pastLabel, todayLabel, '#1e90ff', '#ff8c1a')}
+          <div class="dc-verdict ${improved?'':'negative'}">${verdictText}</div>
+
+          <div class="dc-day-label past">Your Past Self</div>
+          <div class="dc-day-label-gr">Ο Παλιός σου Εαυτός</div>
+          <div class="dc-day-label-en">${escHtml(pastLabel)}</div>
+          ${renderComparisonDayEntries(past.entries)}
+
+          <div class="dc-day-label today" style="margin-top:20px;">You Today</div>
+          <div class="dc-day-label-gr">Ο Νέος σου Εαυτός</div>
+          <div class="dc-day-label-en">${escHtml(todayLabel)}</div>
+          ${renderComparisonDayEntries(today.entries)}
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px;" id="daycompare-close-btn">Κλείσιμο</button>
+        </div>
+      </div>`;
+    document.getElementById('daycompare-close-x')?.addEventListener('click', ()=>{ state.dayComparisonModalOpen=false; renderModal(); });
+    document.getElementById('daycompare-close-btn')?.addEventListener('click', ()=>{ state.dayComparisonModalOpen=false; renderModal(); });
+    document.getElementById('daycompare-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='daycompare-overlay'){ state.dayComparisonModalOpen=false; renderModal(); } });
+    animateCompareChart('dc', past, today);
+    return;
+  }
+  if(state.monthComparisonModalOpen){
+    const logs = state.workoutLogsCache || [];
+    if(!state.monthCompareA || !state.monthCompareB){
+      const curYear = state.workoutCalYear, curMonth = state.workoutCalMonth;
+      let prevYear = curYear, prevMonth = curMonth - 1;
+      if(prevMonth < 0){ prevMonth = 11; prevYear--; }
+      state.monthCompareA = { year: prevYear, month: prevMonth };
+      state.monthCompareB = { year: curYear, month: curMonth };
+    }
+    const { year: prevYear, month: prevMonth } = state.monthCompareA;
+    const { year: curYear, month: curMonth } = state.monthCompareB;
+    const monthNames = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+    function monthAgg(y,m){
+      const filtered = logs.filter(l=>{ const d=new Date(l.created_at); return d.getFullYear()===y && d.getMonth()===m; });
+      const wv = filtered.reduce((s,e)=> s+((e.wv!==null&&e.wv!==undefined)?Number(e.wv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+      const awv = filtered.reduce((s,e)=> s+((e.awv!==null&&e.awv!==undefined)?Number(e.awv):(Number(e.kg)||0)*(Number(e.reps)||0)), 0);
+      const wve = wv>0 ? (awv/wv)*100 : 0;
+      const sessionDays = new Set(filtered.map(l=>{ const d=new Date(l.created_at); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; })).size;
+      return { wv, awv, wve, sessionDays };
+    }
+    const prevAgg = monthAgg(prevYear, prevMonth);
+    const curAgg = monthAgg(curYear, curMonth);
+    const awvDiff = curAgg.awv - prevAgg.awv;
+    const wveDiff = curAgg.wve - prevAgg.wve;
+    const improved = awvDiff >= 0;
+    const verdictText = improved
+      ? `Βελτίωση Αποδοτικού Όγκου κατά <strong>${formatCalcNum(Math.abs(awvDiff))} kg</strong> (${wveDiff>=0?'+':''}${formatCalcNum(wveDiff)}% απόδοση) σε σχέση με τον άλλο μήνα!<span class="en">Actual Workout Volume improved by ${formatCalcNum(Math.abs(awvDiff))} kg (${wveDiff>=0?'+':''}${formatCalcNum(wveDiff)}% efficiency) vs the other month!</span>`
+      : `Ο άλλος μήνας είχε <strong>${formatCalcNum(Math.abs(awvDiff))} kg</strong> μεγαλύτερο αποδοτικό όγκο (${formatCalcNum(wveDiff)}% απόδοση). Πάμε να τον ξεπεράσουμε!<span class="en">The other month had ${formatCalcNum(Math.abs(awvDiff))} kg more actual volume (${formatCalcNum(wveDiff)}% efficiency). Let's beat it!</span>`;
+    root.innerHTML = `
+      <div class="modal-overlay" id="monthcompare-overlay">
+        <div class="modal" style="max-width:460px;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:-6px;">
+            <button id="monthcompare-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+          </div>
+          <div class="dc-hero-title">Your Past Self vs You Today</div>
+          <div class="dc-hero-sub">Ο Παλιός σου Εαυτός εναντίον του Νέου σου Εαυτού</div>
+          <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+            <div class="mc-month-picker">
+              <button type="button" class="mc-month-arrow" id="mc-a-prev">←</button>
+              <span class="mc-month-label" style="color:#1e90ff;">${escHtml(monthNames[prevMonth])} ${prevYear}</span>
+              <button type="button" class="mc-month-arrow" id="mc-a-next">→</button>
+            </div>
+            <span style="color:var(--ink-soft);font-size:12px;">vs</span>
+            <div class="mc-month-picker">
+              <button type="button" class="mc-month-arrow" id="mc-b-prev">←</button>
+              <span class="mc-month-label" style="color:#ff8c1a;">${escHtml(monthNames[curMonth])} ${curYear}</span>
+              <button type="button" class="mc-month-arrow" id="mc-b-next">→</button>
+            </div>
+          </div>
+          ${renderCompareChartHTML('mc', prevAgg, curAgg, monthNames[prevMonth].toUpperCase(), monthNames[curMonth].toUpperCase(), String(prevYear), String(curYear), '#1e90ff', '#ff8c1a')}
+          <div class="dc-verdict ${improved?'':'negative'}">${verdictText}</div>
+          <div class="calc-info-note" style="text-align:left;">
+            Προπονήσεις <strong style="color:#7fd8ff;">${escHtml(monthNames[prevMonth])}</strong>: <strong>${prevAgg.sessionDays}</strong> &nbsp;|&nbsp;
+            Προπονήσεις <strong style="color:#ffb347;">${escHtml(monthNames[curMonth])}</strong>: <strong>${curAgg.sessionDays}</strong>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px;" id="monthcompare-close-btn">Κλείσιμο</button>
+        </div>
+      </div>`;
+    function shiftMonth(side, delta){
+      const m = side==='A' ? state.monthCompareA : state.monthCompareB;
+      m.month += delta;
+      if(m.month<0){ m.month=11; m.year--; }
+      else if(m.month>11){ m.month=0; m.year++; }
+      renderModal();
+    }
+    document.getElementById('mc-a-prev')?.addEventListener('click', ()=>shiftMonth('A',-1));
+    document.getElementById('mc-a-next')?.addEventListener('click', ()=>shiftMonth('A',1));
+    document.getElementById('mc-b-prev')?.addEventListener('click', ()=>shiftMonth('B',-1));
+    document.getElementById('mc-b-next')?.addEventListener('click', ()=>shiftMonth('B',1));
+    document.getElementById('monthcompare-close-x')?.addEventListener('click', ()=>{ state.monthComparisonModalOpen=false; renderModal(); });
+    document.getElementById('monthcompare-close-btn')?.addEventListener('click', ()=>{ state.monthComparisonModalOpen=false; renderModal(); });
+    document.getElementById('monthcompare-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='monthcompare-overlay'){ state.monthComparisonModalOpen=false; renderModal(); } });
+    animateCompareChart('mc', prevAgg, curAgg);
+    return;
+  }
+  if(state.progressChartModalOpen){
+    renderProgressChartModal(root);
     return;
   }
   if(state.inviteModalOpen){
@@ -4608,10 +5248,8 @@ function bindHistoryDetailEvents(){
     const btn = document.getElementById('hist-load-log');
     const area = document.getElementById('hist-log-area');
     btn.disabled = true; btn.textContent = 'Φόρτωση...';
-    const logs = await loadWorkoutLogs(state.selectedCustomerCode);
     btn.style.display = 'none';
-    area.innerHTML = renderWorkoutLogFull(logs);
-    bindWorkoutCalendarEvents('hist-log-area');
+    await loadAndRenderWorkoutLog(state.selectedCustomerCode, 'hist-log-area');
   });
   document.querySelectorAll('[data-hist-edit]').forEach(el=>{
     el.addEventListener('click', ()=>{
