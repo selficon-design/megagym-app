@@ -1217,6 +1217,7 @@ let state = {
   monthCompareB: null,
   progressChartModalOpen: false,
   previousWorkoutsModalOpen: false,
+  firstSetInfoModalOpen: false,
   progressChartRange: '3m',
   tplLibShellContext: 'trainer', // 'client' | 'trainer' — ποιο "κέλυφος" να ξαναφτιάξει το κουμπί πίσω
   copiedFromProgramId: null, // αν φτιάχνουμε πρόγραμμα ξεκινώντας από αντιγραφή, το id του αρχικού
@@ -1897,6 +1898,9 @@ function animateCompareChart(idPrefix, aggA, aggB){
 async function renderPreviousWorkoutsModal(root){
   const ex = state.workoutExercise;
   const exerciseName = ex ? ex.exercise : '';
+  const primaryEq = ex && ex.equipment && ex.equipment[0] ? ex.equipment[0] : null;
+  const equipmentName = primaryEq ? primaryEq.name : '';
+  const range = ex ? parseRepRangeStr(ex.rep) : { min:8, max:12 };
   root.innerHTML = `
     <div class="modal-overlay" id="prevworkouts-overlay">
       <div class="modal" style="max-width:460px;">
@@ -1905,8 +1909,9 @@ async function renderPreviousWorkoutsModal(root){
         </div>
         <div class="dc-hero-title" style="font-size:16px;">ΠΡΟΗΓΟΥΜΕΝΕΣ ΠΡΟΠΟΝΗΣΕΙΣ</div>
         <div style="text-align:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--ink-soft);margin-bottom:10px;letter-spacing:.05em;">PREVIOUS WORKOUTS</div>
-        <p style="font-size:12px;color:#eefcff;text-align:center;font-weight:700;margin:0 0 6px;text-transform:uppercase;">${escHtml(exerciseName)}</p>
-        <p style="font-size:10.5px;color:var(--ink-soft);text-align:center;font-style:italic;margin:0 0 20px;line-height:1.5;">Δείτε τα κιλά και τις επαναλήψεις που είχατε βάλει σε προηγούμενες προπονήσεις στην ίδια άσκηση.</p>
+        <p style="font-size:12px;color:#eefcff;text-align:center;font-weight:700;margin:0;text-transform:uppercase;">${escHtml(exerciseName)}</p>
+        ${equipmentName ? `<p style="font-size:11px;color:#ffd23f;text-align:center;font-weight:700;margin:2px 0 6px;text-shadow:0 0 8px rgba(255,210,63,.5);">⚙ ${escHtml(equipmentName)}</p>` : ''}
+        <p style="font-size:10.5px;color:var(--ink-soft);text-align:center;font-style:italic;margin:6px 0 20px;line-height:1.5;">Δείτε τα κιλά και τις επαναλήψεις που είχατε βάλει σε προηγούμενες προπονήσεις στην ίδια άσκηση με τον ίδιο εξοπλισμό.</p>
         <div id="prevworkouts-area"><div style="text-align:center;color:var(--ink-soft);padding:20px 0;">Φόρτωση...</div></div>
         <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;" id="prevworkouts-close-btn">Κλείσιμο</button>
       </div>
@@ -1921,17 +1926,20 @@ async function renderPreviousWorkoutsModal(root){
     area.innerHTML = `<div style="text-align:center;color:var(--ink-soft);padding:20px 0;">Δεν βρέθηκαν δεδομένα.</div>`;
     return;
   }
-  const days = await loadPreviousWorkoutsForExercise(code, exerciseName);
+  const days = await loadPreviousWorkoutsForExercise(code, exerciseName, equipmentName);
   if(!area) return; // ο χρήστης μπορεί να έκλεισε το modal στο μεταξύ
   if(!days.length){
-    area.innerHTML = `<div style="text-align:center;color:var(--ink-soft);padding:20px 0;">Καμία προηγούμενη καταγραφή σε αυτή την άσκηση.<br><span style="font-size:11px;font-style:italic;">No previous records for this exercise.</span></div>`;
+    area.innerHTML = `<div style="text-align:center;color:var(--ink-soft);padding:20px 0;">Καμία προηγούμενη καταγραφή σε αυτή την άσκηση με τον ίδιο εξοπλισμό.<br><span style="font-size:11px;font-style:italic;">No previous records for this exercise with the same equipment.</span></div>`;
     return;
   }
   area.innerHTML = days.map(day=>{
     const dateLabel = day.dateObj.toLocaleDateString('el-GR');
     const rows = day.entries.map((e,i)=>{
       const roundingStep = (CALC_TYPES[e.calc_type]||CALC_TYPES[DEFAULT_CALC_TYPE]).roundingStep;
-      const needed = computeNeededWeightFor20Reps(Number(e.kg), Number(e.reps), roundingStep);
+      // 1ο SET: στόχος 20 επαναλήψεις (test σετ). Επόμενα SET: στόχος το εύρος επαναλήψεων του προγράμματος.
+      const needed = i===0
+        ? computeNeededWeightForRange(Number(e.kg), Number(e.reps), PREV_WORKOUTS_TARGET_REPS, PREV_WORKOUTS_TARGET_REPS, roundingStep)
+        : computeNeededWeightForRange(Number(e.kg), Number(e.reps), range.min, range.max, roundingStep);
       return `<tr>
         <td>${i+1}ο SET</td>
         <td>${escHtml(String(e.reps))}</td>
@@ -2084,27 +2092,26 @@ function animateLinePath(id, duration){
   requestAnimationFrame(step);
 }
 const PREV_WORKOUTS_TARGET_REPS = 20;
-function computeNeededWeightFor20Reps(kg, reps, roundingStep){
+function computeNeededWeightForRange(kg, reps, minTarget, maxTarget, roundingStep){
   if(!kg || !reps) return null;
-  const target = PREV_WORKOUTS_TARGET_REPS;
   let weightPercent = 0, repsPercent = 0;
-  if(reps === target){
+  if(reps >= minTarget && reps <= maxTarget){
     weightPercent = 0;
-  } else if(reps > target){
-    repsPercent = ((reps-target)/target)*100;
+  } else if(reps > maxTarget){
+    repsPercent = ((reps-maxTarget)/maxTarget)*100;
     weightPercent = repsPercent<=60 ? repsPercent : 60+(repsPercent-60)*0.5;
     weightPercent = Math.min(weightPercent, 230);
   } else {
-    repsPercent = ((target-reps)/target)*100;
+    repsPercent = ((minTarget-reps)/minTarget)*100;
     weightPercent = -Math.min(repsPercent, 90);
   }
   const raw = kg*(1+weightPercent/100);
   return Math.max(0, roundToStepW(raw, roundingStep||2.5));
 }
-async function loadPreviousWorkoutsForExercise(customerCode, exerciseName){
-  const { data, error } = await sb.from('workout_logs').select('*')
-    .eq('customer_code', customerCode).eq('exercise', exerciseName)
-    .order('created_at', { ascending:false });
+async function loadPreviousWorkoutsForExercise(customerCode, exerciseName, equipmentName){
+  let q = sb.from('workout_logs').select('*').eq('customer_code', customerCode).eq('exercise', exerciseName);
+  if(equipmentName) q = q.eq('equipment_name', equipmentName);
+  const { data, error } = await q.order('created_at', { ascending:false });
   if(error){ console.error(error); return []; }
   const groups = {};
   const order = [];
@@ -3936,6 +3943,14 @@ function addWorkoutCalcNumber(n){
   workoutCalcValues[workoutCalcField]+=n;
   updateWorkoutCalcDisplay();
 }
+function addWorkoutCalcDecimal(){
+  if(!workoutCalcField){ showWorkoutCalcError('Πάτησε πρώτα REPS ή KG.'); return; }
+  if(workoutCalcField==='reps') return; // οι επαναλήψεις είναι πάντα ακέραιος αριθμός
+  if(workoutCalcValues.kg.includes(',')) return; // ένα μόνο κόμμα επιτρέπεται
+  if(!workoutCalcValues.kg) workoutCalcValues.kg = '0';
+  workoutCalcValues.kg += ',';
+  updateWorkoutCalcDisplay();
+}
 function deleteWorkoutCalcNumber(){
   if(!workoutCalcField) return;
   workoutCalcValues[workoutCalcField]=workoutCalcValues[workoutCalcField].slice(0,-1);
@@ -3962,10 +3977,13 @@ function formatCalcNum(n){
   const v = Math.round((Number(n)+Number.EPSILON)*10)/10;
   return Number.isInteger(v)?String(v):String(v).replace('.',',');
 }
+function parseCalcNumber(str){
+  return Number(String(str).replace(',', '.'));
+}
 function calculateWorkoutNextWeight(){
   if(!workoutCalcValues.reps || !workoutCalcValues.kg){ state.repsKgRequiredModalOpen = true; renderModal(); return; }
   const reps0 = Number(workoutCalcValues.reps);
-  const kg0 = Number(workoutCalcValues.kg);
+  const kg0 = parseCalcNumber(workoutCalcValues.kg);
   if(!Number.isFinite(reps0)||!Number.isFinite(kg0)||reps0<=0||kg0<=0){ showWorkoutCalcError('Οι τιμές πρέπει να είναι μεγαλύτερες από το μηδέν.'); return; }
   if(!workoutFailureQuality){ state.fqRequiredModalOpen = true; renderModal(); return; }
 
@@ -3991,7 +4009,7 @@ function performWorkoutCalculation(){
   const ex = state.workoutExercise;
   const range = parseRepRangeStr(ex.rep);
   const reps = Number(workoutCalcValues.reps);
-  const kg = Number(workoutCalcValues.kg);
+  const kg = parseCalcNumber(workoutCalcValues.kg);
   if(!workoutCalcValues.reps || !workoutCalcValues.kg){ showWorkoutCalcError('Συμπλήρωσε πρώτα τις επαναλήψεις και τα κιλά.'); return; }
   if(!Number.isFinite(reps)||!Number.isFinite(kg)||reps<=0||kg<=0){ showWorkoutCalcError('Οι τιμές πρέπει να είναι μεγαλύτερες από το μηδέν.'); return; }
 
@@ -4087,6 +4105,7 @@ function renderWorkoutPage(){
     </div>
 
     <div class="panel pad">
+      <button class="btn eq-action-btn" style="width:100%;min-height:52px;font-size:13px;margin-bottom:10px;" id="firstSetInfoBtn">ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΠΡΩΤΟΥ SET · FIRST SET WEIGHT CALCULATION</button>
       <button class="btn eq-action-btn" style="width:100%;min-height:52px;font-size:13px;" id="prevWorkoutsBtn">ΠΡΟΗΓΟΥΜΕΝΕΣ ΠΡΟΠΟΝΗΣΕΙΣ · PREVIOUS WORKOUTS</button>
     </div>
 
@@ -4112,9 +4131,10 @@ function renderWorkoutPage(){
       <div style="text-align:center;font-size:10px;color:var(--ink-soft);font-style:italic;margin:-4px 0 10px;">${escHtml(calcType.kgFieldLabelEn)}</div>
       <div class="calc-keypad">
         ${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="calc-key" data-calc-num="${n}">${n}</button>`).join('')}
-        <button type="button" class="calc-key clear" id="calcClearBtn">C</button>
+        <button type="button" class="calc-key" data-calc-decimal="1">,</button>
         <button type="button" class="calc-key" data-calc-num="0">0</button>
         <button type="button" class="calc-key delete" id="calcDeleteBtn">⌫</button>
+        <button type="button" class="calc-key clear" id="calcClearBtn" style="grid-column:span 3;">C</button>
       </div>
       <div class="eq-section-title" style="font-size:13px;margin-bottom:10px;">Ποιότητα Εκτέλεσης Σετ</div>
       <div class="fq-list">
@@ -4145,6 +4165,7 @@ function bindWorkoutPageEvents(){
   document.getElementById('workout-back')?.addEventListener('click', closeWorkoutPage);
   document.getElementById('timerInstructionsBtn')?.addEventListener('click', ()=>{ state.instructionsModalOpen=true; renderModal(); });
   document.getElementById('prevWorkoutsBtn')?.addEventListener('click', ()=>{ state.previousWorkoutsModalOpen=true; renderModal(); });
+  document.getElementById('firstSetInfoBtn')?.addEventListener('click', ()=>{ state.firstSetInfoModalOpen=true; renderModal(); });
   document.getElementById('startBtn')?.addEventListener('click', startWorkoutTimer);
   document.getElementById('stopBtn')?.addEventListener('click', stopWorkoutTimer);
   document.getElementById('resetTimerBtn')?.addEventListener('click', resetWorkoutTimer);
@@ -4153,6 +4174,7 @@ function bindWorkoutPageEvents(){
   document.querySelectorAll('[data-calc-num]').forEach(el=>{
     el.addEventListener('click', ()=>addWorkoutCalcNumber(el.getAttribute('data-calc-num')));
   });
+  document.querySelector('[data-calc-decimal]')?.addEventListener('click', addWorkoutCalcDecimal);
   document.getElementById('calcClearBtn')?.addEventListener('click', clearWorkoutCalcField);
   document.getElementById('calcDeleteBtn')?.addEventListener('click', deleteWorkoutCalcNumber);
   document.querySelectorAll('[data-fq-key]').forEach(el=>{
@@ -4423,6 +4445,55 @@ function renderModal(){
   }
   if(state.previousWorkoutsModalOpen){
     renderPreviousWorkoutsModal(root);
+    return;
+  }
+  if(state.firstSetInfoModalOpen){
+    root.innerHTML = `
+      <div class="modal-overlay" id="firstsetinfo-overlay">
+        <div class="modal" style="max-width:460px;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:-6px;">
+            <button id="firstsetinfo-close-x" style="background:none;border:none;color:var(--ink-soft);font-size:20px;cursor:pointer;line-height:1;padding:4px;">✕</button>
+          </div>
+          <div class="dc-hero-title" style="font-size:16px;">ΥΠΟΛΟΓΙΣΜΟΣ ΚΙΛΩΝ ΠΡΩΤΟΥ SET</div>
+          <div style="text-align:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--ink-soft);margin-bottom:20px;letter-spacing:.05em;">FIRST SET WEIGHT CALCULATION</div>
+
+          <div style="font-size:13px;line-height:1.7;color:#eefcff;margin-bottom:16px;">
+            <strong style="color:var(--accent);">1.</strong> Αν δεν έχετε ξανακάνει αυτή την άσκηση, δηλαδή δεν έχουν καταγραφτεί δεδομένα, τότε για να υπολογίσετε πόσα κιλά να βάλετε στο πρώτο SET θα πρέπει να βάλετε τόσα όσα χρειάζονται για να βγάλετε <strong>20 Επαναλήψεις – REPS</strong>. Κάντε όσες περισσότερες επαναλήψεις μπορείτε, ακόμη και αν ξεπεράσετε τις 20 επαναλήψεις. Μετά χρησιμοποιήστε τον <strong style="color:var(--cyan-soft);">ΥΠΟΛΟΓΙΣΤΗ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET</strong> και αυτός θα σας κατευθύνει στα επόμενα SETS.
+          </div>
+          <div style="font-size:11px;line-height:1.6;color:var(--ink-soft);font-style:italic;margin-bottom:22px;">
+            <strong>1.</strong> If you haven't done this exercise before, meaning no data has been recorded, then to calculate how much weight to use in the first SET, use as much as is needed to complete <strong>20 Repetitions – REPS</strong>. Do as many reps as you can, even if you go beyond 20. Then use the <strong>NEXT SET WEIGHT CALCULATOR</strong> and it will guide you through the following SETS.
+          </div>
+
+          <div style="font-size:13px;line-height:1.7;color:#eefcff;margin-bottom:16px;">
+            <strong style="color:var(--accent);">2.</strong> Αν έχετε ξανακάνει αυτή την άσκηση και έχουν καταγραφτεί δεδομένα, πατήστε το κουμπί <strong style="color:var(--cyan-soft);">«ΠΡΟΗΓΟΥΜΕΝΕΣ ΠΡΟΠΟΝΗΣΕΙΣ»</strong>. Δείτε πόσα κιλά έπρεπε να είχατε βάλει την προηγούμενη φορά και βάλτε αυτά τα κιλά στο πρώτο σας SET.
+          </div>
+          <div style="font-size:11px;line-height:1.6;color:var(--ink-soft);font-style:italic;margin-bottom:22px;">
+            <strong>2.</strong> If you have done this exercise before and data has been recorded, press the <strong>"PREVIOUS WORKOUTS"</strong> button. See how much weight you should have used last time and use that weight for your first SET.
+          </div>
+
+          <div style="font-size:13px;line-height:1.7;color:#eefcff;margin-bottom:16px;">
+            <strong style="color:var(--accent);">3.</strong> Ακόμη θα δείτε και τα υπόλοιπα SETS για να έχετε μια εικόνα των προηγούμενων προπονήσεων. Τα κιλά που θα επιλέξετε στα επόμενα SETS, πλην του πρώτου, δεν θα τα πάρετε από εδώ αλλά από τον <strong style="color:var(--cyan-soft);">ΥΠΟΛΟΓΙΣΤΗ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET</strong>.
+          </div>
+          <div style="font-size:11px;line-height:1.6;color:var(--ink-soft);font-style:italic;margin-bottom:22px;">
+            <strong>3.</strong> You will also see the remaining SETS to get a picture of your previous workouts. The weight you choose for the sets after the first one should NOT come from here, but from the <strong>NEXT SET WEIGHT CALCULATOR</strong>.
+          </div>
+
+          <div class="dc-verdict" style="text-align:left;">
+            <strong style="color:#ff6a00;">ΠΡΟΣΟΧΗ!</strong> Είναι σημαντικό να χρησιμοποιείτε τον ΥΠΟΛΟΓΙΣΤΗ ΚΙΛΩΝ για να κρατούνται δεδομένα της προπόνησης αλλά και για να βάζετε τα σωστά κιλά.
+            <span class="en"><strong>ATTENTION!</strong> It is important to use the WEIGHT CALCULATOR so that your workout data is recorded and so that you use the correct weight.</span>
+          </div>
+
+          <div class="calc-info-note" style="text-align:left;">
+            Κάθε φορά που πατάτε το κουμπί «ΥΠΟΛΟΓΙΣΤΗΣ ΚΙΛΩΝ ΕΠΟΜΕΝΟΥ SET» καταγράφεται στο ιστορικό σας η άσκηση που μόλις εκτελέσατε.
+            <span style="display:block;font-style:italic;opacity:.75;margin-top:5px;">Every time you press the "NEXT SET WEIGHT CALCULATOR" button, the exercise you just performed is recorded in your history.</span>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" id="firstsetinfo-close-btn">Κατάλαβα</button>
+        </div>
+      </div>`;
+    document.getElementById('firstsetinfo-close-x')?.addEventListener('click', ()=>{ state.firstSetInfoModalOpen=false; renderModal(); });
+    document.getElementById('firstsetinfo-close-btn')?.addEventListener('click', ()=>{ state.firstSetInfoModalOpen=false; renderModal(); });
+    document.getElementById('firstsetinfo-overlay')?.addEventListener('click', (e)=>{ if(e.target.id==='firstsetinfo-overlay'){ state.firstSetInfoModalOpen=false; renderModal(); } });
     return;
   }
   if(state.inviteModalOpen){
